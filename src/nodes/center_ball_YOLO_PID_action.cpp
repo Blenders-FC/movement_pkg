@@ -19,7 +19,8 @@ BT::CenterBallYOLOPID::~CenterBallYOLOPID() {}
 void BT::CenterBallYOLOPID::WaitForTick()
 {
     // double Kp = 2.0, Ki = 0.0, Kd = 0.1; // Tune these
-    double Kp = 1.0, Ki = 0.0, Kd = 0.3; // Tune these
+    double Kp_x = 0.5, Ki_x = 0.0, Kd_x = 0.0; // Tune these
+    double Kp_y = 0.5, Ki_y = 0.0, Kd_y = 0.0;
     double integral_pan = 0, integral_tilt = 0;
     double prev_error_pan = 0, prev_error_tilt = 0;
     ros::Rate rate(30); // 30 Hz
@@ -41,8 +42,8 @@ void BT::CenterBallYOLOPID::WaitForTick()
             if ((ball_center_position_.x == 999 || ball_center_position_.x == 0) || (ball_center_position_.y == 999 || ball_center_position_.y == 0))
             {
                 ROS_COLORED_LOG("BALL NOT detected. Not able to center.", RED, false);
-                set_status(BT::FAILURE);
-                break;
+                //set_status(BT::FAILURE);
+                continue;;
             }
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();
@@ -65,8 +66,8 @@ void BT::CenterBallYOLOPID::WaitForTick()
             double derivative_pan = (error_pan - prev_error_pan) / dt;
             double derivative_tilt = (error_tilt - prev_error_tilt) / dt;
 
-            double output_pan = Kp * error_pan + Ki * integral_pan + Kd * derivative_pan;
-            double output_tilt = Kp * error_tilt + Ki * integral_tilt + Kd * derivative_tilt;
+            double output_pan = Kp_x * error_pan + Ki_x * integral_pan + Kd_x * derivative_pan;
+            double output_tilt = Kp_y * error_tilt + Ki_y * integral_tilt + Kd_y * derivative_tilt;
 
             angle_mov_x_ += output_pan;   // rad         // * 57.2958;   // rad to deg
             angle_mov_y_ += output_tilt;  // rad         // * 57.2958;  // rad to deg
