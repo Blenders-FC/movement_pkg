@@ -16,8 +16,8 @@ BT::ReturnStatus BT::RefereeStateCondition::Tick()
     while (ros::ok())
     {
             // Condition checking and state update
-        int refereeState = blackboard.getTarget("m_refereeStatus")->refereeStatus;   
-
+        //int refereeState = blackboard.getTarget("m_refereeStatus")->refereeStatus;   
+        int refereeState = 2;
         if (refereeState == referee::STILL || refereeState == referee::GET_FAR)
         {   
             ROS_COLORED_LOG("Not allowed to play by referee",CYAN, true);
