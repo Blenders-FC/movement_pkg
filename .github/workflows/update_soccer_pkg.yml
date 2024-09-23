@@ -1,0 +1,21 @@
+name: Update Main Repo
+
+on:
+  push:
+    branches:
+      - main  # or any branch you want to trigger on
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the external repository
+        uses: actions/checkout@v3
+
+      - name: Trigger update in main repository
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/Blenders-FC/blenders_soccer_pkg/dispatches \
+          -d '{"event_type": "update_subtrees"}'
