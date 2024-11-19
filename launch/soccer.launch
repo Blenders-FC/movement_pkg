@@ -3,7 +3,7 @@
 
   <param name="robot_id"                 value="0"/>
 
-  <param name="gazebo"                   value="false"          type="bool"/>
+  <param name="gazebo"                   value="true"          type="bool"/>
   <param name="gazebo_robot_name"        value="robotis_op3"/>
     
   <param name="offset_file_path"         value="$(find op3_manager)/config/offset.yaml"/>
@@ -15,7 +15,7 @@
   <param name="/robotis/direct_control/default_moving_angle"    value="90"/>
     
   <!-- OP3 Manager -->
-  <node pkg="op3_manager" type="op3_gazebo" name="op3_manager" output="screen">
+  <node pkg="op3_manager" type="op3_manager" name="op3_manager" output="screen">
     <param name="angle_unit"             value="30" />
     <param name="robot_id"               value="0"/>
   </node>
