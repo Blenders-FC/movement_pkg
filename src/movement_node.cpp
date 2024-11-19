@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 
     ros::Duration(3.0).sleep();
     ros::Time prev_time_walk = ros::Time::now();
-
+    setModule("walking_module");
     walkTowardsBall(head_pan, head_tilt);
     
     // while (ros::ok()){
