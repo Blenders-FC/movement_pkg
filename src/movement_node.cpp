@@ -35,7 +35,7 @@ void goWalk(std::string& command);
 bool isActionRunning();
 bool getWalkingParam();
 void publishHeadJoint(double pan, double tilt);
-void walkTowardsBall(double pan, double tilt)
+void walkTowardsBall(double pan, double tilt);
 
 void calcFootstep(double target_distance, double target_angle, double delta_time, double& fb_move, double& rl_angle);
 void setWalkingParam(double x_move, double y_move, double rotation_angle, bool balance = true);
@@ -73,7 +73,9 @@ double current_period_time = 0.6;
 
 const int SPIN_RATE = 30;
 const bool DEBUG_PRINT = false;
+
 std::string command;
+sensor_msgs::JointState head_angle_msg;
 
 enum ControlModule
 {
@@ -152,7 +154,6 @@ int main(int argc, char **argv)
     ros::Rate loop_rate_pararse(60);
     
     goAction(9);
-    ros::Time prev_time_ = ros::Time::now();
     
     setModule("head_control_module");
     head_angle_msg.name.push_back("head_pan");
@@ -162,6 +163,7 @@ int main(int argc, char **argv)
     write_head_joint_offset_pub.publish(head_angle_msg);
 
     ros::Duration(3.0).sleep();
+    ros::Time prev_time_walk = ros::Time::now();
 
     walkTowardsBall(head_pan, head_tilt);
     
@@ -242,8 +244,6 @@ void walkTowardsBall(double pan, double tilt){
   double delta_time_walk = dur_walk.nsec * 0.000000001 + dur_walk.sec;
   prev_time_walk = curr_time_walk;
 
-  count_not_found_ = 0;
-
   distance_to_ball = CAMERA_HEIGHT * tan(M_PI * 0.5 + tilt - hip_pitch_offset_);
 
   if (distance_to_ball < 0) {
@@ -253,33 +253,6 @@ void walkTowardsBall(double pan, double tilt){
   double distance_to_kick = 0.22;  //0.22
 
   // std::cout << distance_to_ball << std::endl;
-  
-  if (distance_to_ball < distance_to_kick) { //&& (fabs(ball_x_angle) < 25.0) to kick
-    count_to_kick_ += 1;	
-    // std::cout << count_to_kick_ << std::endl;
-    if (count_to_kick_ > 20) {
-      std::string command = "stop";
-      goWalk(command);
-      if (pan > 0) { //left
-        std::cout << "PATEA DERECHA" << std::endl;
-        goAction(84); //left kick
-      }
-      else { //right
-        std::cout << "PATEA IZQUIERDA" << std::endl;
-        goAction(83); //right kick
-      }
-    }
-    else if (count_to_kick_ > 15) {
-      getWalkingParam();
-      setWalkingParam(IN_PLACE_FB_STEP, 0, 0, true);
-
-      std_msgs::String command_msg;
-      command_msg.data = "start";
-      walk_command_pub.publish(command_msg);
-    }
-  } else {
-    count_to_kick_ = 0;
-  }
 
   double fb_move = 0.0, rl_angle = 0.0;
   double distance_to_walk = distance_to_ball - distance_to_kick;
