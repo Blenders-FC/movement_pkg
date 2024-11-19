@@ -76,6 +76,7 @@ const bool DEBUG_PRINT = false;
 
 std::string command;
 sensor_msgs::JointState head_angle_msg;
+ros::Time prev_time_walk;
 
 enum ControlModule
 {
