@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "read_write");
     ros::NodeHandle nh(ros::this_node::getName());
 
-    int robot_id;
+    int robot_id;|
     nh.param<int>("robot_id", robot_id, 0);
 
     //subscribers
@@ -328,15 +328,19 @@ bool checkManagerRunning(std::string& manager_name)
 
 void setModule(const std::string& module_name) 
 {
-  robotis_controller_msgs::SetModule set_module_srv;
-  set_module_srv.request.module_name = module_name;
+  RobotisController *controller = RobotisController::getInstance();
+  controller->setCtrlModule(module_name);
+  usleep(200 * 1000);
+  return;
+  // robotis_controller_msgs::SetModule set_module_srv;
+  // set_module_srv.request.module_name = module_name;
 
-  if (set_joint_module_client.call(set_module_srv) == false)
-  {
-    ROS_ERROR("Failed to set module");
-    return;
-  }
-  return ;
+  // if (set_joint_module_client.call(set_module_srv) == false)
+  // {
+  //   ROS_ERROR("Failed to set module");
+  //   return;
+  // }
+  // return ;
 }
 
 void torqueOnAll() 
