@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(soccer_pkg)
+project(movement_pkg)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
@@ -138,11 +138,11 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/soccer_pkg.cpp
+#   src/${PROJECT_NAME}/movement_pkg.cpp
 # )
 
 ## Declare a C++ executable
-#add_executable(${PROJECT_NAME}_node src/soccer_pkg_node.cpp)
+#add_executable(${PROJECT_NAME}_node src/movement_pkg_node.cpp)
 add_executable(movement_node
   src/movement_node.cpp
 )
@@ -223,7 +223,7 @@ install(DIRECTORY launch
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_soccer_pkg.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_movement_pkg.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
