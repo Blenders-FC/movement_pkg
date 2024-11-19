@@ -15,7 +15,7 @@
   <param name="/robotis/direct_control/default_moving_angle"    value="90"/>
     
   <!-- OP3 Manager -->
-  <node pkg="op3_manager" type="op3_manager" name="op3_manager" output="screen">
+  <node pkg="op3_manager" type="op3_gazebo" name="op3_manager" output="screen">
     <param name="angle_unit"             value="30" />
     <param name="robot_id"               value="0"/>
   </node>
