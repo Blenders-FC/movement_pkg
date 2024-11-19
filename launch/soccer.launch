@@ -21,7 +21,7 @@
   </node>
 
   <!-- Movement node -->
-  <node pkg="soccer_pkg" type="movement_node" name="op3_movement_node" output="screen">
+  <node pkg="movement_pkg" type="movement_node" name="op3_movement_node" output="screen">
     <param name="robot_id"               value="0"/>
   </node>
 </launch>
