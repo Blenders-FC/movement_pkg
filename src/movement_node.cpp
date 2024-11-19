@@ -113,22 +113,22 @@ int main(int argc, char **argv)
     nh.param<int>("robot_id", robot_id, 0);
 
     //subscribers
-    read_joint_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/present_joint_states",1, callbackJointStates);
-    imu_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/imu", 1, callbackImu);
+    read_joint_sub = nh.subscribe("/robotis/present_joint_states",1, callbackJointStates);
+    imu_sub = nh.subscribe("/robotis/open_cr/imu", 1, callbackImu);
     
     
     //publishers
-    init_pose_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/base/ini_pose", 0);
-    dxl_torque_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/dxl_torque", 0);
-    action_pose_pub = nh.advertise<std_msgs::Int32>("/robotis_" + std::to_string(robot_id) + "/action/page_num", 0);
-    walk_command_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/walking/command", 0);
-    write_head_joint_offset_pub = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/head_control/set_joint_states", 0);
-    set_walking_param_pub = nh.advertise<op3_walking_module_msgs::WalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/set_params", 0);
+    init_pose_pub = nh.advertise<std_msgs::String>("/robotis/base/ini_pose", 0);
+    dxl_torque_pub = nh.advertise<std_msgs::String>("/robotis/dxl_torque", 0);
+    action_pose_pub = nh.advertise<std_msgs::Int32>("/robotis/action/page_num", 0);
+    walk_command_pub = nh.advertise<std_msgs::String>("/robotis/walking/command", 0);
+    write_head_joint_offset_pub = nh.advertise<sensor_msgs::JointState>("/robotis/head_control/set_joint_states", 0);
+    set_walking_param_pub = nh.advertise<op3_walking_module_msgs::WalkingParam>("/robotis/walking/set_params", 0);
 
     //services
-    set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/set_present_ctrl_modules");
-    is_running_client = nh.serviceClient<op3_action_module_msgs::IsRunning>("/robotis_" + std::to_string(robot_id) + "/action/is_running");
-    get_param_client = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/get_params");
+    set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis/set_present_ctrl_modules");
+    is_running_client = nh.serviceClient<op3_action_module_msgs::IsRunning>("/robotis/action/is_running");
+    get_param_client = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis/walking/get_params");
 
     ros::start();
 
