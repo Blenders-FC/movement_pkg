@@ -16,7 +16,7 @@
 #include <fstream>
 #include <eigen3/Eigen/Eigen>
 
-#include "robotis_controller/robotis_controller.h"
+#include "robotis_controller/robotis_controller/robotis_controller.h"
 #include "robotis_controller_msgs/SetModule.h"
 #include "robotis_controller_msgs/SyncWriteItem.h"
 #include "robotis_math/robotis_linear_algebra.h"
