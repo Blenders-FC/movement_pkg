@@ -16,7 +16,7 @@
 #include <fstream>
 #include <eigen3/Eigen/Eigen>
 
-#include "robotis_controller/robotis_controller.h"
+// #include "robotis_controller/robotis_controller.h"
 #include "robotis_controller_msgs/SetModule.h"
 #include "robotis_controller_msgs/SyncWriteItem.h"
 #include "robotis_math/robotis_linear_algebra.h"
@@ -329,19 +329,19 @@ bool checkManagerRunning(std::string& manager_name)
 
 void setModule(const std::string& module_name) 
 {
-  RobotisController *controller = RobotisController::getInstance();
-  controller->setCtrlModule(module_name);
-  usleep(200 * 1000);
-  return;
-  // robotis_controller_msgs::SetModule set_module_srv;
-  // set_module_srv.request.module_name = module_name;
+  // RobotisController *controller = RobotisController::getInstance();
+  // controller->setCtrlModule(module_name);
+  // usleep(200 * 1000);
+  // return;
+  robotis_controller_msgs::SetModule set_module_srv;
+  set_module_srv.request.module_name = module_name;
 
-  // if (set_joint_module_client.call(set_module_srv) == false)
-  // {
-  //   ROS_ERROR("Failed to set module");
-  //   return;
-  // }
-  // return ;
+  if (set_joint_module_client.call(set_module_srv) == false)
+  {
+    ROS_ERROR("Failed to set module");
+    return;
+  }
+  return ;
 }
 
 void torqueOnAll() 
