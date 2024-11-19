@@ -16,6 +16,7 @@
 #include <fstream>
 #include <eigen3/Eigen/Eigen>
 
+#include "robotis_controller/robotis_controller.h"
 #include "robotis_controller_msgs/SetModule.h"
 #include "robotis_controller_msgs/SyncWriteItem.h"
 #include "robotis_math/robotis_linear_algebra.h"
@@ -108,7 +109,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "read_write");
     ros::NodeHandle nh(ros::this_node::getName());
 
-    int robot_id;|
+    int robot_id;
     nh.param<int>("robot_id", robot_id, 0);
 
     //subscribers
