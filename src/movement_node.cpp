@@ -1,542 +1,1147 @@
+/* 
+Authors: Pedro Deniz
+           Marlene Cobian 
+*/
+
+#include <std_srvs/Empty.h>
+
+#include <ros/ros.h>
+#include <cmath>
 #include <iostream>
-#include <vector>
-#include <Eigen/Core>
-#include <Eigen/Dense>
+#include <fstream>
 
-// Assume robotis_framework's methods
-namespace robotis_framework {
-    Eigen::Vector3d getTransitionXYZ(double x, double y, double z) {
-        return Eigen::Vector3d(x, y, z);
-    }
+#include <std_msgs/String.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/Int32.h>
+#include <std_msgs/Bool.h>
+#include <sensor_msgs/JointState.h>
+#include <sensor_msgs/Imu.h>
+#include <geometry_msgs/Point.h>
+#include <soccer_pkg/referee.h>
+#include <eigen3/Eigen/Eigen>
 
-    Eigen::Matrix3d getInertiaXYZ(double xx, double xy, double xz, double yy, double yz, double zz) {
-        Eigen::Matrix3d inertia;
-        inertia << xx, xy, xz,
-                   xy, yy, yz,
-                   xz, yz, zz;
-        return inertia;
-    }
-}
+#include "robotis_controller_msgs/SetModule.h"
+#include "robotis_controller_msgs/SyncWriteItem.h"
+#include "robotis_math/robotis_linear_algebra.h"
+#include "op3_action_module_msgs/IsRunning.h"
+#include "op3_walking_module_msgs/GetWalkingParam.h"
+#include "op3_walking_module_msgs/WalkingParam.h"
 
-// LinkData structure
-class LinkData {
-public:
-    std::string name_;              // Name of the link
-    int parent_;                    // Parent link ID
-    int sibling_;                   // Sibling link ID
-    int child_;                     // Child link ID
-    double mass_;                   // Mass of the link
-    Eigen::Vector3d center_of_mass_; // Center of mass of the link (relative to the parent)
-    Eigen::Vector3d relative_position_; // Position relative to the parent
-    Eigen::Vector3d joint_axis_;    // Axis of rotation for the joint
-    double joint_limit_max_;        // Maximum joint limit (in radians)
-    double joint_limit_min_;        // Minimum joint limit (in radians)
-    Eigen::Matrix3d inertia_;       // Inertia matrix
+void readyToDemo();
+void setModule(const std::string& module_name);
+bool checkManagerRunning(std::string& manager_name);
+void torqueOnAll();
 
-    // Constructor to initialize the link data
-    LinkData(std::string name, double mass, Eigen::Vector3d com, Eigen::Vector3d pos)
-        : name_(name), mass_(mass), center_of_mass_(com), relative_position_(pos) {}
+void goInitPose();
+void goAction(int page);
+void goWalk(std::string& command);
+void callbackImu(const sensor_msgs::Imu::ConstPtr& msg);
+// void callbackReferee(const soccer_pkg::referee& msg);
+void buttonHandlerCallback(const std_msgs::String::ConstPtr& msg);
+void turn2search(int limit);
+void turn2search_left(int limit);
+void callbackJointStates(const sensor_msgs::JointState& msg);
+void centeredBall();
 
-    // Add more constructors if needed
+bool isActionRunning();
+bool getJointPose();
+bool getWalkingParam();
+
+void calcFootstep(double target_distance, double target_angle, double delta_time, double& fb_move, double& rl_angle);
+void setWalkingParam(double x_move, double y_move, double rotation_angle, bool balance = true);
+bool processFollowing();
+void waitFollowing();
+void writeHeadJoint(double ang_value, bool is_pan);
+void callbackBallCenter(const geometry_msgs::Point& msg);
+void tracking();
+void publishHeadJoint(double pan, double tilt);
+void publishHeadJointSearch(double pan, double tilt);
+void walkTowardsBall(double pan, double tilt);
+void turnToBall(double pan, double tilt);
+void searchBall();
+
+//head control
+geometry_msgs::Point ball_position;
+sensor_msgs::JointState head_angle_msg;
+
+int angle_mov_x = 0;
+int angle_mov_y = -10;  //init head_tilt pose
+double current_ball_pan = 0;
+double current_ball_tilt = 0;
+double xerror_sum = 0;
+double yerror_sum = 0;
+double xerror = 0;
+double yerror = 0;
+
+double p_gain_x = 0.375; //0.6
+double d_gain_x = 0.00; //0.045
+double i_gain_x = 0.0000;
+
+double p_gain_y = 0.4; //0.6
+double d_gain_y = 0.00; //0.045
+double i_gain_y = 0.0000;
+
+double x_target = 0;
+double y_target = 0;
+double t = 0;
+bool head_direction = true;  //true=>right / false=>left
+bool ball_following = false;
+
+ros::Time prev_time;
+ros::Time prev_time_walk;
+
+//referee
+int referee_state = 0;
+bool playing = true;  // false;
+
+//button
+bool start_button_flag = false;
+
+//turn
+int turn_cnt = 0;
+//standing up txt
+const int rows = 40;
+const int cols = 6;
+float positions[rows][cols];
+
+//imu
+double alpha = 0.4;
+double pitch;
+double rpy_orientation;
+const double FALL_FORWARD_LIMIT = 55;
+const double FALL_BACK_LIMIT = -55;
+double present_pitch_;
+
+//searching and walking
+bool search_n_walk = false;  //true
+bool head_down = false;
+
+//walking
+double rest_inc_giro = 0.08726;
+const double SPOT_FB_OFFSET = 0.0;
+const double SPOT_RL_OFFSET = 0.0;
+const double SPOT_ANGLE_OFFSET = 0.0;
+double current_x_move_ = 0.005;
+double current_r_angle_ = 0.0;
+const double IN_PLACE_FB_STEP = -0.003;
+const int NOT_FOUND_THRESHOLD = 0.5;
+int count_not_found_ = 0;
+int count_to_kick_ = 0;
+const double CAMERA_HEIGHT = 0.46;
+const double FOV_WIDTH = 35.2 * M_PI / 180;
+const double FOV_HEIGHT = 21.6 * M_PI / 180;
+const double hip_pitch_offset_ = 0.12217305; //7°
+const double UNIT_FB_STEP = 0.002;
+const double UNIT_RL_TURN = 0.00872665;      //0.5°
+const double MAX_FB_STEP = 0.0175;  //0.04;  //0.007;  //0.015;
+const double MAX_RL_TURN =  0.26179939;      //15°
+const double MIN_FB_STEP = 0.0125;  //0.024;  //0.003;  //0.01;
+const double MIN_RL_TURN = 0.08726646;       //5°
+double accum_period_time = 0.0;
+double current_period_time = 0.6;
+double distance_to_kick = 0.22;  
+double delta_time_w;
+std::string command;
+
+//kicking
+double distance_to_ball = 0.0;
+int page;
+int state;
+double head_tilt;
+double head_pan;
+
+enum ControlModule
+{
+  None = 0,
+  DirectControlModule = 1,
+  Framework = 2,
 };
 
-// List of links
-std::vector<LinkData> op3_link_data_;
+const int SPIN_RATE = 30;
+const bool DEBUG_PRINT = false;
 
-Eigen::Vector3d calculateCoM() {
-    Eigen::Vector3d com(0.0, 0.0, 0.0);  // Center of Mass
-    double total_mass = 0.0;
+ros::Publisher init_pose_pub;
+ros::Publisher dxl_torque_pub;
+ros::Publisher write_head_joint_pub;
+ros::Publisher write_head_joint_offset_pub;
+ros::Publisher write_joint_pub;
+ros::Publisher write_joint_pub2;
+ros::Publisher action_pose_pub;
+ros::Publisher walk_command_pub;
+ros::Publisher set_walking_param_pub;
+ros::Publisher head_scan_pub;
 
-    // Iterate over all links and compute the weighted center of mass
-    for (size_t i = 0; i < op3_link_data_.size(); ++i) {
-        double mass = op3_link_data_[i].mass_;
-        Eigen::Vector3d link_com = op3_link_data_[i].center_of_mass_;
+ros::Subscriber read_joint_sub;
+ros::Subscriber ball_sub;
+ros::Subscriber imu_sub;
+ros::Subscriber ref_sub;
+ros::Subscriber button_sub;
 
-        // Weighted sum for CoM
-        com += link_com * mass;
-        total_mass += mass;
-    }
+ros::ServiceClient set_joint_module_client;
+ros::ServiceClient is_running_client;
+ros::ServiceClient get_param_client;
 
-    // Normalize by total mass to get the final CoM
-    if (total_mass > 0.0) {
-        com /= total_mass;
-    }
+op3_walking_module_msgs::WalkingParam current_walking_param;
 
-    return com;
-}
+int control_module = None;
+bool demo_ready = false;
 
-int main() {
-    // Populate the link data with some links (you can populate as many as needed)
-    op3_link_data_.push_back(LinkData("l_leg_end", 0.0, robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0), robotis_framework::getTransitionXYZ(0.024, 0.0, -0.0305)));
-    // Add more links...
+//node main
+int main(int argc, char **argv) {
+  //init ros
+  ros::init(argc, argv, "read_write");
+  ros::NodeHandle nh(ros::this_node::getName());
 
-    // Calculate CoM
-    Eigen::Vector3d com = calculateCoM();
+  int robot_id;
+  nh.param<int>("robot_id", robot_id, 0);
 
-    // Output the result
-    std::cout << "Center of Mass: " << com.transpose() << std::endl;
+  std::ifstream myfile ("/home/robotis/catkin_ws/src/soccer_pkg/data/Pararse.txt");
+  if (myfile.is_open()) {
+    std::cout << "El archivo se abrió";
 
-    return 0;
-}
-
-
-OP3KinematicsDynamics::OP3KinematicsDynamics(TreeSelect tree)
-{
-  for (int id = 0; id <= ALL_JOINT_ID; id++)
-    op3_link_data_[id] = new LinkData();
-
-  if (tree == WholeBody)
-  {
-    op3_link_data_[0]->name_ = "base";
-    op3_link_data_[0]->parent_ = -1;
-    op3_link_data_[0]->sibling_ = -1;
-    op3_link_data_[0]->child_ = 23;
-    op3_link_data_[0]->mass_ = 0.0;
-    op3_link_data_[0]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[0]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[0]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[0]->joint_limit_max_ = 100.0;
-    op3_link_data_[0]->joint_limit_min_ = -100.0;
-    op3_link_data_[0]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    /* ----- passive joint -----*/
-
-    op3_link_data_[23]->name_ = "passive_x";
-    op3_link_data_[23]->parent_ = 0;
-    op3_link_data_[23]->sibling_ = -1;
-    op3_link_data_[23]->child_ = 24;
-    op3_link_data_[23]->mass_ = 0.0;
-    op3_link_data_[23]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[23]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[23]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[23]->joint_limit_max_ = 100.0;
-    op3_link_data_[23]->joint_limit_min_ = -100.0;
-    op3_link_data_[23]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    op3_link_data_[24]->name_ = "passive_y";
-    op3_link_data_[24]->parent_ = 23;
-    op3_link_data_[24]->sibling_ = -1;
-    op3_link_data_[24]->child_ = 25;
-    op3_link_data_[24]->mass_ = 0.0;
-    op3_link_data_[24]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[24]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[24]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[24]->joint_limit_max_ = 100.0;
-    op3_link_data_[24]->joint_limit_min_ = -100.0;
-    op3_link_data_[24]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    op3_link_data_[25]->name_ = "passive_z";
-    op3_link_data_[25]->parent_ = 24;
-    op3_link_data_[25]->sibling_ = -1;
-    op3_link_data_[25]->child_ = 26;
-    op3_link_data_[25]->mass_ = 0.0;
-    op3_link_data_[25]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.385);
-    op3_link_data_[25]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[25]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[25]->joint_limit_max_ = 100.0;
-    op3_link_data_[25]->joint_limit_min_ = -100.0;
-    op3_link_data_[25]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    op3_link_data_[26]->name_ = "passive_yaw";
-    op3_link_data_[26]->parent_ = 25;
-    op3_link_data_[26]->sibling_ = -1;
-    op3_link_data_[26]->child_ = 27;
-    op3_link_data_[26]->mass_ = 0.0;
-    op3_link_data_[26]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[26]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 1.0);
-    op3_link_data_[26]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[26]->joint_limit_max_ = 100.0;
-    op3_link_data_[26]->joint_limit_min_ = -100.0;
-    op3_link_data_[26]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    op3_link_data_[27]->name_ = "passive_pitch";
-    op3_link_data_[27]->parent_ = 26;
-    op3_link_data_[27]->sibling_ = -1;
-    op3_link_data_[27]->child_ = 28;
-    op3_link_data_[27]->mass_ = 0.0;
-    op3_link_data_[27]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[27]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 1.0, 0.0);
-    op3_link_data_[27]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[27]->joint_limit_max_ = 100.0;
-    op3_link_data_[27]->joint_limit_min_ = -100.0;
-    op3_link_data_[27]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    op3_link_data_[28]->name_ = "passive_roll";
-    op3_link_data_[28]->parent_ = 27;
-    op3_link_data_[28]->sibling_ = -1;
-    op3_link_data_[28]->child_ = 29;
-    op3_link_data_[28]->mass_ = 0.0;
-    op3_link_data_[28]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[28]->joint_axis_ = robotis_framework::getTransitionXYZ(1.0, 0.0, 0.0);
-    op3_link_data_[28]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[28]->joint_limit_max_ = 100.0;
-    op3_link_data_[28]->joint_limit_min_ = -100.0;
-    op3_link_data_[28]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    /* ----- body -----*/
-
-    // pelvis_link
-    op3_link_data_[29]->name_ = "pelvis";
-    op3_link_data_[29]->parent_ = 28;
-    op3_link_data_[29]->sibling_ = -1;
-    op3_link_data_[29]->child_ = 19;
-    op3_link_data_[29]->mass_ = 1.3492787;
-    op3_link_data_[29]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[29]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[29]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.015014868, 0.00013099, 0.065815797);
-    op3_link_data_[29]->joint_limit_max_ = 100.0;
-    op3_link_data_[29]->joint_limit_min_ = -100.0;
-    op3_link_data_[29]->inertia_ = robotis_framework::getInertiaXYZ(0.03603, 0.00000, 0.00016, 0.02210, 0.00000,
-                                                                    0.03830);
-
-    /* ----- head -----*/
-
-    // head_pan
-    op3_link_data_[19]->name_ = "head_pan";
-    op3_link_data_[19]->parent_ = 29;
-    op3_link_data_[19]->sibling_ = 1;
-    op3_link_data_[19]->child_ = 20;
-    op3_link_data_[19]->mass_ = 0.011759436;
-    op3_link_data_[19]->relative_position_ = robotis_framework::getTransitionXYZ(-0.001, 0.0, 0.1365);
-    op3_link_data_[19]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 1.0);
-    op3_link_data_[19]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.002327479, 0, 0.008227847);
-    op3_link_data_[19]->joint_limit_max_ = 0.5 * M_PI;
-    op3_link_data_[19]->joint_limit_min_ = -0.5 * M_PI;
-    op3_link_data_[19]->inertia_ = robotis_framework::getInertiaXYZ(0.00011, 0.00000, 0.00000, 0.00003, 0.00000,
-                                                                    0.00012);
-
-    // head_tilt
-    op3_link_data_[20]->name_ = "head_tilt";
-    op3_link_data_[20]->parent_ = 19;
-    op3_link_data_[20]->sibling_ = -1;
-    op3_link_data_[20]->child_ = -1;
-    op3_link_data_[20]->mass_ = 0.13630649;
-    op3_link_data_[20]->relative_position_ = robotis_framework::getTransitionXYZ(0.01, 0.019, 0.0285);
-    op3_link_data_[20]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, -1.0, 0.0);
-    op3_link_data_[20]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.002298411, -0.018634079, 0.027696734);
-    op3_link_data_[20]->joint_limit_max_ = 0.5 * M_PI;
-    op3_link_data_[20]->joint_limit_min_ = -0.5 * M_PI;
-    op3_link_data_[20]->inertia_ = robotis_framework::getInertiaXYZ(0.00113, 0.00001, -0.00005, 0.00114, 0.00002,
-                                                                    0.00084);
-
-    /*----- right arm -----*/
-
-    // right arm shoulder pitch
-    op3_link_data_[1]->name_ = "r_sho_pitch";
-    op3_link_data_[1]->parent_ = 29;
-    op3_link_data_[1]->sibling_ = 2;
-    op3_link_data_[1]->child_ = 3;
-    op3_link_data_[1]->mass_ = 0.011759436;
-    op3_link_data_[1]->relative_position_ = robotis_framework::getTransitionXYZ(-0.001, -0.06, 0.111);
-    op3_link_data_[1]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, -1.0, 0.0);
-    op3_link_data_[1]->center_of_mass_ = robotis_framework::getTransitionXYZ(0, -0.008227847, -0.002327479);
-    op3_link_data_[1]->joint_limit_max_ = 0.5 * M_PI;
-    op3_link_data_[1]->joint_limit_min_ = -0.5 * M_PI;
-    op3_link_data_[1]->inertia_ = robotis_framework::getInertiaXYZ(0.00018, 0.0, 0.0, 0.00058, -0.00004, 0.00057);
-
-    // right arm shoulder roll
-    op3_link_data_[3]->name_ = "r_sho_roll";
-    op3_link_data_[3]->parent_ = 1;
-    op3_link_data_[3]->sibling_ = -1;
-    op3_link_data_[3]->child_ = 5;
-    op3_link_data_[3]->mass_ = 0.1775763;
-    op3_link_data_[3]->relative_position_ = robotis_framework::getTransitionXYZ(0.019, -0.0285, -0.01);
-    op3_link_data_[3]->joint_axis_ = robotis_framework::getTransitionXYZ(-1.0, 0.0, 0.0);
-    op3_link_data_[3]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.018438243, -0.045143767, 0.000281212);
-    op3_link_data_[3]->joint_limit_max_ = 0.3 * M_PI;
-    op3_link_data_[3]->joint_limit_min_ = -0.5 * M_PI;
-    op3_link_data_[3]->inertia_ = robotis_framework::getInertiaXYZ(0.00043, 0.00000, 0.00000, 0.00112, 0.00000,
-                                                                   0.00113);
-
-    // right arm elbow
-    op3_link_data_[5]->name_ = "r_el";
-    op3_link_data_[5]->parent_ = 3;
-    op3_link_data_[5]->sibling_ = -1;
-    op3_link_data_[5]->child_ = 21;
-    op3_link_data_[5]->mass_ = 0.041267974;
-    op3_link_data_[5]->relative_position_ = robotis_framework::getTransitionXYZ(0, -0.0904, -0.0001);
-    op3_link_data_[5]->joint_axis_ = robotis_framework::getTransitionXYZ(1.0, 0.0, 0.0);
-    op3_link_data_[5]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.019000003, -0.070330391, 0.00380012);
-    op3_link_data_[5]->joint_limit_max_ = 0.5 * M_PI;
-    op3_link_data_[5]->joint_limit_min_ = -0.5 * M_PI;
-    op3_link_data_[5]->inertia_ = robotis_framework::getInertiaXYZ(0.00277, 0.00002, -0.00001, 0.00090, 0.00004,
-                                                                   0.00255);
-
-    // right arm end effector
-    op3_link_data_[21]->name_ = "r_arm_end";
-    op3_link_data_[21]->parent_ = 5;
-    op3_link_data_[21]->sibling_ = -1;
-    op3_link_data_[21]->child_ = -1;
-    op3_link_data_[21]->mass_ = 0.0;
-    op3_link_data_[21]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, -0.15, 0.0);
-    op3_link_data_[21]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[21]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[21]->joint_limit_max_ = 100.0;
-    op3_link_data_[21]->joint_limit_min_ = -100.0;
-    op3_link_data_[21]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    /*----- left arm -----*/
-
-    // left arm shoulder pitch
-    op3_link_data_[2]->name_ = "l_sho_pitch";
-    op3_link_data_[2]->parent_ = 29;
-    op3_link_data_[2]->sibling_ = 7;
-    op3_link_data_[2]->child_ = 4;
-    op3_link_data_[2]->mass_ = 0.011759436;
-    op3_link_data_[2]->relative_position_ = robotis_framework::getTransitionXYZ(-0.001, 0.06, 0.111);
-    op3_link_data_[2]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 1.0, 0.0);
-    op3_link_data_[2]->center_of_mass_ = robotis_framework::getTransitionXYZ(0, 0.008227847, -0.002327479);
-    op3_link_data_[2]->joint_limit_max_ = 0.5 * M_PI;
-    op3_link_data_[2]->joint_limit_min_ = -0.5 * M_PI;
-    op3_link_data_[2]->inertia_ = robotis_framework::getInertiaXYZ(0.00018, 0.00000, 0.00000, 0.00058, 0.00004,
-                                                                   0.00057);
-
-    // left arm shoulder roll
-    op3_link_data_[4]->name_ = "l_sho_roll";
-    op3_link_data_[4]->parent_ = 2;
-    op3_link_data_[4]->sibling_ = -1;
-    op3_link_data_[4]->child_ = 6;
-    op3_link_data_[4]->mass_ = 0.1775763;
-    op3_link_data_[4]->relative_position_ = robotis_framework::getTransitionXYZ(0.019, 0.0285, -0.01);
-    op3_link_data_[4]->joint_axis_ = robotis_framework::getTransitionXYZ(-1.0, 0.0, 0.0);
-    op3_link_data_[4]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.018438243, 0.045143767, 0.000281212);
-    op3_link_data_[4]->joint_limit_max_ = 0.5 * M_PI;
-    op3_link_data_[4]->joint_limit_min_ = -0.3 * M_PI;
-    op3_link_data_[4]->inertia_ = robotis_framework::getInertiaXYZ(0.00043, 0.00000, 0.00000, 0.00112, 0.00000,
-                                                                   0.00113);
-
-    // left arm elbow
-    op3_link_data_[6]->name_ = "l_el";
-    op3_link_data_[6]->parent_ = 4;
-    op3_link_data_[6]->sibling_ = -1;
-    op3_link_data_[6]->child_ = 22;
-    op3_link_data_[6]->mass_ = 0.041267974;
-    op3_link_data_[6]->relative_position_ = robotis_framework::getTransitionXYZ(0, 0.0904, -0.0001);
-    op3_link_data_[6]->joint_axis_ = robotis_framework::getTransitionXYZ(1.0, 0.0, 0.0);
-    op3_link_data_[6]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.018999997, 0.070330391, 0.003800117);
-    op3_link_data_[6]->joint_limit_max_ = 0.5 * M_PI;
-    op3_link_data_[6]->joint_limit_min_ = -0.5 * M_PI;
-    op3_link_data_[6]->inertia_ = robotis_framework::getInertiaXYZ(0.00277, -0.00002, -0.00001, 0.00090, -0.00004,
-                                                                   0.00255);
-
-    // left arm end effector
-    op3_link_data_[22]->name_ = "l_arm_end";
-    op3_link_data_[22]->parent_ = 6;
-    op3_link_data_[22]->sibling_ = -1;
-    op3_link_data_[22]->child_ = -1;
-    op3_link_data_[22]->mass_ = 0.0;
-    op3_link_data_[22]->relative_position_ = robotis_framework::getTransitionXYZ(0.0, 0.15, 0.0);
-    op3_link_data_[22]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[22]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[22]->joint_limit_max_ = 100.0;
-    op3_link_data_[22]->joint_limit_min_ = -100.0;
-    op3_link_data_[22]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    /* ----- right leg -----*/
-
-    // right leg hip yaw
-    op3_link_data_[7]->name_ = "r_hip_yaw";
-    op3_link_data_[7]->parent_ = 29;
-    op3_link_data_[7]->sibling_ = 8;
-    op3_link_data_[7]->child_ = 9;
-    op3_link_data_[7]->mass_ = 0.011813898;
-    op3_link_data_[7]->relative_position_ = robotis_framework::getTransitionXYZ(0, -0.035, 0);
-    op3_link_data_[7]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, -1.0);
-    op3_link_data_[7]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.001566062, 0, -0.00774017);
-    op3_link_data_[7]->joint_limit_max_ = 0.45 * M_PI;
-    op3_link_data_[7]->joint_limit_min_ = -0.45 * M_PI;
-    op3_link_data_[7]->inertia_ = robotis_framework::getInertiaXYZ(0.00024, 0.00000, 0.00000, 0.00101, 0.00000,
-                                                                   0.00092);
-
-    // right leg hip roll
-    op3_link_data_[9]->name_ = "r_hip_roll";
-    op3_link_data_[9]->parent_ = 7;
-    op3_link_data_[9]->sibling_ = -1;
-    op3_link_data_[9]->child_ = 11;
-    op3_link_data_[9]->mass_ = 0.17885985;
-    op3_link_data_[9]->relative_position_ = robotis_framework::getTransitionXYZ(-0.024, 0, -0.0285);
-    op3_link_data_[9]->joint_axis_ = robotis_framework::getTransitionXYZ(-1.0, 0.0, 0.0);
-    op3_link_data_[9]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.00388263, -0.000278863, -0.012138713);
-    op3_link_data_[9]->joint_limit_max_ = 0.3 * M_PI;
-    op3_link_data_[9]->joint_limit_min_ = -0.3 * M_PI;
-    op3_link_data_[9]->inertia_ = robotis_framework::getInertiaXYZ(0.00056, 0.00000, 0.00000, 0.00168, 0.00000,
-                                                                   0.00171);
-
-    // right leg hip pitch
-    op3_link_data_[11]->name_ = "r_hip_pitch";
-    op3_link_data_[11]->parent_ = 9;
-    op3_link_data_[11]->sibling_ = -1;
-    op3_link_data_[11]->child_ = 13;
-    op3_link_data_[11]->mass_ = 0.11543381;
-    op3_link_data_[11]->relative_position_ = robotis_framework::getTransitionXYZ(0.0241, -0.019, 0);
-    op3_link_data_[11]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, -1.0, 0.0);
-    op3_link_data_[11]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.000590366, 0.019005093, -0.084075186);
-    op3_link_data_[11]->joint_limit_max_ = 0.4 * M_PI;
-    op3_link_data_[11]->joint_limit_min_ = -0.4 * M_PI;
-    op3_link_data_[11]->inertia_ = robotis_framework::getInertiaXYZ(0.04329, -0.00027, 0.00286, 0.04042, 0.00203,
-                                                                    0.00560);
-
-    // right leg knee
-    op3_link_data_[13]->name_ = "r_knee";
-    op3_link_data_[13]->parent_ = 11;
-    op3_link_data_[13]->sibling_ = -1;
-    op3_link_data_[13]->child_ = 15;
-    op3_link_data_[13]->mass_ = 0.040146918;
-    op3_link_data_[13]->relative_position_ = robotis_framework::getTransitionXYZ(0.0001, 0,	-0.11015);
-    op3_link_data_[13]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, -1.0, 0.0);
-    op3_link_data_[13]->center_of_mass_ = robotis_framework::getTransitionXYZ(0, 0.021514031, -0.055);
-    op3_link_data_[13]->joint_limit_max_ = 0.1 * M_PI;
-    op3_link_data_[13]->joint_limit_min_ = -0.7 * M_PI;
-    op3_link_data_[13]->inertia_ = robotis_framework::getInertiaXYZ(0.01971, -0.00031, -0.00294, 0.01687, -0.00140,
-                                                                    0.00574);
-
-    // right leg ankle pitch
-    op3_link_data_[15]->name_ = "r_ank_pitch";
-    op3_link_data_[15]->parent_ = 13;
-    op3_link_data_[15]->sibling_ = -1;
-    op3_link_data_[15]->child_ = 17;
-    op3_link_data_[15]->mass_ = 0.17885985;
-    op3_link_data_[15]->relative_position_ = robotis_framework::getTransitionXYZ(0, 0, -0.11);
-    op3_link_data_[15]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 1.0, 0.0);
-    op3_link_data_[15]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.02021737, 0.018721137, 0.012138713);
-    op3_link_data_[15]->joint_limit_max_ = 0.45 * M_PI;
-    op3_link_data_[15]->joint_limit_min_ = -0.45 * M_PI;
-    op3_link_data_[15]->inertia_ = robotis_framework::getInertiaXYZ(0.00056, 0.00000, 0.00000, 0.00168, 0.00000,
-                                                                    0.00171);
-
-    // right leg ankle roll
-    op3_link_data_[17]->name_ = "r_ank_roll";
-    op3_link_data_[17]->parent_ = 15;
-    op3_link_data_[17]->sibling_ = -1;
-    op3_link_data_[17]->child_ = 31;
-    op3_link_data_[17]->mass_ = 0.069344849;
-    op3_link_data_[17]->relative_position_ = robotis_framework::getTransitionXYZ(-0.0241, 0.019, 0);
-    op3_link_data_[17]->joint_axis_ = robotis_framework::getTransitionXYZ(1.0, 0.0, 0.0);
-    op3_link_data_[17]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.023733194, -0.010370444, -0.027601507);
-    op3_link_data_[17]->joint_limit_max_ = 0.45 * M_PI;
-    op3_link_data_[17]->joint_limit_min_ = -0.45 * M_PI;
-    op3_link_data_[17]->inertia_ = robotis_framework::getInertiaXYZ(0.00022, 0.00000, -0.00001, 0.00099, 0.00000,
-                                                                    0.00091);
-
-    // right leg end
-    op3_link_data_[31]->name_ = "r_leg_end";
-    op3_link_data_[31]->parent_ = 17;
-    op3_link_data_[31]->sibling_ = -1;
-    op3_link_data_[31]->child_ = -1;
-    op3_link_data_[31]->mass_ = 0.0;
-    op3_link_data_[31]->relative_position_ = robotis_framework::getTransitionXYZ(0.024, 0.0, -0.0305);
-    op3_link_data_[31]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[31]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[31]->joint_limit_max_ = 100.0;
-    op3_link_data_[31]->joint_limit_min_ = -100.0;
-    op3_link_data_[31]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-    /* ----- left leg -----*/
-
-    // left leg hip yaw
-    op3_link_data_[8]->name_ = "l_hip_yaw";
-    op3_link_data_[8]->parent_ = 29;
-    op3_link_data_[8]->sibling_ = -1;
-    op3_link_data_[8]->child_ = 10;
-    op3_link_data_[8]->mass_ = 0.011813898;
-    op3_link_data_[8]->relative_position_ = robotis_framework::getTransitionXYZ(0, 0.035, 0);
-    op3_link_data_[8]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, -1.0);
-    op3_link_data_[8]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.001566062, 0, -0.00774017);
-    op3_link_data_[8]->joint_limit_max_ = 0.45 * M_PI;
-    op3_link_data_[8]->joint_limit_min_ = -0.45 * M_PI;
-    op3_link_data_[8]->inertia_ = robotis_framework::getInertiaXYZ(0.00024, 0.00000, 0.00000, 0.00101, 0.00000,
-                                                                   0.00092);
-
-    // left leg hip roll
-    op3_link_data_[10]->name_ = "l_hip_roll";
-    op3_link_data_[10]->parent_ = 8;
-    op3_link_data_[10]->sibling_ = -1;
-    op3_link_data_[10]->child_ = 12;
-    op3_link_data_[10]->mass_ = 0.17885985;
-    op3_link_data_[10]->relative_position_ = robotis_framework::getTransitionXYZ(-0.024, 0, -0.0285);
-    op3_link_data_[10]->joint_axis_ = robotis_framework::getTransitionXYZ(-1.0, 0.0, 0.0);
-    op3_link_data_[10]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.00388263, 0.000278863, -0.012138713);
-    op3_link_data_[10]->joint_limit_max_ = 0.3 * M_PI;
-    op3_link_data_[10]->joint_limit_min_ = -0.3 * M_PI;
-    op3_link_data_[10]->inertia_ = robotis_framework::getInertiaXYZ(0.00056, 0.00000, 0.00000, 0.00168, 0.00000,
-                                                                    0.00171);
-
-    // left leg hip pitch
-    op3_link_data_[12]->name_ = "l_hip_pitch";
-    op3_link_data_[12]->parent_ = 10;
-    op3_link_data_[12]->sibling_ = -1;
-    op3_link_data_[12]->child_ = 14;
-    op3_link_data_[12]->mass_ = 0.11543381;
-    op3_link_data_[12]->relative_position_ = robotis_framework::getTransitionXYZ(0.0241, 0.019, 0);
-    op3_link_data_[12]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 1.0, 0.0);
-    op3_link_data_[12]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.000590367, -0.019005093, -0.084075186);
-    op3_link_data_[12]->joint_limit_max_ = 0.4 * M_PI;
-    op3_link_data_[12]->joint_limit_min_ = -0.4 * M_PI;
-    op3_link_data_[12]->inertia_ = robotis_framework::getInertiaXYZ(0.04328, 0.00028, 0.00288, 0.04042, -0.00202,
-                                                                    0.00560);
-
-    // left leg knee pitch
-    op3_link_data_[14]->name_ = "l_knee";
-    op3_link_data_[14]->parent_ = 12;
-    op3_link_data_[14]->sibling_ = -1;
-    op3_link_data_[14]->child_ = 16;
-    op3_link_data_[14]->mass_ = 0.040146918;
-    op3_link_data_[14]->relative_position_ = robotis_framework::getTransitionXYZ(0.0001, 0, -0.11015);
-    op3_link_data_[14]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 1.0, 0.0);
-    op3_link_data_[14]->center_of_mass_ = robotis_framework::getTransitionXYZ(0, -0.021514031, -0.055);
-    op3_link_data_[14]->joint_limit_max_ = 0.7 * M_PI;
-    op3_link_data_[14]->joint_limit_min_ = -0.1 * M_PI;
-    op3_link_data_[14]->inertia_ = robotis_framework::getInertiaXYZ(0.01971, 0.00031, -0.00294, 0.01687, 0.00140,
-                                                                    0.00574);
-
-    // left leg ankle pitch
-    op3_link_data_[16]->name_ = "l_ank_pitch";
-    op3_link_data_[16]->parent_ = 14;
-    op3_link_data_[16]->sibling_ = -1;
-    op3_link_data_[16]->child_ = 18;
-    op3_link_data_[16]->mass_ = 0.17885985;
-    op3_link_data_[16]->relative_position_ = robotis_framework::getTransitionXYZ(0.000, 0.000, -0.110);
-    op3_link_data_[16]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, -1.0, 0.0);
-    op3_link_data_[16]->center_of_mass_ = robotis_framework::getTransitionXYZ(-0.02021825, -0.018721131, 0.012138988);
-    op3_link_data_[16]->joint_limit_max_ = 0.45 * M_PI;
-    op3_link_data_[16]->joint_limit_min_ = -0.45 * M_PI;
-    op3_link_data_[16]->inertia_ = robotis_framework::getInertiaXYZ(0.00056, 0.00000, 0.00000, 0.00168, 0.00000,
-                                                                    0.00171);
-
-    // left leg ankle roll
-    op3_link_data_[18]->name_ = "l_ank_roll";
-    op3_link_data_[18]->parent_ = 16;
-    op3_link_data_[18]->sibling_ = -1;
-    op3_link_data_[18]->child_ = 30;
-    op3_link_data_[18]->mass_ = 0.069344849;
-    op3_link_data_[18]->relative_position_ = robotis_framework::getTransitionXYZ(-0.0241, -0.019, 0);
-    op3_link_data_[18]->joint_axis_ = robotis_framework::getTransitionXYZ(1.0, 0.0, 0.0);
-    op3_link_data_[18]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.023733194, 0.010370444, -0.027601507);
-    op3_link_data_[18]->joint_limit_max_ = 0.45 * M_PI;
-    op3_link_data_[18]->joint_limit_min_ = -0.45 * M_PI;
-    op3_link_data_[18]->inertia_ = robotis_framework::getInertiaXYZ(0.00022, 0.00000, -0.00001, 0.00099, 0.00000,
-                                                                    0.00091);
-
-    // left leg end
-    op3_link_data_[30]->name_ = "l_leg_end";
-    op3_link_data_[30]->parent_ = 18;
-    op3_link_data_[30]->sibling_ = -1;
-    op3_link_data_[30]->child_ = -1;
-    op3_link_data_[30]->mass_ = 0.0;
-    op3_link_data_[30]->relative_position_ = robotis_framework::getTransitionXYZ(0.024, 0.0, -0.0305);
-    op3_link_data_[30]->joint_axis_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[30]->center_of_mass_ = robotis_framework::getTransitionXYZ(0.0, 0.0, 0.0);
-    op3_link_data_[30]->joint_limit_max_ = 100.0;
-    op3_link_data_[30]->joint_limit_min_ = -100.0;
-    op3_link_data_[30]->inertia_ = robotis_framework::getInertiaXYZ(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    for (int idx2 = 0; idx2 < rows; idx2++) {
+      for (int idy2 = 0; idy2 < cols; idy2++) {
+        myfile >> positions[idx2][idy2];
+      }
+  	}
+	  myfile.close();
+  } else {
+	  std::cout << "El archivo no abrió";
   }
+
+  //subscribers
+  read_joint_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/present_joint_states",1, callbackJointStates);
+  ball_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/ball_center", 5, callbackBallCenter);
+  imu_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/imu", 1, callbackImu);
+  // ref_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/r_data", 1, callbackReferee);
+  button_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/button", 1, buttonHandlerCallback);
   
-  hip_offset_angle_rad_ = atan2(0.0001, 0.11015);
-  hip_pitch_offset_m_ = 0.0001;
-  thigh_length_m_ = sqrt(op3_link_data_[ID_R_LEG_START + 2 * 3]->relative_position_.coeff(0, 0)*op3_link_data_[ID_R_LEG_START + 2 * 3]->relative_position_.coeff(0, 0)
-                               + op3_link_data_[ID_R_LEG_START + 2 * 3]->relative_position_.coeff(2, 0)*op3_link_data_[ID_R_LEG_START + 2 * 3]->relative_position_.coeff(2, 0));
-  calf_length_m_ = std::fabs(op3_link_data_[ID_R_LEG_START + 2 * 4]->relative_position_.coeff(2, 0));
-  ankle_length_m_ = std::fabs(op3_link_data_[ID_R_LEG_END]->relative_position_.coeff(2, 0));
-  leg_side_offset_m_ = 2.0 * (std::fabs(op3_link_data_[ID_R_LEG_START]->relative_position_.coeff(1, 0)));
+  //publishers
+  init_pose_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/base/ini_pose", 0);
+  dxl_torque_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/dxl_torque", 0);
+  write_head_joint_pub = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/head_control/set_joint_states", 0);
+  write_head_joint_offset_pub = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/head_control/set_joint_states_offset", 0);
+  write_joint_pub = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
+  write_joint_pub2 = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
+  walk_command_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/walking/command",0);
+  set_walking_param_pub = nh.advertise<op3_walking_module_msgs::WalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/set_params",0);
+  head_scan_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/head_control/scan_command", 0);
+  action_pose_pub = nh.advertise<std_msgs::Int32>("/robotis_" + std::to_string(robot_id) + "/action/page_num", 0);
+
+  //services
+  set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/set_present_ctrl_modules");
+  is_running_client = nh.serviceClient<op3_action_module_msgs::IsRunning>("/robotis_" + std::to_string(robot_id) + "/action/is_running");
+  get_param_client = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/get_params");
+  
+  ros::start();
+
+  //set node loop rate
+  ros::Rate loop_rate(SPIN_RATE);
+
+  //wait for starting of op3_manager
+  std::string manager_name = "/op3_manager";
+  while (ros::ok()) {
+    ros::Duration(1.0).sleep();
+
+    if (checkManagerRunning(manager_name) == true) {
+    break;
+    ROS_INFO_COND(DEBUG_PRINT, "Succeed to connect");
+    }
+    ROS_WARN("Waiting for op3 manager");
+  } 
+
+  readyToDemo();
+  //ros::Duration(5.0).sleep();
+
+  // setModule("head_control_module");
+  // head_angle_msg.name.push_back("head_pan");
+  // head_angle_msg.position.push_back(0);
+  // head_angle_msg.name.push_back("head_tilt");
+  // head_angle_msg.position.push_back(0);
+
+  // write_head_joint_pub.publish(head_angle_msg);
+
+  while (ros::ok()) {
+    ros::spinOnce();
+    if (start_button_flag == 1){
+      asm("NOP");
+      std::cout  << "MUEVETE" << std::endl;
+      break;
+    } else {
+      std::cout  << "nada" << std::endl; 
+      continue;
+    }
+    // angle_mov_x = (int)head_pan;
+    // angle_mov_y = (int)head_tilt;
+	}
+
+  // while (ros::ok()) {
+  //   ros::spinOnce();
+  //   if (playing){
+  //     break;
+  //   }
+  //   std::cout  << "Amonestado inicialmente" << std::endl;
+	// }
+
+  std::string command = "stop";
+  goWalk(command);
+  ros::Duration(1.0).sleep();
+
+  
+  //node loop
+  ros::Time prev_time = ros::Time::now();
+  ros::Time prev_time_walk = ros::Time::now();
+
+  while (ros::ok()) {
+    ros::spinOnce();
+
+    centeredBall();
+    std::cout << angle_mov_x << std::endl;
+    std::cout << angle_mov_y << std::endl;
+    std::cout << turn_cnt << std::endl;
+    ros::Duration(0.1).sleep();
+  }
+
+  return 0;
 }
 
+void centeredBall() {
+  if ((ball_position.x != 999 || ball_position.y != 999)) {  // Sólo jugar o quedarse quieto
+    ros::Duration(0.2).sleep();
+    xerror = (320 - ball_position.x) * 70 / 320; //-atan(ball_position.x * tan(FOV_WIDTH));
+    yerror = (240 - ball_position.y) * 70 / 240; //-atan(ball_position.y * tan(FOV_HEIGHT));
+
+    std::cout << "xerror: " << xerror << std::endl;
+    std::cout << "yerror: " << yerror << std::endl;
+    turn_cnt = 0;
+
+    if (!ball_following && (xerror <= 20 || xerror >= -20) && (yerror <= 20 || yerror >= -20)){
+      if (xerror >= 11 || xerror <= -11){
+        xerror = xerror * M_PI / 180;
+
+        if (xerror < 0){
+          angle_mov_x -= 1;
+        }else{
+          angle_mov_x += 1;
+        }
+        writeHeadJoint(angle_mov_x, true);
+        //walkTowardsBall(current_ball_pan, head_tilt);
+      } else if (yerror >= 20 || yerror <= -20) {
+        yerror = yerror * M_PI / 180;
+
+        if (yerror < 0){
+          angle_mov_y -= 1;
+        }else{
+          angle_mov_y += 1;
+        }
+        writeHeadJoint(angle_mov_y, false);
+      } else {
+        setModule("walking_module");
+        walkTowardsBall(head_pan, head_tilt);
+        std::cout << "START WALKING" << std::endl;
+        ball_following = true;
+      }
+    } else {
+      std::cout << "KEEP WALKING" << std::endl;
+      walkTowardsBall(head_pan, head_tilt);
+    }
+  } else {
+    //std::cout << "no hay pelota" << std::endl;
+    searchBall();
+    if(ball_following){
+      std::string command = "stop";
+      std::cout << "me detengooooooooo" << std::endl;
+      goWalk(command);
+      ros::Duration(1.0).sleep();
+    }
+    ball_following = false;
+  }
+}
+
+void searchBall() {
+
+  if (distance_to_ball >= 1){
+    if (search_n_walk){
+      walkTowardsBall(0.0,-0.1);
+      ros::Duration(1.0).sleep();  //wait for module DO NOT REMOVE!!!!
+    }
+
+    if (head_direction && angle_mov_x <= 70){
+      angle_mov_x += 1;
+      writeHeadJoint(angle_mov_x, true);
+      if (angle_mov_x == 70)
+        head_direction = false;
+    }else if (!head_direction && angle_mov_x >= -70){
+      angle_mov_x -= 1;
+      writeHeadJoint(angle_mov_x, true);
+      if (angle_mov_x == -70){
+        head_direction = true;
+        turn_cnt += 1;
+        if (turn_cnt == 1){
+          angle_mov_y = -50;
+          ros::Duration(1.0).sleep();
+          writeHeadJoint(angle_mov_y, false);
+          ros::Duration(1.0).sleep();
+        }else if (turn_cnt == 2) {
+          turn_cnt = 0;
+          turn2search(9);
+        }
+      }
+    }
+  }else{
+    if (search_n_walk){
+      walkTowardsBall(0.0,-0.1);
+      ros::Duration(1.0).sleep();  //wait for module DO NOT REMOVE!!!!
+    }
+    if (!head_down && turn_cnt == 0){
+      angle_mov_y = -50;
+      ros::Duration(1.0).sleep();
+      writeHeadJoint(angle_mov_y, false);
+      ros::Duration(1.0).sleep();
+      head_down = true;
+    }
+    if (head_direction && angle_mov_x <= 70){
+      angle_mov_x += 1;
+      writeHeadJoint(angle_mov_x, true);
+      if (angle_mov_x == 70){
+	 /*if (!head_down){
+	    turn_cnt=0;
+	    turn2search(9);
+	 }*/
+	 head_direction = false;
+      }
+    }else if (!head_direction && angle_mov_x >= -70){
+      angle_mov_x -= 1;
+      writeHeadJoint(angle_mov_x, true);
+      if (angle_mov_x == -70){
+        head_direction = true;
+        turn_cnt += 1;
+        if (turn_cnt == 1){
+          angle_mov_y = -10;
+          ros::Duration(1.0).sleep();
+          writeHeadJoint(angle_mov_y, false);
+          ros::Duration(1.0).sleep();
+          head_down = false;
+        }else if (turn_cnt == 2) {  //prob este ya no se usa
+          turn_cnt = 0;
+          turn2search(9);
+        }
+      }
+    }
+  }
+
+  
+  // } if (turn_cnt > 3 && !search_n_walk){
+  //   search_n_walk = true;
+  // }
+  /*} else if (turn_cnt > 4) {
+    std::string command = "stop";
+    goWalk(command);
+    ros::Duration(1.0).sleep();
+    turn_cnt = 0;
+    turn2search(3);
+  }
+
+
+
+
+  // if (search_n_walk){
+  //   walkTowardsBall(0.0,-0.1);
+  //   ros::Duration(1.0).sleep();  //wait for module DO NOT REMOVE!!!!
+  // }else{
+  //   std::string command = "stop";
+  //   goWalk(command);
+  //   ros::Duration(1.0).sleep();
+  // }
+
+  // t += 1;
+
+  // x_target = 60*sin(t);
+  // y_target = 15*cos(t) - 30;
+
+  // if (x_target >= 54 ) {
+  //   turn_cnt += 1;
+  // }
+  // std::cout << "cont:" << turn_cnt << std::endl;
+  // if (turn_cnt >= 2){
+  //   y_target -= 20;
+  // } if (turn_cnt > 3 && !search_n_walk){
+  //   search_n_walk = true;
+  // }
+  // /*} else if (turn_cnt > 4) {
+  //   std::string command = "stop";
+  //   goWalk(command);
+  //   ros::Duration(1.0).sleep();
+  //   turn_cnt = 0;
+  //   turn2search(3);
+  // }*/
+
+  // //x_target = (x_target*M_PI)/180;
+  // y_target = (y_target*M_PI)/180;
+
+  // /*if (distance_to_ball < 0.43 && distance_to_ball != 0.0) {
+  //   y_target -= 0.17;
+  // }*/
+  // // std::cout << "dist to ball" << x_target << std::endl; 
+  // //publishHeadJointSearch(x_target, y_target);
+  // writeHeadJoint(x_target, true);
+}
+
+void tracking() {
+  
+  if (playing){
+    if ((ball_position.x != 999 || ball_position.y != 999)) {  // Sólo jugar o quedarse quieto
+      xerror = (320 - ball_position.x) * 70 / 320; //-atan(ball_position.x * tan(FOV_WIDTH));
+      yerror = (240 - ball_position.y) * 70 / 240; //-atan(ball_position.y * tan(FOV_HEIGHT));
+
+      std::cout << "xerror: " << xerror << std::endl;
+      std::cout << "yerror: " << yerror << std::endl;
+      turn_cnt = 0;
+
+      if (xerror >= 10 || xerror <= -10){xerror = xerror * M_PI / 180;
+        yerror = yerror * M_PI / 180;
+
+        ros::Time curr_time = ros::Time::now();
+        ros::Duration dur = curr_time - prev_time;
+
+
+
+        double delta_time = dur.nsec * 0.000000001 + dur.sec;
+        prev_time = curr_time;
+
+        double xerror_dif = (xerror - current_ball_pan) / delta_time;
+        double yerror_dif = (yerror - current_ball_tilt) / delta_time;
+
+        xerror_sum += xerror;
+        yerror_sum += yerror;
+
+        double xerror_target = xerror * p_gain_x + xerror_dif * d_gain_x + xerror_sum * i_gain_x;
+        double yerror_target = yerror * p_gain_y + yerror_dif * d_gain_y + yerror_sum * i_gain_y;
+
+        writeHeadJoint(0.349, true);
+        
+        current_ball_pan = xerror_target;
+        current_ball_tilt = yerror_target;
+        //walkTowardsBall(current_ball_pan, head_tilt);
+
+      } else if (yerror >= 20 || yerror <= -20) {
+        
+
+      } else {
+       // walkTowardsBall(current_ball_pan, head_tilt);
+        setModule("walking_module");
+        std::cout << "caminando" << std::endl;
+      }
+    } else {
+      xerror_sum = 0;
+      yerror_sum = 0;
+      current_ball_pan = 0;
+      current_ball_tilt = 0;
+      //std::cout << "no hay pelota" << std::endl;
+      //turnToBall(current_ball_pan, current_ball_tilt);
+    }
+  }
+}
+
+void writeHeadJoint(double ang_value, bool is_pan) {
+  setModule("direct_control_module");
+  sensor_msgs::JointState write_msg;
+  write_msg.header.stamp = ros::Time::now();
+      
+  ang_value = (ang_value*M_PI)/180;
+
+  if (is_pan){
+    if (ang_value >= 1.2217) ang_value = 1.2217;            //70 deg
+    else if (ang_value <= -1.2217) ang_value = -1.2217;     //-70 deg
+    write_msg.name.push_back("head_pan");
+    write_msg.position.push_back(ang_value);
+  }else{
+    if (ang_value >= 0.34906) ang_value = 0.34906;        //20 deg
+    else if (ang_value <= -1.2217) ang_value = -1.2217;   //-70 deg
+    write_msg.name.push_back("head_tilt");
+    write_msg.position.push_back(ang_value);
+  }
+  write_joint_pub.publish(write_msg);
+}
+
+// void writeHeadJoint(double pan, double tilt) {
+//   sensor_msgs::JointState write_msg;
+//   write_msg.header.stamp = ros::Time::now();
+//   if (pan >= 1.2217) pan = 1.2217;            //70 deg
+//   else if (pan <= -1.2217) pan = -1.2217;     //-70 deg
+  
+//   if (tilt >= 0.34906) tilt = 0.34906;        //20 deg
+//   else if (tilt <= -1.2217) tilt = -1.2217;   //-70 deg
+  
+//   write_msg.name.push_back("head_pan");
+//   write_msg.position.push_back(pan);
+//   write_msg.velocity.push_back(10);
+//   write_msg.name.push_back("head_tilt");
+//   write_msg.position.push_back(tilt);
+//   write_msg.velocity.push_back(10);
+
+//   write_joint_pub.publish(write_msg);
+// }
+
+void publishHeadJoint(double pan, double tilt) {
+  if (pan >= 1.2217) pan = 1.2217;            //70 deg
+  else if (pan <= -1.2217) pan = -1.2217;     //-70 deg
+  
+  if (tilt >= 0.34906) tilt = 0.34906;        //20 deg
+  else if (tilt <= -1.2217) tilt = -1.2217;   //-70 deg
+  
+  head_angle_msg.name.push_back("head_pan");
+  head_angle_msg.position.push_back(pan);
+  head_angle_msg.name.push_back("head_tilt");
+  head_angle_msg.position.push_back(tilt);
+
+  write_head_joint_offset_pub.publish(head_angle_msg);
+}
+
+void publishHeadJointSearch(double pan, double tilt) {
+  if (pan >= 1.2217) pan = 1.2217;            //70 deg
+  else if (pan <= -1.2217) pan = -1.2217;     //-70 deg
+  
+  if (tilt >= 0.34906) tilt = 0.34906;        //20 deg
+  else if (tilt <= -1.2217) tilt = -1.2217;   //-70 deg
+
+  head_angle_msg.name.push_back("head_pan");
+  head_angle_msg.position.push_back(pan);
+  head_angle_msg.name.push_back("head_tilt");
+  head_angle_msg.position.push_back(tilt);
+
+  write_head_joint_pub.publish(head_angle_msg);
+}
+
+void turnToBall(double pan, double tilt) {
+  // if (search_n_walk){
+  //   walkTowardsBall(0.0,-0.1);
+  //   ros::Duration(1.0).sleep();  //wait for module DO NOT REMOVE!!!!
+  // }else{
+  //   std::string command = "stop";
+  //   goWalk(command);
+  //   ros::Duration(1.0).sleep();
+  // }
+
+  t += 1;
+
+  x_target = 60*sin(t);
+  y_target = 15*cos(t) - 30;
+
+  if (x_target >= 54 ) {
+    turn_cnt += 1;
+  }
+  std::cout << "cont:" << turn_cnt << std::endl;
+  if (turn_cnt >= 2){
+    y_target -= 20;
+  } if (turn_cnt > 3 && !search_n_walk){
+    search_n_walk = true;
+  }
+  /*} else if (turn_cnt > 4) {
+    std::string command = "stop";
+    goWalk(command);
+    ros::Duration(1.0).sleep();
+    turn_cnt = 0;
+    turn2search(3);
+  }*/
+
+  //x_target = (x_target*M_PI)/180;
+  y_target = (y_target*M_PI)/180;
+
+  /*if (distance_to_ball < 0.43 && distance_to_ball != 0.0) {
+    y_target -= 0.17;
+  }*/
+  // std::cout << "dist to ball" << x_target << std::endl; 
+  //publishHeadJointSearch(x_target, y_target);
+  writeHeadJoint(x_target, true);
+}
+
+void turn2search(int limit) {
+  //node loop
+  sensor_msgs::JointState write_msg;
+  write_msg.header.stamp = ros::Time::now();
+  
+  setModule("none");
+  ros::Duration(1).sleep();
+  for (int i = 1; i <= limit; i++) {
+    //std::cout  << "Derechaaaa D:" << std::endl;
+    //Levantar pie derecho 
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("r_ank_pitch");
+    write_msg.position.push_back(-0.7091);
+    write_msg.name.push_back("r_knee");
+    write_msg.position.push_back(-1.4131);
+    write_msg.name.push_back("r_hip_pitch");
+    write_msg.position.push_back(0.7091 + rest_inc_giro);
+    write_msg.name.push_back("r_hip_yaw");
+    write_msg.position.push_back(0.1746*1.5);
+    write_msg.name.push_back("l_hip_yaw");
+    write_msg.position.push_back(-0.1746*1.5);
+
+    write_msg.name.push_back("l_hip_roll");
+    write_msg.position.push_back(-0.0873);
+    write_msg.name.push_back("r_hip_roll");
+    write_msg.position.push_back(0.0873);
+    write_msg.name.push_back("l_ank_roll");
+    write_msg.position.push_back(-0.0873);
+    write_msg.name.push_back("r_ank_roll");
+    write_msg.position.push_back(0.0873);
+    write_joint_pub2.publish(write_msg);
+
+    //Bajar pie derecho
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("r_ank_pitch");
+    write_msg.position.push_back(positions[rows-1][0]);
+    write_msg.name.push_back("r_knee");
+    write_msg.position.push_back(positions[rows-1][1]);
+    write_msg.name.push_back("r_hip_pitch");
+    write_msg.position.push_back(positions[rows-1][2] + rest_inc_giro);
+    write_joint_pub2.publish(write_msg);
+    
+    //Levantar pie izquierdo
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("l_ank_pitch");
+    write_msg.position.push_back(0.7091);
+    write_msg.name.push_back("l_knee");
+    write_msg.position.push_back(1.4131);
+    write_msg.name.push_back("l_hip_pitch");
+    write_msg.position.push_back(-0.7091 - rest_inc_giro);
+    write_msg.name.push_back("r_hip_yaw");
+    write_msg.position.push_back(0);
+    write_msg.name.push_back("l_hip_yaw");
+    write_msg.position.push_back(0);
+    write_joint_pub2.publish(write_msg);
+    
+    //Bajar pie izquierdo
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("l_ank_pitch");
+    write_msg.position.push_back(positions[rows-1][3]);
+    write_msg.name.push_back("l_knee");
+    write_msg.position.push_back(positions[rows-1][4]);
+    write_msg.name.push_back("l_hip_pitch");
+    write_msg.position.push_back(positions[rows-1][5] - rest_inc_giro);
+    write_joint_pub2.publish(write_msg);
+  }
+}
+
+void turn2search_left(int limit) {
+  //node loop
+  sensor_msgs::JointState write_msg;
+  write_msg.header.stamp = ros::Time::now();
+  
+  setModule("direct_control_module");
+  ros::Duration(1).sleep();
+  for (int i = 1; i <= limit; i++) {
+    //std::cout  << "Derechaaaa D:" << std::endl;
+     
+    //Levantar pie izquierdo
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("l_ank_pitch");
+    write_msg.position.push_back(0.7091);
+    write_msg.name.push_back("l_knee");
+    write_msg.position.push_back(1.4131);
+    write_msg.name.push_back("l_hip_pitch");
+    write_msg.position.push_back(-0.7091 - rest_inc_giro);
+    write_msg.name.push_back("r_hip_yaw");
+    write_msg.position.push_back(0.1746*1.5);
+    write_msg.name.push_back("l_hip_yaw");
+    write_msg.position.push_back(-0.1746*1.5);
+    write_joint_pub.publish(write_msg);
+    
+    write_msg.name.push_back("l_hip_roll");
+    write_msg.position.push_back(-0.0873);
+    write_msg.name.push_back("r_hip_roll");
+    write_msg.position.push_back(0.0873);
+    write_msg.name.push_back("l_ank_roll");
+    write_msg.position.push_back(-0.0873);
+    write_msg.name.push_back("r_ank_roll");
+    write_msg.position.push_back(0.0873);
+    write_joint_pub.publish(write_msg);
+    
+    //Bajar pie izquierdo
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("l_ank_pitch");
+    write_msg.position.push_back(positions[rows-1][3]);
+    write_msg.name.push_back("l_knee");
+    write_msg.position.push_back(positions[rows-1][4]);
+    write_msg.name.push_back("l_hip_pitch");
+    write_msg.position.push_back(positions[rows-1][5] - rest_inc_giro);
+    write_joint_pub.publish(write_msg);
+    
+    //Levantar pie derecho 
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("r_ank_pitch");
+    write_msg.position.push_back(-0.7091);
+    write_msg.name.push_back("r_knee");
+    write_msg.position.push_back(-1.4131);
+    write_msg.name.push_back("r_hip_pitch");
+    write_msg.position.push_back(0.7091 + rest_inc_giro);
+    write_msg.name.push_back("r_hip_yaw");
+    write_msg.position.push_back(0);
+    write_msg.name.push_back("l_hip_yaw");
+    write_msg.position.push_back(0);
+
+    //Bajar pie derecho
+    ros::Duration(0.1).sleep();
+    write_msg.name.push_back("r_ank_pitch");
+    write_msg.position.push_back(positions[rows-1][0]);
+    write_msg.name.push_back("r_knee");
+    write_msg.position.push_back(positions[rows-1][1]);
+    write_msg.name.push_back("r_hip_pitch");
+    write_msg.position.push_back(positions[rows-1][2] + rest_inc_giro);
+    write_joint_pub.publish(write_msg);
+  }
+}
+
+void walkTowardsBall(double pan, double tilt) {
+  ros::Time curr_time_walk = ros::Time::now();
+  ros::Duration dur_walk = curr_time_walk - prev_time_walk;
+  double delta_time_walk = dur_walk.nsec * 0.000000001 + dur_walk.sec;
+  prev_time_walk = curr_time_walk;
+
+  count_not_found_ = 0;
+
+  distance_to_ball = CAMERA_HEIGHT * tan(M_PI * 0.5 + head_tilt - hip_pitch_offset_);
+  std::cout << "dist to ball: " << distance_to_ball << std::endl;
+
+  if (distance_to_ball < 0) {
+    distance_to_ball *= (-1);
+  }
+
+  double distance_to_kick = 0.30;  //0.22
+
+  // std::cout << distance_to_ball << std::endl;
+  
+  if (distance_to_ball < distance_to_kick) { //&& (fabs(ball_x_angle) < 25.0) to kick
+    count_to_kick_ += 1;	
+    // std::cout << count_to_kick_ << std::endl;
+    if (count_to_kick_ > 5) {
+      std::string command = "stop";
+      goWalk(command);
+      if (pan > 0) { //left
+        std::cout << "PATEA DERECHA" << std::endl;
+        goAction(84); //left kick
+      }
+      else { //right
+        std::cout << "PATEA IZQUIERDA" << std::endl;
+        goAction(83); //right kick
+      }
+    }
+    else if (count_to_kick_ > 15) {
+      getWalkingParam();
+      setWalkingParam(IN_PLACE_FB_STEP, 0, 0, true);
+
+      std_msgs::String command_msg;
+      command_msg.data = "start";
+      walk_command_pub.publish(command_msg);
+    }
+  } else {
+    count_to_kick_ = 0;
+  }
+
+  double fb_move = 0.0, rl_angle = 0.0;
+  double distance_to_walk = distance_to_ball - distance_to_kick;
+  
+  // if (pan > 0.262){
+  //   turn2search(2);
+  //   std::string command = "stop";
+  //   goWalk(command);
+  //   ros::Duration(1).sleep();
+  // }else if (pan < -0.262){
+  //   turn2search_left(2); 
+  //   std::string command = "stop";
+  //   goWalk(command);
+  //   ros::Duration(1).sleep();
+  // }else{
+    calcFootstep(distance_to_walk, pan, delta_time_walk, fb_move, rl_angle);
+
+    getWalkingParam();
+    setWalkingParam(fb_move, 0, rl_angle, true);
+    
+    std_msgs::String command_msg;
+    command_msg.data = "start";
+    walk_command_pub.publish(command_msg);
+  //}
+}
+
+// void tracking(){
+//   double xerror = 0;
+//   double yerror = 0;
+
+//   if (ball_position.x != 999 || ball_position.y != 999) {
+//     xerror = (320 - ball_position.x) * 70 / 320; //-atan(ball_position.x * tan(FOV_WIDTH));
+//     yerror = (240 - ball_position.y) * 70 / 240; //-atan(ball_position.y * tan(FOV_HEIGHT));
+
+//     std::cout << "xerror: " << xerror << std::endl;
+//     std::cout << "yerror: " << yerror << std::endl;
+
+//     if (xerror >= 10 || xerror <= -10){
+//       xerror = xerror * M_PI / 180;
+  
+//       ros::Time curr_time = ros::Time::now();
+//       ros::Duration dur = curr_time - prev_time;
+
+//       double delta_time = dur.nsec * 0.000000001 + dur.sec;
+//       prev_time = curr_time;
+
+//       double xerror_dif = (xerror - current_ball_pan) / delta_time;
+//       xerror_sum += xerror;
+//       double xerror_target = xerror * p_gain + xerror_dif * d_gain + xerror_sum * i_gain;
+      
+//       publishHeadJoint(xerror_target, NULL);
+
+//       current_ball_pan = xerror;
+//     }
+//     if (yerror >= 10 || yerror <= -10){
+//       yerror = yerror * M_PI / 180;
+
+//       ros::Time curr_time = ros::Time::now();
+//       ros::Duration dur = curr_time - prev_time;
+
+//       double delta_time = dur.nsec * 0.000000001 + dur.sec;
+//       prev_time = curr_time;
+
+//       double yerror_dif = (yerror - current_ball_tilt) / delta_time;
+//       yerror_sum += yerror;
+//       double yerror_target = yerror * p_gain + yerror_dif * d_gain + yerror_sum * i_gain;
+
+//       publishHeadJoint(NULL, yerror_target);
+
+//       current_ball_tilt = yerror;
+//     }
+//   }
+// }
+
+// void publishHeadJoint(double pan, double tilt){
+//   if (pan != NULL) {
+//     if (pan >= 1.2217) pan = 1.2217;            //70 deg
+//     else if (pan <= -1.2217) pan = -1.2217;     //-70 deg
+    
+//     head_angle_msg.name.push_back("head_pan");
+//     head_angle_msg.position.push_back(pan);
+//   }else{
+//     std::cout << "pan is null" << std::endl;
+//   }
+//   if (tilt != NULL) {
+//     if (tilt >= 0.34906) tilt = 0.34906;        //20 deg
+//     else if (tilt <= -1.2217) tilt = -1.2217;   //-70 deg
+
+//     head_angle_msg.name.push_back("head_tilt");
+//     head_angle_msg.position.push_back(tilt);
+//   }else{
+//     std::cout << "tilt is null" << std::endl;
+//   }
+//   write_head_joint_offset_pub.publish(head_angle_msg);
+// }
+
+void callbackBallCenter(const geometry_msgs::Point& msg) {
+  ball_position.x = msg.x; // 320) - 1;
+  ball_position.y = msg.y; // 240) - 1;
+}
+
+void callbackJointStates(const sensor_msgs::JointState& msg) { 
+  head_pan = msg.position[0];
+  head_tilt = msg.position[1];
+  return;
+}
+void waitFollowing() {
+  count_not_found_++;
+
+  if (count_not_found_ > NOT_FOUND_THRESHOLD * 0.5)
+      setWalkingParam(0.0, 0.0, 0.0);
+}
+
+void calcFootstep(double target_distance, double target_angle, double delta_time, double& fb_move, double& rl_angle) {
+  double next_movement = current_x_move_;
+  if (target_distance < 0)
+      target_distance = 0.0;
+
+  double fb_goal = fmin(target_distance * 0.1, MAX_FB_STEP);
+  accum_period_time += delta_time;
+  if (accum_period_time > (current_period_time  / 4)) {
+    accum_period_time = 0.0;
+    if ((target_distance * 0.1 / 2) < current_x_move_)
+        next_movement -= UNIT_FB_STEP;
+    else
+        next_movement += UNIT_FB_STEP;
+  }
+  fb_goal = fmin(next_movement, fb_goal);
+  fb_move = fmax(fb_goal, MIN_FB_STEP);
+
+  double rl_goal = 0.0;
+  if (fabs(target_angle) * 180 / M_PI > 5.0) {
+    double rl_offset = fabs(target_angle) * 0.2;
+    rl_goal = fmin(rl_offset, MAX_RL_TURN);
+    rl_goal = fmax(rl_goal, MIN_RL_TURN);
+    rl_angle = fmin(fabs(current_r_angle_) + UNIT_RL_TURN, rl_goal);
+
+    if (target_angle < 0)
+        rl_angle *= (-1);
+  }
+}
+
+void setWalkingParam(double x_move, double y_move, double rotation_angle, bool balance) {
+  current_walking_param.balance_enable = balance;
+  current_walking_param.x_move_amplitude = x_move + SPOT_FB_OFFSET;
+  current_walking_param.y_move_amplitude = y_move + SPOT_RL_OFFSET;
+  current_walking_param.angle_move_amplitude = rotation_angle + SPOT_ANGLE_OFFSET;
+
+  set_walking_param_pub.publish(current_walking_param);
+
+  current_x_move_ = x_move;
+  current_r_angle_ = rotation_angle;
+}
+
+bool getWalkingParam() {
+  op3_walking_module_msgs::GetWalkingParam walking_param_msg;
+  if (get_param_client.call(walking_param_msg)) {
+    current_walking_param = walking_param_msg.response.parameters;
+
+    // update ui
+    ROS_INFO_COND(DEBUG_PRINT, "Get walking parameters");
+    return true;
+  } else {
+    ROS_ERROR("Fail to get walking parameters.");
+    return false;
+  }
+}
+
+void callbackImu(const sensor_msgs::Imu::ConstPtr& msg) {
+  Eigen::Quaterniond orientation(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+  Eigen::MatrixXd rpy_orientation = robotis_framework::convertQuaternionToRPY(orientation);
+  rpy_orientation *= (180 / 3.141516);
+  
+  double pitch = rpy_orientation.coeff(1, 0);
+
+  if (present_pitch_ == 0) 
+    present_pitch_ = pitch;
+  else
+    present_pitch_ = present_pitch_ * (1 - alpha) + pitch * alpha;
+  // std::cout << present_pitch_ << std::endl;
+  if (present_pitch_ > FALL_FORWARD_LIMIT) {
+    goAction(122);
+    setModule("none");
+  } else if (present_pitch_ < FALL_BACK_LIMIT) {
+    goAction(1);
+    setModule("none");
+    ros::Duration(1.0).sleep();
+    goAction(82);
+    setModule("none");
+  } else {
+    state = 0;
+  }
+}
+
+void goAction(int page) {
+  setModule("action_module");
+  ROS_INFO("Action pose");
+
+  std_msgs::Int32 action_msg;
+  action_msg.data = page;
+  action_pose_pub.publish(action_msg);
+}
+
+void goWalk(std::string& command) {
+  setModule("walking_module");
+  if (command == "start") {
+    getWalkingParam();
+    setWalkingParam(IN_PLACE_FB_STEP, 0, 0, true);
+  }
+
+  std_msgs::String command_msg;
+  command_msg.data = command;
+  walk_command_pub.publish(command_msg);
+}
+
+void goInitPose() {
+  std_msgs::String init_msg;
+  init_msg.data = "ini_pose";
+  init_pose_pub.publish(init_msg);
+}
+
+void readyToDemo() {
+  ROS_INFO("Start read-write demo");
+  torqueOnAll();
+  ROS_INFO("Torque on all joints");
+
+  //send message for going init posture
+  goInitPose();
+  ROS_INFO("Go init pose");
+
+  //wait while ROBOTIS-OP3 goes to the init posture.
+  ros::Duration(4.0).sleep();
+
+  setModule("none");
+}
+
+bool checkManagerRunning(std::string& manager_name) {
+  std::vector<std::string> node_list;
+  ros::master::getNodes(node_list);
+
+  for (unsigned int node_list_idx = 0; node_list_idx < node_list.size(); node_list_idx++) {
+    if (node_list[node_list_idx] == manager_name)
+      return true;
+  }
+  ROS_ERROR("Can't find op3_manager");
+  return false;
+}
+
+void setModule(const std::string& module_name) {
+  robotis_controller_msgs::SetModule set_module_srv;
+  set_module_srv.request.module_name = module_name;
+
+  if (set_joint_module_client.call(set_module_srv) == false) {
+    ROS_ERROR("Failed to set module");
+    return;
+  }
+  return ;
+}
+
+void torqueOnAll() {
+  std_msgs::String check_msg;
+  check_msg.data = "check";
+  dxl_torque_pub.publish(check_msg);
+}
+
+bool isActionRunning() {
+  op3_action_module_msgs::IsRunning is_running_srv;
+
+  if (is_running_client.call(is_running_srv) == false) {
+    ROS_ERROR("Failed to start action module");
+    return true;
+  } else {
+    if (is_running_srv.response.is_running == true) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// void callbackReferee(const soccer_pkg::referee& msg) {
+//   /*
+//   0 = "quieto"
+//   1 = "acomodate"
+//   2 = "playing"
+//   3 = "acercate"
+//   4 = "alejate"
+//   */
+//   referee_state = msg.I;
+
+//   if (referee_state >= 1 && referee_state <= 2){
+//     playing = true;
+//   }else{
+//     playing = false;
+//     std::string command = "stop";
+//     goWalk(command);
+//   }
+// }
+
+void buttonHandlerCallback(const std_msgs::String::ConstPtr& msg) {
+  // in the middle of playing demo
+  if (msg->data == "mode") {
+    // go to mode selection status
+    start_button_flag = 1;
+  } else if (msg->data == "start"){
+    start_button_flag = 0;
+  }
+}
