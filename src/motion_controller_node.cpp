@@ -1,39 +1,44 @@
-/* 
-Authors: Pedro Deniz
+/*
+    Authors:
+        Pedro Deniz
+        Marlene Cobian
 */
 
-#include <ros/ros.h>
 #include "movement_pkg/MotionController.h"
-#include <behavior_tree_core/SequenceNode.h>
-#include <behavior_tree_core/FallbackNode.h>
+#include "movement_pkg/nodes/ball_detected_condition.h"
 
+MotionControllerNode::MotionControllerNode() {
+    ROS_INFO("Initializing Movement Controller...");
 
-int main(int argc, char **argv)
-{
-    ros::init(argc, argv, "movement_bt_main");
-    ros::NodeHandle nh;
+    // Register custom nodes
+    factory_.registerNodeType<BallDetectedCondition>("BallDetected");
+    factory_.registerNodeType<WalkAction>("Walk");
+    factory_.registerNodeType<KickAction>("Kick");
+    factory_.registerNodeType<SearchBallAction>("SearchBall");
+    factory_.registerNodeType<RobotFallenCondition>("RobotFallen");
 
-    // Root node
-    BT::FallbackNode root("root");
+    // Load tree from XML
+    std::string xml_path = ros::package::getPath("movement_pkg") + "/config/soccer_motion_controller.xml";
+    tree_ = factory_.createTreeFromFile(xml_path);
+}
 
-    // Behavior nodes
-    BallDetectedCondition ball_condition("BallDetected");
-    MoveToBallAction move_action("MoveToBall");
-    SearchBallAction search_action("SearchBall");
-    HeadTrackingAction head_tracking("HeadTracking");
-    FallRecoveryCondition fall_recovery("FallRecovery");
-    KickAction kick_action("Kick");
+void MotionControllerNode::run() {
+    ros::Rate loop_rate(10);
 
-    // Build behavior tree structure
-    root.AddChild(&fall_recovery);
-    root.AddChild(&ball_condition);
-    root.AddChild(&head_tracking);
-    root.AddChild(&move_action);
-    root.AddChild(&kick_action);
-    root.AddChild(&search_action);
+    while (ros::ok()) {
+        tree_.tickRoot();
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+}
 
-    // Execute tree
-    BT::Execute(&root, 100);
+int main(int argc, char **argv) {
+    ros::init(argc, argv, "motion_controller_node");
+    ros::NodeHandle nh(ros::this_node::getName());  // NodeHandle definition
 
+    BallDetectedCondition ball_detected_condition("ball_detected_condition", nh)
+
+    MotionControllerNode bt_node;  // BehaviorTree Node
+    bt_node.run();
     return 0;
 }
