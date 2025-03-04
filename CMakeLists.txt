@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(movement_pkg)
+project(soccer_pkg)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
@@ -16,7 +16,26 @@ find_package(catkin REQUIRED
     op3_action_module_msgs
     robotis_math
     op3_walking_module_msgs
+    message_generation
+    robotis_framework_common
 )
+
+# Add Behavior Tree Core source files
+set(BT_SOURCE_FILES
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/action_node.cpp
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/condition_node.cpp
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/control_node.cpp
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/decorator_node.cpp
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/leaf_node.cpp
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/tree_node.cpp
+)
+
+set(SOURCE_FILES
+  src/motion_controller_node.cpp
+  src/nodes/ball_detected_condition.cpp
+  src/nodes/walk_to_target_action.cpp
+)
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -52,11 +71,12 @@ find_package(catkin REQUIRED
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
+ add_message_files(
+    FILES
 #   Message1.msg
 #   Message2.msg
-# )
+    referee.msg
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -73,10 +93,10 @@ find_package(catkin REQUIRED
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs  # Or other packages containing msgs
+ )
 
 
 ################################################
@@ -109,6 +129,8 @@ find_package(catkin REQUIRED
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  INCLUDE_DIRS
+    include
   CATKIN_DEPENDS
     roscpp
     robotis_controller_msgs
@@ -121,6 +143,7 @@ catkin_package(
     op3_action_module_msgs
     robotis_math
     op3_walking_module_msgs
+    message_runtime
 )
 ###########
 ## Build ##
@@ -129,24 +152,29 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/include
+  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_leaves/include
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/movement_pkg.cpp
+#   src/${PROJECT_NAME}/soccer_pkg.cpp
 # )
 
 ## Declare a C++ executable
-#add_executable(${PROJECT_NAME}_node src/movement_pkg_node.cpp)
-add_executable(movement_node
-  src/movement_node.cpp
+#add_executable(${PROJECT_NAME}_node src/soccer_pkg_node.cpp)
+add_executable(motion_controller_node
+  src/motion_controller_node.cpp
+  src/nodes/ball_detected_condition.cpp
+  src/nodes/walk_to_target_action.cpp
 )
 
 ## Add cmake target dependencies of the library
 #add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(movement_node
+add_dependencies(motion_controller_node
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )
@@ -166,9 +194,23 @@ add_dependencies(movement_node
 #   ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(movement_node
+add_library(cb_data_manager src/cb_data_manager.cpp)
+add_library(walking_controller src/walking_controller.cpp)
+add_library(utils src/utils.cpp)
+
+target_link_libraries(motion_controller_node
   ${catkin_LIBRARIES}
   ${Eigen3_LIBRARIES}
+  behavior_tree_core
+  cb_data_manager
+  walking_controller
+  utils
+)
+
+target_link_libraries(cb_data_manager
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+  robotis_framework_common
 )
 
 #############
@@ -192,7 +234,7 @@ target_link_libraries(movement_node
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 #)
 
-install(TARGETS movement_node
+install(TARGETS motion_controller_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -220,7 +262,7 @@ install(DIRECTORY launch
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_movement_pkg.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_soccer_pkg.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

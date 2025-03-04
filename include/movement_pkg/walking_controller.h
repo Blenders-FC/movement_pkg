@@ -14,7 +14,7 @@
 #include "op3_walking_module_msgs/WalkingParam.h"
 
 
-class WalkingController
+class WalkingController : public virtual utils
 {
 public:
     // Constructor
@@ -51,12 +51,12 @@ private:
     const double SPOT_FB_OFFSET_ = 0.0;
     const double SPOT_RL_OFFSET_ = 0.0;
     const double SPOT_ANGLE_OFFSET_ = 0.0;
+    const bool DEBUG_PRINT_ = false;
     double accum_period_time_ = 0.0;
     double current_period_time_ = 0.6;
     double current_x_move_ = 0.005;
     double current_r_angle_ = 0.0;
-    const std_msgs::String stop_walking_command_ = "stop";
-
+    std::string stop_walking_command_ = "stop";
 };
 
 #endif  // WALKING_CONTROLLER_H

@@ -17,17 +17,17 @@
 #include <std_msgs/Int32.h>
 #include <std_msgs/Bool.h>
 #include <geometry_msgs/Point.h>
+#include <sensor_msgs/JointState.h>
+#include <sensor_msgs/Imu.h>
 
 #include "robotis_controller_msgs/SetModule.h"
 
 
 
-class utils {
-public:
-    static utils& getInstance() {
-        static utils instance;  // Singleton instance - Ensures only one instance of utils class exists in mem
-        return instance;
-    }
+class utils 
+{
+protected:
+    utils();
 
     ros::NodeHandle nh;  // Shared NodeHandle
     int robot_id;
@@ -35,21 +35,15 @@ public:
     void setModule(const std::string& module_name);
     void goAction(int page);
 
+public:
+    virtual ~utils() = default;
+
 private:
 
+    // ROS variables
     ros::ServiceClient set_joint_module_client;
-
-    // Constructor is private so no other code can create an utils instance
-    utils() : nh(ros::this_node::getName()) {  // Private constructor with NodeHandle
-        nh.param<int>("robot_id", robot_id, 0);
-        ROS_INFO("Loaded utils: robot_id=%d", robot_id);
-        
-        set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/set_present_ctrl_modules");
-    }
-
-    // Ensuring all nodes use the same instance
-    utils(const utils&) = delete;  // Prevent copying
-    void operator=(const utils&) = delete;
+    ros::Publisher action_pose_pub_;
+    std_msgs::Int32 action_msg;
 };
 
 #endif  // UTILS_H

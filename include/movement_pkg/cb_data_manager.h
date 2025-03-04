@@ -5,8 +5,10 @@
 
 #include "movement_pkg/utils.h"
 #include "soccer_pkg/referee.h"
+#include "robotis_math/robotis_linear_algebra.h"
 
-class CBDataManager {
+class CBDataManager : public virtual utils
+{
 public:
     CBDataManager();  // Constructor
 
@@ -15,11 +17,8 @@ public:
     double getRobotPitch();
     double getHeadPan();
     double getHeadTilt();
-    double getRefereeState();
+    // int getRefereeState();
     bool getStartButtonState();
-
-    // Singleton instance to ensure only one manager exists
-    static DataManager& getInstance(ros::NodeHandle& nh);
 
 private:
 
@@ -27,14 +26,14 @@ private:
     void ballCenterCallback(const geometry_msgs::Point& msg);
     void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
     void jointStatesCallback(const sensor_msgs::JointState& msg);
-    void refereeCallback(const soccer_pkg::referee& msg);
+    // void refereeCallback(const soccer_pkg::referee& msg);
     void buttonHandlerCallback(const std_msgs::String::ConstPtr& msg);
 
     // Subscribers
     ros::Subscriber ball_sub_;
     ros::Subscriber imu_sub_;
     ros::Subscriber read_joint_sub_;
-    ros::Subscriber ref_sub_;
+    // ros::Subscriber ref_sub_;
     ros::Subscriber button_sub_;
     
     // Variables
@@ -43,7 +42,7 @@ private:
     Eigen::MatrixXd rpy_orientation_;
     double head_pan_;
     double head_tilt_;
-    int referee_state_;
+    // int referee_state_;
     bool start_button_flag_;
 };
 

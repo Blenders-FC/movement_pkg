@@ -4,22 +4,22 @@
         Marlene Cobian
 */
 
-#include <movemente_pkg/nodes/walk_action.h>
+#include <movement_pkg/walking_controller.h>
 
-WalkingController::WalkingController(std::string name)
+WalkingController::WalkingController() : utils()
 {
     // Publishers
-    walk_command_pub = /nh_.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id_) + "/walking/command", 10);
+    walk_command_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/walking/command", 10);
     set_walking_param_pub_ = nh.advertise<op3_walking_module_msgs::WalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/set_params",0);
 
     // Services
-    get_param_client_ = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis_" + std::to_string(robot_id_) + "/walking/get_params");
+    get_param_client_ = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/get_params");
 }
 
 WalkingController::~WalkingController() {}
   
 void WalkingController::goWalk(std::string& command) {
-    setModule("walking_module");
+    this->setModule("walking_module");
     if (command == "start") {
         setWalkingParam(IN_PLACE_FB_STEP_, 0, 0, true);
     }
@@ -78,7 +78,7 @@ void WalkingController::getWalkingParam() {
         current_walking_param_ = walking_param_msg.response.parameters;
   
         // update ui
-        ROS_INFO_COND(DEBUG_PRINT, "Get walking parameters");
+        ROS_INFO_COND(DEBUG_PRINT_, "Get walking parameters");
         return;
     } else {
         ROS_ERROR("Fail to get walking parameters.");
