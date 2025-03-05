@@ -7,7 +7,8 @@
 #include "movement_pkg/nodes/simple_walk_action.h"
 
 
-BT::SimpleWalk::SimpleWalk(std::string name) : ActionNode::ActionNode(name)
+BT::SimpleWalk::SimpleWalk(std::string name) 
+: ActionNode::ActionNode(name), WalkingController()
 {
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&SimpleWalk::WaitForTick, this);
@@ -24,10 +25,14 @@ void BT::SimpleWalk::WaitForTick()
         DEBUG_STDOUT(get_name() << "TICK RECEIVED");
 
         set_status(BT::RUNNING);
-
-        DEBUG_STDOUT(get_name() << "Walking...");
-        walk_command = "start";
-        goWalk(walk_command);
+        
+        // Perform action...
+        while (get_status() != BT::HALTED)
+        {
+            DEBUG_STDOUT(get_name() << "Walking...");
+            walk_command = "start";
+            goWalk(walk_command);
+        }
     }
 }
 

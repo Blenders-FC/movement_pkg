@@ -18,22 +18,27 @@ BT::WalkToTarget::~WalkToTarget() {}
 
 void BT::WalkToTarget::WaitForTick()
 {
-    DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
-    tick_engine.Wait();
-    DEBUG_STDOUT(get_name() << "TICK RECEIVED");
+    while (true)
+    {
+        DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
+        tick_engine.Wait();
+        DEBUG_STDOUT(get_name() << "TICK RECEIVED");
 
-    set_status(BT::RUNNING);
+        set_status(BT::RUNNING);
 
-    stopWalking();
-    ros::Duration(1.0).sleep();
-    
-    set_status(BT::SUCCESS);
+        if (get_status() != BT::HALTED)
+        {
+            stopWalking();
+            ros::Duration(1.0).sleep();
+            
+            set_status(BT::SUCCESS);
+            return BT::SUCCESS;
+        }
+    }
 }
 
 void BT::WalkToTarget::Halt()
 {
-    stopWalking();
-
     set_status(BT::HALTED);
     DEBUG_STDOUT("WalkToTarget HALTED: Stopped walking.");
 }

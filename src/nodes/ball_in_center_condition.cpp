@@ -15,8 +15,8 @@ BT::ReturnStatus BT::BallInCenterCondition::Tick()
     // Condition checking and state update
 
     ball_center_position_ = getBallPosition();
-    xerror_ = (320 - ball_position.x) * 0.21875;  // 70 / 320
-    yerror_ = (240 - ball_position.y) * 0.29166;  // 70 / 240
+    xerror_ = (320 - ball_center_position_.x) * 0.21875;  // 70 / 320
+    yerror_ = (240 - ball_center_position_.y) * 0.29166;  // 70 / 240
     
     if (xerror_ <= 20 || xerror_ >= -20) && (yerror_ <= 20 || yerror_ >= -20)
     {

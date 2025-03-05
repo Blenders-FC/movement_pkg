@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef KICK_ACTION_H
-#define KICK_ACTION_H
+#ifndef RIGHT_KICK_ACTION_H
+#define RIGHT_KICK_ACTION_H
 
 #include <ros/ros.h>
 #include <std_msgs/String.h>
@@ -13,23 +13,19 @@
 
 namespace BT
 {
-class KickAction : public ActionNode
+class RightKickAction : public ActionNode, public utils
 {
 public:
     // Constructor
-    explicit KickAction(std::string name);
-    ~KickAction();
+    explicit RightKickAction(std::string name);
+    ~RightKickAction();
 
     // The method that is going to be executed by the thread
     void WaitForTick();
 
     // The method used to interrupt the execution of the node
     void Halt();
-private:
-    ros::Publisher action_pose_pub_;
-
-    void goAction(int page);
 };
 }  // namespace BT
 
-#endif  // KICK_ACTION_H
+#endif  // RIGHT_KICK_ACTION_H

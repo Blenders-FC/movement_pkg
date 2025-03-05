@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef SEARCH_BALL_ACTION_H
-#define SEARCH_BALL_ACTION_H
+#ifndef CENTER_BALL_ACTION_H
+#define CENTER_BALL_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
 #include <action_node.h>
@@ -13,12 +13,12 @@
 
 namespace BT
 {
-class SearchBall : public ActionNode, public CBDataManager
+class CenterBall : public ActionNode, public CBDataManager
 {
     public:
         // Constructor
-        explicit SearchBall(std::string name);
-        ~SearchBall();
+        explicit CenterBall(std::string name);
+        ~CenterBall();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
@@ -35,11 +35,12 @@ class SearchBall : public ActionNode, public CBDataManager
 
         // Variables
         bool head_direction_ = true;
-        double angle_mov_x_ = 0;
+        double angle_mov_x_;
         double angle_mov_y_;
-        int turn_cnt_ = 0;
+        double xerror_;
+        double yerror_;
         sensor_msgs::JointState write_msg_;
 };
 }  // namespace BT
 
-#endif  // SEARCH_BALL_ACTION_H
+#endif  // CENTER_BALL_ACTION_H

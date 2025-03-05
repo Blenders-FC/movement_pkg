@@ -13,17 +13,20 @@
 
 namespace BT
 {
-class SimpleWalk : public ActionNode
+class SimpleWalk : public ActionNode, public WalkingController
 {
-public:
-    explicit SimpleWalk(std::string name);  // Constructor
-    ~SimpleWalk();
+    public:
+        explicit SimpleWalk(std::string name);  // Constructor
+        ~SimpleWalk();
 
-    // The method that is going to be executed by the thread
-    void WaitForTick();
+        // The method that is going to be executed by the thread
+        void WaitForTick();
 
-    // The method used to interrupt the execution of the node
-    void Halt();
+        // The method used to interrupt the execution of the node
+        void Halt();
+    
+    private:
+        std_msgs::String walk_command;
 };
 }  // namespace BT
 
