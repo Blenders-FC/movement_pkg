@@ -26,17 +26,21 @@ void BT::WalkToTarget::WaitForTick()
 
         set_status(BT::RUNNING);
 
-        head_pan_angle_ = getHeadPan();
-        head_tilt_angle_ = getHeadTilt();
-
-        this->setModule("walking_module");
-        DEBUG_STDOUT(get_name() << "Walking towards target...");
-        walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
-
-        if (walkingSucced)
+        // Perform action...
+        while (get_status() != BT::HALTED)
         {
-            DEBUG_STDOUT(get_name() << "Walk to target SUCCESS");
-            set_status(BT::SUCCESS);
+            head_pan_angle_ = getHeadPan();
+            head_tilt_angle_ = getHeadTilt();
+
+            this->setModule("walking_module");
+            DEBUG_STDOUT(get_name() << "Walking towards target...");
+            walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
+
+            if (walkingSucced)
+            {
+                DEBUG_STDOUT(get_name() << "Walk to target SUCCESS");
+                set_status(BT::SUCCESS);
+            }
         }
     }
 }

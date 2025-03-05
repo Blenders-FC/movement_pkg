@@ -4,22 +4,22 @@
         Marlene Cobian
 */
 
-#ifndef WALKING_TO_TARGET_ACTION_H
-#define WALKING_TO_TARGET_ACTION_H
+#ifndef SEARCH_BALL_ACTION_H
+#define SEARCH_BALL_ACTION_H
 
-#include "movement_pkg/walking_controller.h"
+#include "movement_pkg/utils.h"
 #include "movement_pkg/cb_data_manager.h"
 #include <action_node.h>
 
 
 namespace BT
 {
-class WalkToTarget : public ActionNode, public WalkingController, public CBDataManager
+class SearchBall : public ActionNode, public CBDataManager, public virtual utils
 {
     public:
         // Constructor
-        explicit WalkToTarget(std::string name);
-        ~WalkToTarget();
+        explicit SearchBall(std::string name);
+        ~SearchBall();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
@@ -31,19 +31,16 @@ class WalkToTarget : public ActionNode, public WalkingController, public CBDataM
         //  Auxiliar methods
         void writeHeadJoint(double ang_value, bool is_pan);
 
+        // ROS variable
+        ros::Publisher write_joint_pub_;
+
         // Variables
-        double head_pan_angle_;
-        double head_tilt_angle_;
-        double fb_move;
-        double rl_angle;
-        double distance_to_walk;
-        const double distance_to_kick_ = 0.30;  // 0.22
-        const double CAMERA_HEIGHT_ = 0.46;
-        const double hip_pitch_offset_ = 0.12217305; //7°
-        bool walkingSucced = false;
-        std_msgs::String walk_command;
-        ros::Time prev_time_walk_ = ros::Time::now();
+        bool head_direction_ = true;
+        double angle_mov_x_ = 0;
+        double angle_mov_y_;
+        int turn_cnt_ = 0;
+        sensor_msgs::JointState write_msg_;
 };
 }  // namespace BT
 
-#endif  // WALKING_TO_TARGET_ACTION_H
+#endif  // SEARCH_BALL_ACTION_H
