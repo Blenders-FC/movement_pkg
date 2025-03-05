@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef LEFT_KICK_ACTION_H
-#define LEFT_KICK_ACTION_H
+#ifndef GET_UP_BACKWARDS_ACTION_H
+#define GET_UP_BACKWARDS_ACTION_H
 
 #include <ros/ros.h>
 #include <std_msgs/String.h>
@@ -13,12 +13,12 @@
 
 namespace BT
 {
-class LeftKick : public ActionNode, public utils
+class GetUpBackwards : public ActionNode, public utils
 {
 public:
     // Constructor
-    explicit LeftKick(std::string name);
-    ~LeftKick();
+    explicit GetUpBackwards(std::string name);
+    ~GetUpBackwards();
 
     // The method that is going to be executed by the thread
     void WaitForTick();
@@ -28,4 +28,4 @@ public:
 };
 }  // namespace BT
 
-#endif  // LEFT_KICK_ACTION_H
+#endif  // GET_UP_BACKWARDS_ACTION_H
