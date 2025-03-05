@@ -6,15 +6,15 @@
 
 #include <movemente_pkg/nodes/left_kick_action.h>
 
-BT::LeftKickAction::LeftKickAction(std::string name) : ActionNode::ActionNode(name), utils()
+BT::LeftKick::LeftKick(std::string name) : ActionNode::ActionNode(name), utils()
 {
     type_ = BT::ACTION_NODE;
-    thread_ = std::thread(&LeftKickAction::WaitForTick, this);
+    thread_ = std::thread(&LeftKick::WaitForTick, this);
 }
 
-BT::LeftKickAction::~LeftKickAction() {}
+BT::LeftKick::~LeftKick() {}
 
-void BT::LeftKickAction::WaitForTick()
+void BT::LeftKick::WaitForTick()
 {
     while (true)
     {
@@ -39,8 +39,8 @@ void BT::LeftKickAction::WaitForTick()
     }
 }
 
-void BT::LeftKickAction::Halt()
+void BT::LeftKick::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("LeftKickAction HALTED: Stopped walking.");
+    DEBUG_STDOUT("LeftKick HALTED: Stopped walking.");
 }

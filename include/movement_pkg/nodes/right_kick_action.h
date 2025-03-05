@@ -13,12 +13,12 @@
 
 namespace BT
 {
-class RightKickAction : public ActionNode, public utils
+class RightKick : public ActionNode, public utils
 {
 public:
     // Constructor
-    explicit RightKickAction(std::string name);
-    ~RightKickAction();
+    explicit RightKick(std::string name);
+    ~RightKick();
 
     // The method that is going to be executed by the thread
     void WaitForTick();

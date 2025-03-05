@@ -11,6 +11,7 @@ utils::utils() : nh(ros::this_node::getName())
     ROS_INFO("Loaded utils: robot_id=%d", robot_id);
     
     set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/set_present_ctrl_modules");
+    get_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/get_present_ctrl_modules");
 }
 
 void utils::setModule(const std::string& module_name) {
@@ -30,6 +31,6 @@ void utils::goAction(int page) {
     setModule("action_module");
     ROS_INFO("Action pose");
   
-    action_msg.data = page;
-    action_pose_pub_.publish(action_msg);
+    action_msg_.data = page;
+    action_pose_pub_.publish(action_msg_);
 }

@@ -35,15 +35,18 @@ protected:
     void setModule(const std::string& module_name);
     void goAction(int page);
 
+    // ROS services
+    ros::ServiceClient set_joint_module_client;
+    ros::ServiceClient get_joint_module_client;
+
 public:
     virtual ~utils() = default;
 
 private:
 
     // ROS variables
-    ros::ServiceClient set_joint_module_client;
     ros::Publisher action_pose_pub_;
-    std_msgs::Int32 action_msg;
+    std_msgs::Int32 action_msg_;
 };
 
 #endif  // UTILS_H

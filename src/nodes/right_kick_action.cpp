@@ -6,15 +6,15 @@
 
 #include <movemente_pkg/nodes/right_kick_action.h>
 
-BT::RightKickAction::RightKickAction(std::string name) : ActionNode::ActionNode(name), utils()
+BT::RightKick::RightKick(std::string name) : ActionNode::ActionNode(name), utils()
 {
     type_ = BT::ACTION_NODE;
-    thread_ = std::thread(&RightKickAction::WaitForTick, this);
+    thread_ = std::thread(&RightKick::WaitForTick, this);
 }
 
-BT::RightKickAction::~RightKickAction() {}
+BT::RightKick::~RightKick() {}
 
-void BT::RightKickAction::WaitForTick()
+void BT::RightKick::WaitForTick()
 {
     while (true)
     {
@@ -39,8 +39,8 @@ void BT::RightKickAction::WaitForTick()
     }
 }
 
-void BT::RightKickAction::Halt()
+void BT::RightKick::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("RightKickAction HALTED: Stopped walking.");
+    DEBUG_STDOUT("RightKick HALTED: Stopped walking.");
 }
