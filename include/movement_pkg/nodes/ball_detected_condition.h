@@ -10,6 +10,7 @@
 #include "movement_pkg/cb_data_manager.h"
 #include "condition_node.h"
 
+
 namespace BT
 {
 class BallDetectedCondition : public ConditionNode, public CBDataManager

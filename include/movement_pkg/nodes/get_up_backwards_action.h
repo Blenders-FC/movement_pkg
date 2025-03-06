@@ -7,9 +7,9 @@
 #ifndef GET_UP_BACKWARDS_ACTION_H
 #define GET_UP_BACKWARDS_ACTION_H
 
-#include <ros/ros.h>
-#include <std_msgs/String.h>
 #include <movement_pkg/nodes/utils.h>
+#include <action_node.h>
+
 
 namespace BT
 {
