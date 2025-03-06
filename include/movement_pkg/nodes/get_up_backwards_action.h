@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef RIGHT_KICK_ACTION_H
-#define RIGHT_KICK_ACTION_H
+#ifndef GET_UP_BACKWARDS_ACTION_H
+#define GET_UP_BACKWARDS_ACTION_H
 
 #include <movement_pkg/nodes/utils.h>
 #include <action_node.h>
@@ -13,12 +13,12 @@
 
 namespace BT
 {
-class RightKick : public ActionNode, public utils
+class GetUpBackwards : public ActionNode, public utils
 {
 public:
     // Constructor
-    explicit RightKick(std::string name);
-    ~RightKick();
+    explicit GetUpBackwards(std::string name);
+    ~GetUpBackwards();
 
     // The method that is going to be executed by the thread
     void WaitForTick();
@@ -28,4 +28,4 @@ public:
 };
 }  // namespace BT
 
-#endif  // RIGHT_KICK_ACTION_H
+#endif  // GET_UP_BACKWARDS_ACTION_H

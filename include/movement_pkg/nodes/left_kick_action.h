@@ -7,9 +7,9 @@
 #ifndef LEFT_KICK_ACTION_H
 #define LEFT_KICK_ACTION_H
 
-#include <ros/ros.h>
-#include <std_msgs/String.h>
-#include <movemente_pkg/nodes/utils.h>
+#include <movement_pkg/nodes/utils.h>
+#include <action_node.h>
+
 
 namespace BT
 {
