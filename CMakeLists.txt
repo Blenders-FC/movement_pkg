@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(soccer_pkg)
+project(movement_pkg)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
@@ -33,6 +33,21 @@ set(BT_SOURCE_FILES
 set(SOURCE_FILES
   src/motion_controller_node.cpp
   src/nodes/ball_detected_condition.cpp
+  src/nodes/ball_in_center_condition.cpp
+  src/nodes/center_ball_action.cpp
+  src/nodes/choose_kick_foot_condition.cpp
+  src/nodes/get_up_backwards_action.cpp
+  src/nodes/get_up_forward_action.cpp
+  src/nodes/left_kick_action.cpp
+  src/nodes/manager_running_condition.cpp
+  src/nodes/right_kick_action.cpp
+  src/nodes/robot_fallen_condition.cpp
+  src/nodes/search_ball_action.cpp
+  src/nodes/simple_walk_action.cpp
+  src/nodes/stand_up_action.cpp
+  src/nodes/start_button_condition.cpp
+  src/nodes/turn_left_action.cpp
+  src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
 )
 
@@ -169,6 +184,21 @@ include_directories(
 add_executable(motion_controller_node
   src/motion_controller_node.cpp
   src/nodes/ball_detected_condition.cpp
+  src/nodes/ball_in_center_condition.cpp
+  src/nodes/center_ball_action.cpp
+  src/nodes/choose_kick_foot_condition.cpp
+  src/nodes/get_up_backwards_action.cpp
+  src/nodes/get_up_forward_action.cpp
+  src/nodes/left_kick_action.cpp
+  src/nodes/manager_running_condition.cpp
+  src/nodes/right_kick_action.cpp
+  src/nodes/robot_fallen_condition.cpp
+  src/nodes/search_ball_action.cpp
+  src/nodes/simple_walk_action.cpp
+  src/nodes/stand_up_action.cpp
+  src/nodes/start_button_condition.cpp
+  src/nodes/turn_left_action.cpp
+  src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
 )
 
