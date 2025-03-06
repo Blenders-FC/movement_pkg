@@ -34,3 +34,49 @@ void utils::goAction(int page) {
     action_msg_.data = page;
     action_pose_pub_.publish(action_msg_);
 }
+
+// Function to dynamically get the "data" folder path
+std::string utils::getDataFilePath(const std::string& filename) 
+{
+    // Get the directory of the current source file (base_class.cpp)
+    std::string source_path = __FILE__;  // Gets "/home/robotis/catkin_ws/src/<PACKAGE>/src/utils.cpp"
+
+    // Move up one directory level to the package root
+    fs::path base_path = fs::path(source_path).parent_path().parent_path();  
+    // Now we have "/home/robotis/catkin_ws/src/<PACKAGE>"
+
+    // Append the "data" folder and filename
+    fs::path data_file = base_path / "data" / filename;
+
+    return data_file.string();  // Convert to string and return
+}
+
+// Function to load positions from a file
+std::vector<std::vector<float>> utils::loadPositions() 
+{
+    std::string filepath = getDataFilePath("Pararse.txt");
+    std::ifstream myfile(filepath);
+    
+    if (!myfile.is_open()) {
+        std::cerr << "Couldn't open file!" << std::endl;
+        return {};  // Return empty vector if file fails to open
+    }
+
+    std::cout << "File was opened!!!" << std::endl;
+
+    // Create a 2D vector initialized with zeros
+    std::vector<std::vector<float>> positions(rows_, std::vector<float>(cols_, 0.0f));
+
+    // Read data into the 2D vector
+    for (int idx2 = 0; idx2 < rows_; idx2++) {
+        for (int idy2 = 0; idy2 < cols_; idy2++) {
+            if (!(myfile >> positions[idx2][idy2])) {
+                std::cerr << "Error reading data at (" << idx2 << "," << idy2 << ")" << std::endl;
+                return {};  // Return empty vector on error
+            }
+        }
+    }
+
+    myfile.close();
+    return positions;
+}

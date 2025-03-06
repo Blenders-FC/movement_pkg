@@ -4,20 +4,20 @@
         Marlene Cobian
 */
 
-#ifndef TURN_RIGHT_ACTION_H
-#define TURN_RIGHT_ACTION_H
+#ifndef TURN_LEFT_ACTION_H
+#define TURN_LEFT_ACTION_H
 
 #include <movemente_pkg/nodes/utils.h>
 #include <action_node.h>
 
 namespace BT
 {
-class TurnRight : public ActionNode, public utils
+class LeftRight : public ActionNode, public utils
 {
     public:
         // Constructor
-        explicit TurnRight(std::string name);
-        ~TurnRight();
+        explicit LeftRight(std::string name);
+        ~LeftRight();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
@@ -35,4 +35,4 @@ class TurnRight : public ActionNode, public utils
 };
 }  // namespace BT
 
-#endif  // TURN_RIGHT_ACTION_H
+#endif  // TURN_LEFT_ACTION_H
