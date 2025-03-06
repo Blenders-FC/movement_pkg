@@ -7,16 +7,16 @@
 #include "movement_pkg/nodes/stand_up_action.h"
 
 
-BT::WalkToTarget::WalkToTarget(std::string name) 
+BT::StandUp::StandUp(std::string name) 
 : ActionNode::ActionNode(name), WalkingController()
 {
     type_ = BT::ACTION_NODE;
-    thread_ = std::thread(&WalkToTarget::WaitForTick, this);
+    thread_ = std::thread(&StandUp::WaitForTick, this);
 }
 
-BT::WalkToTarget::~WalkToTarget() {}
+BT::StandUp::~StandUp() {}
 
-void BT::WalkToTarget::WaitForTick()
+void BT::StandUp::WaitForTick()
 {
     while (true)
     {
@@ -37,8 +37,8 @@ void BT::WalkToTarget::WaitForTick()
     }
 }
 
-void BT::WalkToTarget::Halt()
+void BT::StandUp::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("WalkToTarget HALTED: Stopped walking.");
+    DEBUG_STDOUT("StandUp HALTED: Stopped walking.");
 }
