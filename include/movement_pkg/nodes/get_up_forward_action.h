@@ -7,13 +7,13 @@
 #ifndef GET_UP_FORWARD_ACTION_H
 #define GET_UP_FORWARD_ACTION_H
 
-#include <movement_pkg/nodes/utils.h>
+#include "movement_pkg/utils.h"
 #include <action_node.h>
 
 
 namespace BT
 {
-class GetUpForward : public ActionNode, public utils
+class GetUpForward : public ActionNode, public virtual utils
 {
 public:
     // Constructor

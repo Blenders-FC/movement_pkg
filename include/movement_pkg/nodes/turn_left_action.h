@@ -7,17 +7,18 @@
 #ifndef TURN_LEFT_ACTION_H
 #define TURN_LEFT_ACTION_H
 
-#include <movemente_pkg/nodes/utils.h>
+#include <movement_pkg/utils.h>
 #include <action_node.h>
+
 
 namespace BT
 {
-class LeftRight : public ActionNode, public utils
+class TurnLeft : public ActionNode, public virtual utils
 {
     public:
         // Constructor
-        explicit LeftRight(std::string name);
-        ~LeftRight();
+        explicit TurnLeft(std::string name);
+        ~TurnLeft();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
@@ -29,7 +30,7 @@ class LeftRight : public ActionNode, public utils
         
         ros::Publisher write_joint_pub_;
         sensor_msgs::JointState write_msg_;
-        double rest_inc_giro_ = 0.08726;  // 5°
+        double crouch_angle_ = 0.08726;  // 5°
         std::vector<std::vector<float>> positions = loadPositions();;
         const int rows_ = 40;
 };

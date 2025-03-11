@@ -4,7 +4,7 @@
         Marlene Cobian
 */
 
-#include <movemente_pkg/nodes/get_up_forward_action.h>
+#include "movement_pkg/nodes/get_up_forward_action.h"
 
 BT::GetUpForward::GetUpForward(std::string name) : ActionNode::ActionNode(name), utils()
 {
@@ -34,7 +34,6 @@ void BT::GetUpForward::WaitForTick()
             
             DEBUG_STDOUT(get_name() << "Get up forward action SUCCESS");
             set_status(BT::SUCCESS);
-            return BT::SUCCESS;
         }
     }
 }

@@ -32,7 +32,6 @@ void BT::StandUp::WaitForTick()
             ros::Duration(1.0).sleep();
             
             set_status(BT::SUCCESS);
-            return BT::SUCCESS;
         }
     }
 }

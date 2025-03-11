@@ -7,13 +7,13 @@
 #ifndef TURN_RIGHT_ACTION_H
 #define TURN_RIGHT_ACTION_H
 
-#include <movement_pkg/nodes/utils.h>
+#include <movement_pkg/utils.h>
 #include <action_node.h>
 
 
 namespace BT
 {
-class TurnRight : public ActionNode, public utils
+class TurnRight : public ActionNode, public virtual utils
 {
     public:
         // Constructor
@@ -30,7 +30,7 @@ class TurnRight : public ActionNode, public utils
         
         ros::Publisher write_joint_pub_;
         sensor_msgs::JointState write_msg_;
-        double rest_inc_giro_ = 0.08726;  // 5°
+        double crouch_angle_ = 0.08726;  // 5°
         std::vector<std::vector<float>> positions = loadPositions();;
         const int rows_ = 40;
 };

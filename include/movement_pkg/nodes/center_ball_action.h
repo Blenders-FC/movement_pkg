@@ -34,7 +34,10 @@ class CenterBall : public ActionNode, public CBDataManager
         ros::Publisher write_joint_pub_;
 
         // Variables
+        geometry_msgs::Point ball_center_position_;
         bool head_direction_ = true;
+        double head_pan_angle_;
+        double head_tilt_angle_;
         double angle_mov_x_;
         double angle_mov_y_;
         double xerror_;

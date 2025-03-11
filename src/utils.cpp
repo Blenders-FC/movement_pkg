@@ -38,17 +38,23 @@ void utils::goAction(int page) {
 // Function to dynamically get the "data" folder path
 std::string utils::getDataFilePath(const std::string& filename) 
 {
-    // Get the directory of the current source file (base_class.cpp)
+    // Get the directory of the current source file (utils.cpp)
     std::string source_path = __FILE__;  // Gets "/home/robotis/catkin_ws/src/<PACKAGE>/src/utils.cpp"
 
-    // Move up one directory level to the package root
-    fs::path base_path = fs::path(source_path).parent_path().parent_path();  
-    // Now we have "/home/robotis/catkin_ws/src/<PACKAGE>"
+    // Find the last occurrence of "/src/" in the path to get the package root
+    std::size_t pos = source_path.find("/src/");
+    if (pos == std::string::npos) {
+        std::cerr << "Error: Could not determine package root from __FILE__." << std::endl;
+        return "";  // Return an empty string in case of an error
+    }
 
-    // Append the "data" folder and filename
-    fs::path data_file = base_path / "data" / filename;
+    // Extract the package root path
+    std::string base_path = source_path.substr(0, pos);  // "/home/robotis/catkin_ws/src/<PACKAGE>"
 
-    return data_file.string();  // Convert to string and return
+    // Construct the final file path
+    std::string data_file = base_path + "/data/" + filename;
+
+    return data_file;
 }
 
 // Function to load positions from a file

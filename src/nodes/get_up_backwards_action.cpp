@@ -4,7 +4,7 @@
         Marlene Cobian
 */
 
-#include <movemente_pkg/nodes/get_up_backwards_action.h>
+#include "movement_pkg/nodes/get_up_backwards_action.h"
 
 BT::GetUpBackwards::GetUpBackwards(std::string name) : ActionNode::ActionNode(name), utils()
 {
@@ -36,12 +36,11 @@ void BT::GetUpBackwards::WaitForTick()
             
             DEBUG_STDOUT(get_name() << "Get up backwards action SUCCESS");
             set_status(BT::SUCCESS);
-            return BT::SUCCESS;
         }
     }
 }
 
-void BT::GetUpForward::Halt()
+void BT::GetUpBackwards::Halt()
 {
     set_status(BT::HALTED);
     DEBUG_STDOUT("GetUpBackwards HALTED: Stopped walking.");

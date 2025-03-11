@@ -25,7 +25,7 @@ void BT::SearchBall::WaitForTick()
         tick_engine.Wait();
         DEBUG_STDOUT(get_name() << "TICK RECEIVED");
 
-        turn_cnt_ = 0
+        turn_cnt_ = 0;
 
         set_status(BT::RUNNING);
 
@@ -34,7 +34,7 @@ void BT::SearchBall::WaitForTick()
         while (get_status() != BT::HALTED)
         {
             head_pan_angle_ = getHeadPan();
-            angle_mov_x_ = head_pan_angle_ * 57.2958  // RadToDeg -> 180/pi
+            angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
 
             if (head_direction_ && angle_mov_x_ <= 70)
             {
@@ -63,7 +63,6 @@ void BT::SearchBall::WaitForTick()
                         // turn2search(9);
                         DEBUG_STDOUT(get_name() << "Couldn't find ball! Changing the search position...");
                         set_status(BT::FAILURE);
-                        return BT::FAILURE;
                     }
                 }
             }

@@ -7,13 +7,13 @@
 #ifndef GET_UP_BACKWARDS_ACTION_H
 #define GET_UP_BACKWARDS_ACTION_H
 
-#include <movement_pkg/nodes/utils.h>
+#include "movement_pkg/utils.h"
 #include <action_node.h>
 
 
 namespace BT
 {
-class GetUpBackwards : public ActionNode, public utils
+class GetUpBackwards : public ActionNode, public virtual utils
 {
 public:
     // Constructor

@@ -4,7 +4,7 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/search_ball_action.h"
+#include "movement_pkg/nodes/center_ball_action.h"
 
 
 BT::CenterBall::CenterBall(std::string name) 
@@ -34,8 +34,8 @@ void BT::CenterBall::WaitForTick()
             ball_center_position_ = getBallPosition();
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();
-            angle_mov_x_ = head_pan_angle_ * 57.2958  // RadToDeg -> 180/pi
-            angle_mov_y_ = head_tilt_angle_ * 57.2958  // RadToDeg -> 180/pi
+            angle_mov_x_ = head_pan_angle_ * 57.2958;   // RadToDeg -> 180/pi
+            angle_mov_y_ = head_tilt_angle_ * 57.2958;  // RadToDeg -> 180/pi
             xerror_ = (320 - ball_center_position_.x) * 0.21875;  // 70 / 320
             yerror_ = (240 - ball_center_position_.y) * 0.29166;  // 70 / 240
 
@@ -72,7 +72,6 @@ void BT::CenterBall::WaitForTick()
             {
                 ROS_INFO("Ball IN CENTER! Starting walking process!");
                 set_status(BT::SUCCESS);
-                return BT::SUCCESS;
             }
         }
     }

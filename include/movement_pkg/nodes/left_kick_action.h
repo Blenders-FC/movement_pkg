@@ -7,13 +7,13 @@
 #ifndef LEFT_KICK_ACTION_H
 #define LEFT_KICK_ACTION_H
 
-#include <movement_pkg/nodes/utils.h>
+#include "movement_pkg/utils.h"
 #include <action_node.h>
 
 
 namespace BT
 {
-class LeftKick : public ActionNode, public utils
+class LeftKick : public ActionNode, public virtual utils
 {
 public:
     // Constructor

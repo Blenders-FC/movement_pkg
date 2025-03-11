@@ -37,6 +37,7 @@ class SearchBall : public ActionNode, public CBDataManager
         bool head_direction_ = true;
         double angle_mov_x_ = 0;
         double angle_mov_y_;
+        double head_pan_angle_;
         int turn_cnt_ = 0;
         sensor_msgs::JointState write_msg_;
 };

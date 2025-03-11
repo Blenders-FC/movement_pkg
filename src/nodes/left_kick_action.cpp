@@ -4,7 +4,7 @@
         Marlene Cobian
 */
 
-#include <movemente_pkg/nodes/left_kick_action.h>
+#include "movement_pkg/nodes/left_kick_action.h"
 
 BT::LeftKick::LeftKick(std::string name) : ActionNode::ActionNode(name), utils()
 {
@@ -34,7 +34,6 @@ void BT::LeftKick::WaitForTick()
             
             DEBUG_STDOUT(get_name() << "Left kick action SUCCESS");
             set_status(BT::SUCCESS);
-            return BT::SUCCESS;
         }
     }
 }

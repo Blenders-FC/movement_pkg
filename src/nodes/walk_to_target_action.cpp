@@ -40,7 +40,6 @@ void BT::WalkToTarget::WaitForTick()
             {
                 DEBUG_STDOUT(get_name() << "Walk to target SUCCESS");
                 set_status(BT::SUCCESS);
-                return BT::SUCCESS;
             }
         }
     }

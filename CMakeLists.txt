@@ -16,7 +16,7 @@ find_package(catkin REQUIRED
     op3_action_module_msgs
     robotis_math
     op3_walking_module_msgs
-    message_generation
+#   message_generation
     robotis_framework_common
 )
 
@@ -86,12 +86,12 @@ set(SOURCE_FILES
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-    FILES
+# add_message_files(
+#   FILES
 #   Message1.msg
 #   Message2.msg
-    referee.msg
- )
+#   referee.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -108,10 +108,10 @@ set(SOURCE_FILES
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs  # Or other packages containing msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
+# )
 
 
 ################################################
@@ -158,7 +158,7 @@ catkin_package(
     op3_action_module_msgs
     robotis_math
     op3_walking_module_msgs
-    message_runtime
+#    message_runtime
 )
 ###########
 ## Build ##

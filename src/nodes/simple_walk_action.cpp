@@ -30,8 +30,8 @@ void BT::SimpleWalk::WaitForTick()
         while (get_status() != BT::HALTED)
         {
             DEBUG_STDOUT(get_name() << "Walking...");
-            walk_command = "start";
-            goWalk(walk_command);
+            walking_command_ = "start";
+            goWalk(walking_command_);
         }
     }
 }

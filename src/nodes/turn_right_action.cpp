@@ -4,7 +4,7 @@
         Marlene Cobian
 */
 
-#include <movemente_pkg/nodes/turn_right_action.h>
+#include <movement_pkg/nodes/turn_right_action.h>
 
 BT::TurnRight::TurnRight(std::string name) : ActionNode::ActionNode(name), utils()
 {
@@ -56,7 +56,7 @@ void BT::TurnRight::turn()
     write_msg_.name.push_back("r_knee");
     write_msg_.position.push_back(-1.4131);
     write_msg_.name.push_back("r_hip_pitch");
-    write_msg_.position.push_back(0.7091 + rest_inc_giro_);
+    write_msg_.position.push_back(0.7091 + crouch_angle_);
     write_msg_.name.push_back("r_hip_yaw");
     write_msg_.position.push_back(0.1746*1.5);
     write_msg_.name.push_back("l_hip_yaw");
@@ -79,7 +79,7 @@ void BT::TurnRight::turn()
     write_msg_.name.push_back("r_knee");
     write_msg_.position.push_back(positions[rows_-1][1]);
     write_msg_.name.push_back("r_hip_pitch");
-    write_msg_.position.push_back(positions[rows_-1][2] + rest_inc_giro_);
+    write_msg_.position.push_back(positions[rows_-1][2] + crouch_angle_);
     write_joint_pub_.publish(write_msg_);
 
     // Getting left foot up
@@ -89,7 +89,7 @@ void BT::TurnRight::turn()
     write_msg_.name.push_back("l_knee");
     write_msg_.position.push_back(1.4131);
     write_msg_.name.push_back("l_hip_pitch");
-    write_msg_.position.push_back(-0.7091 - rest_inc_giro_);
+    write_msg_.position.push_back(-0.7091 - crouch_angle_);
     write_msg_.name.push_back("r_hip_yaw");
     write_msg_.position.push_back(0);
     write_msg_.name.push_back("l_hip_yaw");
@@ -103,7 +103,7 @@ void BT::TurnRight::turn()
     write_msg_.name.push_back("l_knee");
     write_msg_.position.push_back(positions[rows_-1][4]);
     write_msg_.name.push_back("l_hip_pitch");
-    write_msg_.position.push_back(positions[rows_-1][5] - rest_inc_giro_);
+    write_msg_.position.push_back(positions[rows_-1][5] - crouch_angle_);
     write_joint_pub_.publish(write_msg_);
 }
 

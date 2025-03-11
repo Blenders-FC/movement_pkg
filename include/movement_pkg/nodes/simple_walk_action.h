@@ -7,7 +7,7 @@
 #ifndef SIMPLE_WALK_ACTION_H
 #define SIMPLE_WALK_ACTION_H
 
-#include "movement_pkg/nodes/walking_controller.h"
+#include "movement_pkg/walking_controller.h"
 #include <action_node.h>
 
 
@@ -26,7 +26,7 @@ class SimpleWalk : public ActionNode, public WalkingController
         void Halt();
     
     private:
-        std_msgs::String walk_command;
+        std::string walking_command_;
 };
 }  // namespace BT
 

@@ -13,7 +13,7 @@
 #include "utils.h"
 #include "nodes/ball_detected_condition.h"
 #include "nodes/walk_to_target_action.h"
-#include "manager_running_condition.h"
+#include "nodes/manager_running_condition.h"
 
 namespace BT
 {

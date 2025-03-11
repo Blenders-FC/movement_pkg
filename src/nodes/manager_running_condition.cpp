@@ -8,7 +8,7 @@
 
 
 BT::ManagerRunningCondition::ManagerRunningCondition(const std::string &name) 
-: BT::ConditionNode(name) {}
+: BT::ConditionNode(name), utils() {}
 
 BT::ReturnStatus BT::ManagerRunningCondition::Tick()
 {

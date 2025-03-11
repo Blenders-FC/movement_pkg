@@ -20,16 +20,18 @@ BT::ReturnStatus BT::StartButtonCondition::Tick()
         ros::spinOnce();
         start_button_flag_ = getStartButtonState();
 
-        if (start_button_flag)
+        if (start_button_flag_)
         {
             asm("NOP");
-            ROS_INFO_COND(DEBUG_PRINT, "MOVE!");
+            ROS_INFO_COND(DEBUG_PRINT_, "MOVE!");
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         } 
         else 
         {
-            ROS_INFO_COND(DEBUG_PRINT, "WAITING FOR BUTTON");
+            ROS_INFO_COND(DEBUG_PRINT_, "WAITING FOR BUTTON");
         }
     }
+
+    return BT::FAILURE;  // ROS stopped unexpectedly 
 }
