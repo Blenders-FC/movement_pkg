@@ -6,6 +6,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#define GREEN_TEXT "\033[1;32m"
+#define RESET_TEXT "\033[0m"
+
 #include <ros/ros.h>
 #include <cmath>
 #include <iostream>
@@ -23,7 +26,7 @@
 #include <sensor_msgs/Imu.h>
 
 #include "robotis_controller_msgs/SetModule.h"
-
+#include <robotis_controller_msgs/StatusMsg.h>
 
 
 class utils 

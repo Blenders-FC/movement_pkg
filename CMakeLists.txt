@@ -40,6 +40,7 @@ set(SOURCE_FILES
   src/nodes/get_up_forward_action.cpp
   src/nodes/left_kick_action.cpp
   src/nodes/manager_running_condition.cpp
+  src/nodes/manager_done_condition.cpp
   src/nodes/right_kick_action.cpp
   src/nodes/robot_fallen_condition.cpp
   src/nodes/search_ball_action.cpp
@@ -191,6 +192,7 @@ add_executable(motion_controller_node
   src/nodes/get_up_forward_action.cpp
   src/nodes/left_kick_action.cpp
   src/nodes/manager_running_condition.cpp
+  src/nodes/manager_done_condition.cpp
   src/nodes/right_kick_action.cpp
   src/nodes/robot_fallen_condition.cpp
   src/nodes/search_ball_action.cpp

@@ -25,7 +25,8 @@ class ManagerRunningCondition : public ConditionNode, public virtual utils
         bool checkManagerRunning(std::string& manager_name);
 
         std::string manager_name = "/op3_manager";
-        bool DEBUG_PRINT_ = false;
+        bool DEBUG_PRINT_ = true;
+        bool already_logged_ = false;
 };
 }  // namesapce BT
 

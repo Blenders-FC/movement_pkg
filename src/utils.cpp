@@ -5,6 +5,7 @@
 
 #include "movement_pkg/utils.h"
 
+
 utils::utils() : nh(ros::this_node::getName()) 
 {
     nh.param<int>("robot_id", robot_id, 0);

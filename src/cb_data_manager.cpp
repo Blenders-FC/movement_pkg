@@ -15,6 +15,7 @@ CBDataManager::CBDataManager() : utils(), imu_orientation_(1, 0, 0, 0)  // Defau
     read_joint_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/present_joint_states", 10, &CBDataManager::jointStatesCallback, this);
     // ref_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/r_data", 10, &CBDataManager::refereeCallback, this);
     button_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/button", 10, &CBDataManager::buttonHandlerCallback, this);
+    robot_status_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/status", 10, &CBDataManager::statusCallback, this);
 }
 
 // [============================== CALLBACKS ==============================]
@@ -62,6 +63,14 @@ void CBDataManager::buttonHandlerCallback(const std_msgs::String::ConstPtr& msg)
     }
 }
 
+// Updating general robot status
+void CBDataManager::statusCallback(const robotis_controller_msgs::StatusMsg::ConstPtr& msg)
+{
+    // Save data into global variables
+    module_name_ = msg->module_name;
+    status_msg_ = msg->status_msg;
+}
+
 
 // [========================= EXTERNAL FUNCTIONS ==========================]
 
@@ -96,4 +105,9 @@ double CBDataManager::getHeadTilt()
 bool CBDataManager::getStartButtonState()
 {
     return start_button_flag_;
+}
+
+std::pair<std::string, std::string> CBDataManager::getRobotStatus()
+{
+    return std::make_pair(module_name_, status_msg_);
 }

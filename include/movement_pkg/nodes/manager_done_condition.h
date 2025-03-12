@@ -22,7 +22,9 @@ class ManagerDoneCondition : public ConditionNode, public CBDataManager
         BT::ReturnStatus Tick() override;
 
     private:
-        bool DEBUG_PRINT_ = false;
+        bool DEBUG_PRINT_ = true;
+        bool already_logged_ = false;
+        std::pair<std::string, std::string> robot_status_;
 };
 }  // namesapce BT
 

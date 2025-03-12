@@ -14,17 +14,13 @@
 #include "nodes/ball_detected_condition.h"
 #include "nodes/walk_to_target_action.h"
 #include "nodes/manager_running_condition.h"
+#include "nodes/manager_done_condition.h"
+#include "nodes/start_button_condition.h"
 
 namespace BT
 {
 class MotionControllerNode 
 {
-    public:
-        MotionControllerNode();
-        void run();
-
-    private:
-        BT::SequenceNodeWithMemory* root_node_;
 };
 }
 

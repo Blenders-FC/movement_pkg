@@ -8,28 +8,27 @@
 
 
 BT::ManagerDoneCondition::ManagerDoneCondition(const std::string &name) 
-: BT::ConditionNode(name), utils() {}
+: BT::ConditionNode(name) {}
 
 BT::ReturnStatus BT::ManagerDoneCondition::Tick()
 {
     // Condition checking and state update
     while (ros::ok())
     {
-        ros::Duration(1).sleep();
+        robot_status_ = getRobotStatus();  // first: module_name  second: status_msg
 
-        if (checkManagerRunning(manager_name) == true) 
+        if (robot_status_.first == "Base" && robot_status_.second == "Finish Init Pose") 
         {
-            ROS_INFO_COND(DEBUG_PRINT_, "Succeed to connect");
+            ROS_INFO_STREAM_COND(DEBUG_PRINT_, GREEN_TEXT << "[SUCCESS] OP3 manager has finished init pose succesfully!" << RESET_TEXT);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {
-            ROS_WARN("Waiting for op3 manager");
-            set_status(BT::FAILURE);
-            return BT::FAILURE;
+            ROS_INFO_COND(!already_logged_ && DEBUG_PRINT_, "Waiting for op3 manager to finish init pose");
+            already_logged_ = true;
         }
     }
 
-    return BT::FAILURE;
+    return BT::FAILURE;  // ROS stopped unexpectedly
 }

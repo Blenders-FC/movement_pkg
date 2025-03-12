@@ -18,14 +18,16 @@ int main(int argc, char **argv) {
         BT::BallDetectedCondition* ball_detected = new BT::BallDetectedCondition("BallDetected");
         BT::WalkToTarget* walk_to_ball = new BT::WalkToTarget("WalkToTarget");
         BT::ManagerRunningCondition* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
+        BT::ManagerDoneCondition* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
+        BT::StartButtonCondition* is_start_button = new BT::StartButtonCondition("IsStartButton");
 
         // Create Control Nodes
         BT::SequenceNodeWithMemory* root_sequence = new BT::SequenceNodeWithMemory("RootSequence");
 
         // Build the Behavior Tree
         root_sequence->AddChild(is_manager_running);
-        root_sequence->AddChild(ball_detected);
-        root_sequence->AddChild(walk_to_ball);
+        root_sequence->AddChild(is_manager_done);
+        root_sequence->AddChild(is_start_button);
 
         // Execute the tree with the given tick period
         Execute(root_sequence, TickPeriodMilliseconds);
