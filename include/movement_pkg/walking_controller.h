@@ -51,7 +51,6 @@ private:
     const double SPOT_FB_OFFSET_ = 0.0;
     const double SPOT_RL_OFFSET_ = 0.0;
     const double SPOT_ANGLE_OFFSET_ = 0.0;
-    const bool DEBUG_PRINT_ = false;
     double accum_period_time_ = 0.0;
     double current_period_time_ = 0.6;
     double current_x_move_ = 0.005;

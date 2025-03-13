@@ -19,13 +19,13 @@ BT::ReturnStatus BT::ManagerDoneCondition::Tick()
 
         if (robot_status_.first == "Base" && robot_status_.second == "Finish Init Pose") 
         {
-            ROS_INFO_STREAM_COND(DEBUG_PRINT_, GREEN_TEXT << "[SUCCESS] OP3 manager has finished init pose succesfully!" << RESET_TEXT);
+            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager has finished init pose succesfully!" << RESET_TEXT);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {
-            ROS_INFO_COND(!already_logged_ && DEBUG_PRINT_, "Waiting for op3 manager to finish init pose");
+            ROS_INFO_COND(!already_logged_ && DEBUG_PRINT, "Waiting for op3 manager to finish init pose");
             already_logged_ = true;
         }
     }

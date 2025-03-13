@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
         BT::ManagerRunningCondition* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
         BT::ManagerDoneCondition* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
         BT::StartButtonCondition* is_start_button = new BT::StartButtonCondition("IsStartButton");
+        BT::StandUp* stand_up = new BT::StandUp("StandUp");
 
         // Create Control Nodes
         BT::SequenceNodeWithMemory* root_sequence = new BT::SequenceNodeWithMemory("RootSequence");
@@ -28,6 +29,7 @@ int main(int argc, char **argv) {
         root_sequence->AddChild(is_manager_running);
         root_sequence->AddChild(is_manager_done);
         root_sequence->AddChild(is_start_button);
+        root_sequence->AddChild(stand_up);
 
         // Execute the tree with the given tick period
         Execute(root_sequence, TickPeriodMilliseconds);

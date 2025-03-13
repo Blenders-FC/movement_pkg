@@ -16,6 +16,7 @@
 #include "nodes/manager_running_condition.h"
 #include "nodes/manager_done_condition.h"
 #include "nodes/start_button_condition.h"
+#include "nodes/stand_up_action.h"
 
 namespace BT
 {

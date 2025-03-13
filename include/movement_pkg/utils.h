@@ -36,6 +36,7 @@ protected:
 
     ros::NodeHandle nh;  // Shared NodeHandle
     int robot_id;
+    bool DEBUG_PRINT = true;
 
     void setModule(const std::string& module_name);
     void goAction(int page);

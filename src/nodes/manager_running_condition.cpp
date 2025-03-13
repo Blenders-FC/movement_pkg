@@ -19,13 +19,13 @@ BT::ReturnStatus BT::ManagerRunningCondition::Tick()
 
         if (checkManagerRunning(manager_name) == true) 
         {
-            ROS_INFO_STREAM_COND(DEBUG_PRINT_, GREEN_TEXT << "[SUCCESS] Succeed to connect to OP3 manager!" << RESET_TEXT);
+            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] Succeed to connect to OP3 manager!" << RESET_TEXT);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {
-            ROS_INFO_COND(!already_logged_ && DEBUG_PRINT_, "Waiting for op3 manager to connect");
+            ROS_INFO_COND(!already_logged_ && DEBUG_PRINT, "Waiting for op3 manager to connect");
             already_logged_ = true;
         }
     }

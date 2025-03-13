@@ -24,7 +24,6 @@ class StartButtonCondition : public ConditionNode, public CBDataManager
     private:
         //button
         bool start_button_flag_ = false;
-        bool DEBUG_PRINT_ = true;
         bool already_logged_ = false;
 };
 }  // namesapce BT

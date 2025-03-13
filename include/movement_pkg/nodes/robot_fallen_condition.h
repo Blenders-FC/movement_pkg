@@ -27,9 +27,6 @@ class RobotFallenCondition : public ConditionNode, public CBDataManager
         double present_pitch_;
         const double FALL_FORWARD_LIMIT = 55;
         const double FALL_BACKWARDS_LIMIT = -55;
-        
-        
-        bool DEBUG_PRINT_ = false;
 };
 }  // namesapce BT
 
