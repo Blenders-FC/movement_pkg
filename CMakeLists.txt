@@ -50,6 +50,8 @@ set(SOURCE_FILES
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
+  src/nodes/ball_direction_condition.cpp
+  src/nodes/fov_walking_action.cpp
 )
 
 
@@ -229,6 +231,7 @@ add_dependencies(motion_controller_node
 add_library(cb_data_manager src/cb_data_manager.cpp)
 add_library(walking_controller src/walking_controller.cpp)
 add_library(utils src/utils.cpp)
+add_library(fov_calculation src/fov_calculation.cpp)
 
 target_link_libraries(motion_controller_node
   ${catkin_LIBRARIES}
@@ -237,6 +240,7 @@ target_link_libraries(motion_controller_node
   cb_data_manager
   walking_controller
   utils
+  fov_calculation
 )
 
 target_link_libraries(cb_data_manager
