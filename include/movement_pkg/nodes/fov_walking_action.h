@@ -18,7 +18,7 @@ class FOVWalking : public ActionNode, public WalkingController, public FOVCalcul
 {
     public:
         // Constructor
-        explicit FOVWalking()
+        explicit FOVWalking(std::string name);
         ~FOVWalking();
 
         // The method that is going to be executed by the thread
@@ -29,7 +29,7 @@ class FOVWalking : public ActionNode, public WalkingController, public FOVCalcul
 
     private:
         //  Auxiliar methods
-        void walkTowardsTarget(double head_pan_angle, double head_tilt_angle);
+        void walkTowardsTarget();
 
         // Variables
         double fb_move;

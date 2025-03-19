@@ -7,9 +7,9 @@
 #include "movement_pkg/nodes/ball_direction_condition.h"
 
 
-BT::BallDirectionCondition::BallDirectionCondition(std::string name) 
+BT::BallDirectionCondition::BallDirectionCondition(const std::string &name) 
     : BT::ConditionNode(name),
-    FOVCalculation(ball_x, ball_y, head_pan, head_tilt)
+    FOVCalculation()
     {}
 
 BT::ReturnStatus BT::BallDirectionCondition::Tick()
@@ -22,11 +22,11 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
         set_status(BT::RUNNING);
         ros::spinOnce();
 
-        ball_center_position_ = getBallPosition();
-        ball_position_x = ball_center_position_.x;
-        ball_position_y = ball_center_position_.y;
-        current_head_pan = getHeadPan();
-        current_head_tilt = getHeadTilt();
+        this->ball_center_position_ = getBallPosition();
+        this->ball_position_x = ball_center_position_.x;
+        this->ball_position_y = ball_center_position_.y;
+        this->current_head_pan = getHeadPan();
+        this->current_head_tilt = getHeadTilt();
         
         calcFocalLength_x();        // Updates focal length in x axis
         calcPanAngle();             // Updates pan_angle to the ball in body's frame
@@ -37,6 +37,7 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
             calcDistanceToTarget();     // Updates distance to ball
 
             ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager is able to walk towards the ball!" << RESET_TEXT);
+            std::cout << "dist: " << distance_to_target << "    pan: " << pan_angle << std::endl;
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }

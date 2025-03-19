@@ -19,7 +19,7 @@ BT::SearchBall::~SearchBall() {}
 
 void BT::SearchBall::WaitForTick()
 {
-    while (true)
+    while (ros::ok())
     {
         DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
         tick_engine.Wait();
@@ -28,6 +28,8 @@ void BT::SearchBall::WaitForTick()
         turn_cnt_ = 0;
 
         set_status(BT::RUNNING);
+        setModule("direct_control_module");
+        ros::Duration(1.0).sleep();
 
         // Flow for searching ball - specially when distance to ball >= 1m
         
@@ -36,32 +38,34 @@ void BT::SearchBall::WaitForTick()
             head_pan_angle_ = getHeadPan();
             angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
 
+            std::cout << angle_mov_x_ << std::endl;
             if (head_direction_ && angle_mov_x_ <= 70)
             {
-                angle_mov_x_ += 1;
+                angle_mov_x_ += 5;
+                std::cout << angle_mov_x_ << std::endl;
                 writeHeadJoint(angle_mov_x_, true);
-                if (angle_mov_x_ == 70) head_direction_ = false;
+                ros::Duration(1.0).sleep();
+                if (angle_mov_x_ >= 70) head_direction_ = false;
             }
             else if (!head_direction_ && angle_mov_x_ >= -70)
             {
-                angle_mov_x_ -= 1;
+                angle_mov_x_ -= 5;
                 writeHeadJoint(angle_mov_x_, true);
-                if (angle_mov_x_ == -70)
+                ros::Duration(1.0).sleep();
+                if (angle_mov_x_ <= -70)
                 {
                     head_direction_ = true;
                     turn_cnt_ += 1;
                     if (turn_cnt_ == 1)
                     {
                         angle_mov_y_ = -50;
-                        ros::Duration(1.0).sleep();
                         writeHeadJoint(angle_mov_y_, false);
-                        ros::Duration(1.0).sleep();
                     }
                     else if (turn_cnt_ == 2) 
                     {
                         turn_cnt_ = 0;
                         // turn2search(9);
-                        DEBUG_STDOUT(get_name() << "Couldn't find ball! Changing the search position...");
+                        ROS_INFO("Couldn't find ball! Changing the search position...");
                         set_status(BT::FAILURE);
                     }
                 }
@@ -72,8 +76,6 @@ void BT::SearchBall::WaitForTick()
 
 void BT::SearchBall::writeHeadJoint(double ang_value, bool is_pan)
 {
-    setModule("direct_control_module");
-    write_msg_;
     write_msg_.header.stamp = ros::Time::now();
         
     ang_value *= 0.0174533;  // DegToRad -> pi/180
@@ -95,5 +97,5 @@ void BT::SearchBall::writeHeadJoint(double ang_value, bool is_pan)
 void BT::SearchBall::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("SearchBall HALTED: Stopped walking.");
+    ROS_INFO("SearchBall HALTED: Stopped walking.");
 }

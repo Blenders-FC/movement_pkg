@@ -33,9 +33,11 @@ set(BT_SOURCE_FILES
 set(SOURCE_FILES
   src/motion_controller_node.cpp
   src/nodes/ball_detected_condition.cpp
+  src/nodes/ball_direction_condition.cpp
   src/nodes/ball_in_center_condition.cpp
   src/nodes/center_ball_action.cpp
   src/nodes/choose_kick_foot_condition.cpp
+  src/nodes/fov_walking_action.cpp
   src/nodes/get_up_backwards_action.cpp
   src/nodes/get_up_forward_action.cpp
   src/nodes/left_kick_action.cpp
@@ -50,8 +52,6 @@ set(SOURCE_FILES
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
-  src/nodes/ball_direction_condition.cpp
-  src/nodes/fov_walking_action.cpp
 )
 
 
@@ -187,9 +187,11 @@ include_directories(
 add_executable(motion_controller_node
   src/motion_controller_node.cpp
   src/nodes/ball_detected_condition.cpp
+  src/nodes/ball_direction_condition.cpp
   src/nodes/ball_in_center_condition.cpp
   src/nodes/center_ball_action.cpp
   src/nodes/choose_kick_foot_condition.cpp
+  src/nodes/fov_walking_action.cpp
   src/nodes/get_up_backwards_action.cpp
   src/nodes/get_up_forward_action.cpp
   src/nodes/left_kick_action.cpp

@@ -6,13 +6,16 @@
 
 #include <movement_pkg/fov_calculation.h>
 
-FOVCalculation::FOVCalculation(float ball_x, float ball_y, double head_pan, double head_tilt) 
+
+// Define and initialize static members outside the class
+double FOVCalculation::pan_angle = 0;
+double FOVCalculation::distance_to_target = 0;
+
+FOVCalculation::FOVCalculation(double ball_x, double ball_y, double head_pan, double head_tilt) 
     : utils(),
     focal_length_x(0),
     focal_length_y(0),
     tilt_angle(0),
-    pan_angle(0),
-    distance_to_target(0),
     ball_position_x(ball_x),
     ball_position_y(ball_y),
     current_head_pan(head_pan),
@@ -20,7 +23,7 @@ FOVCalculation::FOVCalculation(float ball_x, float ball_y, double head_pan, doub
 
 FOVCalculation::~FOVCalculation() {}
   
-double FOVCalculation::calcFocalLength_y() {
+void FOVCalculation::calcFocalLength_y() {
     /*
     Focal length determines how much of the FOV is captured by the camera and is responsible for the zooming effect.
     It represents the distance from the camera's optical center (lens) to the image plane.
@@ -32,7 +35,7 @@ double FOVCalculation::calcFocalLength_y() {
 
 }
 
-double FOVCalculation::calcFocalLength_x() {
+void FOVCalculation::calcFocalLength_x() {
     /*
     Focal length determines how much of the FOV is captured by the camera and is responsible for the zooming effect.
     It represents the distance from the camera's optical center (lens) to the image plane.
@@ -40,7 +43,7 @@ double FOVCalculation::calcFocalLength_x() {
 
     This functions returns focal length in pixels.
     */
-    focal_length_x = CAM_WIDTH_DEF_RES / (2 * tan(HALF_VHOV_DEF_RES));
+    focal_length_x = CAM_WIDTH_DEF_RES / (2 * tan(HALF_VFOV_DEF_RES));
 }
 
 double FOVCalculation::getVerticalAngle(){

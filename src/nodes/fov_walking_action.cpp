@@ -10,7 +10,7 @@
 BT::FOVWalking::FOVWalking(std::string name) 
     : ActionNode::ActionNode(name), 
     WalkingController(), 
-    FOVCalculation(ball_x, ball_y, head_pan, head_tilt)
+    FOVCalculation()
 {
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&FOVWalking::WaitForTick, this);
