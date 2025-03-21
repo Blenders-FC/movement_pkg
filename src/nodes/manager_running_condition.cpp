@@ -19,18 +19,18 @@ BT::ReturnStatus BT::ManagerRunningCondition::Tick()
 
         if (checkManagerRunning(manager_name) == true) 
         {
-            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] Succeed to connect to OP3 manager!" << RESET_TEXT);
+            ROS_SUCCESS_LOG("Succeed to connect to OP3 manager!");
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {
-            ROS_INFO_COND(!already_logged_ && DEBUG_PRINT, "Waiting for op3 manager to connect");
+            ROS_TAGGED_ONCE_LOG(!already_logged_ && DEBUG_PRINT, "Waiting for op3 manager to connect");
             already_logged_ = true;
         }
     }
-
-    return BT::FAILURE;  // ROS stopped unexpectedly
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 bool BT::ManagerRunningCondition::checkManagerRunning(std::string& manager_name) {
@@ -42,6 +42,6 @@ bool BT::ManagerRunningCondition::checkManagerRunning(std::string& manager_name)
       if (node_list[node_list_idx] == manager_name)
         return true;
     }
-    ROS_ERROR("Can't find op3_manager");
+    ROS_ERROR_LOG("Can't find op3_manager");
     return false;
 }
