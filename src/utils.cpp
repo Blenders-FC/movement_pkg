@@ -104,7 +104,7 @@ void utils::ROS_TAGGED_ONCE_LOG(const std::string& msg,
     
     if (!already_logged_tags_[resolved_tag] && DEBUG_PRINT)
     {
-        ROS_COLORED_INFO_LOG("%s", color_name, bold, msg.c_str());
+        ROS_COLORED_LOG("%s", color_name, bold, msg.c_str());
         already_logged_tags_[resolved_tag] = true;
     }
 }

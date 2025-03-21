@@ -62,7 +62,7 @@
     ROS_ERROR_COND(DEBUG_PRINT, "%s[%s:%d] " RESET_TEXT msg, (bold ? BOLD_PINK_TEXT : PINK_TEXT), __FILENAME__, __LINE__, ##__VA_ARGS__)
 
 // Flexible color info log
-#define ROS_COLORED_INFO_LOG(msg, color_name, bold, ...) \
+#define ROS_COLORED_LOG(msg, color_name, bold, ...) \
     ROS_INFO_COND(DEBUG_PRINT, "%s[%s:%d] " RESET_TEXT "%s" msg RESET_TEXT, \
     (bold ? BOLD_PINK_TEXT : PINK_TEXT), __FILENAME__, __LINE__, COLOR_TEXT(color_name, bold), ##__VA_ARGS__)
 
