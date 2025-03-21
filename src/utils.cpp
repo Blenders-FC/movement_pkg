@@ -87,3 +87,24 @@ std::vector<std::vector<float>> utils::loadPositions()
     myfile.close();
     return positions;
 }
+
+/*
+ * Logs a message only once, with an optional tag, color, and boldness.
+ * @param msg The message to log.
+ * @param color_name The color name (e.g., CYAN, GREEN).
+ * @param bold Whether the message should be bold.
+ * @param tag Optional tag. If empty, logs only once globally.
+*/
+void utils::ROS_TAGGED_ONCE_LOG(const std::string& msg,
+    const std::string& color_name,
+    bool bold,
+    const std::string& tag) 
+{
+    std::string resolved_tag = tag.empty() ? "__default__" : tag;
+    
+    if (!already_logged_tags_[resolved_tag] && DEBUG_PRINT)
+    {
+        ROS_COLORED_INFO_LOG("%s", color_name, bold, msg.c_str());
+        already_logged_tags_[resolved_tag] = true;
+    }
+}
