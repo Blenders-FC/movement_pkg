@@ -62,8 +62,14 @@ void FOVCalculation::calcPanAngle(){
     diff_x = ball_position_x - W_CENTER_DEF_RES;
     phi = atan(diff_x / focal_length_x);  // Converting ratio into an angle
     pan_angle = current_head_pan + phi;  // Adding θ + β (head tilt + betha)
+    
+    ball_info.pan = pan_angle;
+    blackboard.setTarget("ball", ball_info);  // Update the blackboard
 }
 
 void FOVCalculation::calcDistanceToTarget(){
     distance_to_target = CAMERA_HEIGHT_ / tan(getVerticalAngle());  // cot(x) = tan(π/2 - x) = 1/tan(x)
+    
+    ball_info.distance = distance_to_target;
+    blackboard.setTarget("ball", ball_info);  // Update the blackboard
 }

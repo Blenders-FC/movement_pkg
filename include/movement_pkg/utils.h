@@ -27,6 +27,7 @@
 
 #include "robotis_controller_msgs/SetModule.h"
 #include <robotis_controller_msgs/StatusMsg.h>
+#include "movement_pkg/blackboard.h"
 
 // ===== ANSI COLOR CODES =====
 #define DEFAULT_TEX RESET_TEXT  "\033[0m"
@@ -68,44 +69,46 @@
 
 class utils 
 {
-protected:
-    utils();
+    protected:
+        utils() : blackboard();
 
-    ros::NodeHandle nh;  // Shared NodeHandle
-    int robot_id;
-    bool DEBUG_PRINT = true;
+        ros::NodeHandle nh;  // Shared NodeHandle
+        int robot_id;
+        bool DEBUG_PRINT = true;
 
-    void setModule(const std::string& module_name);
-    void goAction(int page);
-    std::string getDataFilePath(const std::string& filename) ;
-    std::vector<std::vector<float>> loadPositions();
+        void setModule(const std::string& module_name);
+        void goAction(int page);
+        std::string getDataFilePath(const std::string& filename) ;
+        std::vector<std::vector<float>> loadPositions();
 
-    // ROS services
-    ros::ServiceClient set_joint_module_client;
-    ros::ServiceClient get_joint_module_client;
+        // ROS services
+        ros::ServiceClient set_joint_module_client;
+        ros::ServiceClient get_joint_module_client;
 
-    // ROS LOG ONCE
-    void ROS_TAGGED_ONCE_LOG(const std::string& msg,
-        const std::string& color_name = "DEFAULT",
-        bool bold = false,
-        const std::string& tag = "");
+        // ROS LOG ONCE
+        void ROS_TAGGED_ONCE_LOG(const std::string& msg,
+            const std::string& color_name = "DEFAULT",
+            bool bold = false,
+            const std::string& tag = "");
 
+        Blackboard blackboard;
 
-public:
-    virtual ~utils() = default;
+    public:
+        virtual ~utils() = default;
+        Blackboard* getBlackboard() { return &blackboard; }
 
-private:
+    private:
 
-    // ROS variables
-    ros::Publisher action_pose_pub_;
-    std_msgs::Int32 action_msg_;
+        // ROS variables
+        ros::Publisher action_pose_pub_;
+        std_msgs::Int32 action_msg_;
 
-    // ROS LOG ONCE
-    std::unordered_map<std::string, bool> already_logged_tags_;
-    
-    //standing up txt
-    const int rows_ = 40;
-    const int cols_ = 6;
-};
+        // ROS LOG ONCE
+        std::unordered_map<std::string, bool> already_logged_tags_;
+        
+        //standing up txt
+        const int rows_ = 40;
+        const int cols_ = 6;
+    };
 
 #endif  // UTILS_H
