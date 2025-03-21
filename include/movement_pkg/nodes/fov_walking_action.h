@@ -39,6 +39,10 @@ class FOVWalking : public ActionNode, public WalkingController, public FOVCalcul
         bool walkingSucced = false;
         std_msgs::String walk_command;
         ros::Time prev_time_walk_ = ros::Time::now();
+
+        const TargetInfo* ball = blackboard.getTarget("ball");
+        double pan_angle_to_ball;
+        double distance_to_ball;
 };
 }  // namespace BT
 

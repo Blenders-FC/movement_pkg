@@ -32,8 +32,11 @@ protected:
     double current_head_tilt;
 
     // Read-only variables
-    static double pan_angle;
-    static double distance_to_target;
+    double pan_angle;
+    double distance_to_target;
+    
+    // Blackboard
+    TargetInfo ball_info;
 
 private:
     // Internal functions

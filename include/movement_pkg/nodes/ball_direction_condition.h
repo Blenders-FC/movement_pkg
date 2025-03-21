@@ -24,6 +24,9 @@ class BallDirectionCondition : public ConditionNode, public CBDataManager, publi
 
     private:
         geometry_msgs::Point ball_center_position_;
+        const TargetInfo* ball = blackboard.getTarget("ball");
+        double pan_angle_to_ball;
+        double distance_to_ball;
 };
 }  // namesapce BT
 

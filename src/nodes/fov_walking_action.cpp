@@ -56,16 +56,20 @@ void BT::FOVWalking::walkTowardsTarget()
 
     while (ros::ok())
     {
-        if (distance_to_target < 0) distance_to_target *= (-1);
-        std::cout << "dist to ball: " << distance_to_target << std::endl;
         
-        if (distance_to_target > distance_to_kick_)
+        distance_to_ball = ball->distance;
+        pan_angle_to_ball = ball->pan_angle;
+
+        if (distance_to_ball < 0) distance_to_ball *= (-1);
+        std::cout << "dist to ball: " << distance_to_ball << std::endl;
+        
+        if (distance_to_ball > distance_to_kick_)
         {
             fb_move = 0.0;
             rl_angle = 0.0;
-            distance_to_walk = distance_to_target - distance_to_kick_;
+            distance_to_walk = distance_to_ball - distance_to_kick_;
 
-            calcFootstep(distance_to_walk, pan_angle, delta_time_walk, fb_move, rl_angle);
+            calcFootstep(distance_to_walk, pan_angle_to_ball, delta_time_walk, fb_move, rl_angle);
             setWalkingParam(fb_move, 0, rl_angle, true);
 
             walk_command.data = "start";
