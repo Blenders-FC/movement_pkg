@@ -19,11 +19,11 @@ BT::CenterBall::~CenterBall() {}
 
 void BT::CenterBall::WaitForTick()
 {
-    while (true)
+    while (ros::ok())
     {
-        DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << "TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
         set_status(BT::RUNNING);
 
@@ -70,11 +70,13 @@ void BT::CenterBall::WaitForTick()
             }
             else
             {
-                ROS_INFO("Ball IN CENTER! Starting walking process!");
+                ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!");
                 set_status(BT::SUCCESS);
             }
         }
     }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)
@@ -102,5 +104,5 @@ void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)
 void BT::CenterBall::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("CenterBall HALTED: Stopped walking.");
+    ROS_COLORED_LOG("CenterBall HALTED: Stopped walking.", DEFAULT, false);
 }
