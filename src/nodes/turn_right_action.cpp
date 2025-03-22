@@ -19,33 +19,37 @@ BT::TurnRight::~TurnRight() {}
 
 void BT::TurnRight::WaitForTick()
 {
-    while (true)
-    {
-        // Waiting for the first tick to come
-        DEBUG_STDOUT(get_name() << " WAIT FOR TICK");
-        tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << " TICK RECEIVED");
-
-        // Running state
-        set_status(BT::RUNNING);
-
-        // Perform action...
-        while (get_status() != BT::HALTED)
+    while(ros::ok()){
+        while (true)
         {
-            DEBUG_STDOUT("Turning in place!");
-            //node loop
-            write_msg_.header.stamp = ros::Time::now();
-            
-            if (get_joint_module_client != "none")
-            {
-                setModule("none");
-                ros::Duration(1).sleep();
-            }
+            // Waiting for the first tick to come
+            ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+            tick_engine.Wait();
+            ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-            ros::Duration(0.1).sleep();
-            turn();
+            // Running state
+            set_status(BT::RUNNING);
+
+            // Perform action...
+            while (get_status() != BT::HALTED)
+            {
+                ROS_TAGGED_ONCE_LOG("Turning in place!");
+                //node loop
+                write_msg_.header.stamp = ros::Time::now();
+                
+                if (get_joint_module_client != "none")
+                {
+                    setModule("none");
+                    ros::Duration(1).sleep();
+                }
+
+                ros::Duration(0.1).sleep();
+                turn();
+            }
         }
     }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::TurnRight::turn()
@@ -110,5 +114,5 @@ void BT::TurnRight::turn()
 void BT::TurnRight::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("TurnRight HALTED: Stopped turning in place");
+    ROS_TAGGED_ONCE_LOG("TurnRight HALTED: Stopped turning in place");
 }

@@ -20,9 +20,9 @@ void BT::StandUp::WaitForTick()
 {
     while (ros::ok())
     {
-        DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << "TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
         set_status(BT::RUNNING);
 
@@ -31,16 +31,17 @@ void BT::StandUp::WaitForTick()
             stopWalking();
             // ros::Duration(1.0).sleep();  // Verify if it's completely necessary
             
-            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] Succeed to stand up!" << RESET_TEXT);
+            ROS_SUCCESS_LOG("Succeed to stand up!");
             set_status(BT::SUCCESS);
         }
     }
 
-    set_status(BT::FAILURE);  // ROS stopped unexpectedly
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::StandUp::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("StandUp HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("StandUp HALTED: Stopped walking.");
 }

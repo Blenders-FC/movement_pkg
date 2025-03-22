@@ -18,31 +18,36 @@ BT::WalkToTarget::~WalkToTarget() {}
 
 void BT::WalkToTarget::WaitForTick()
 {
-    while (true)
+    while(ros::ok())
     {
-        DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
-        tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << "TICK RECEIVED");
-
-        set_status(BT::RUNNING);
-
-        // Perform action...
-        while (get_status() != BT::HALTED)
+        while (true)
         {
-            head_pan_angle_ = getHeadPan();
-            head_tilt_angle_ = getHeadTilt();
+            ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+            tick_engine.Wait();
+            ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-            this->setModule("walking_module");
-            DEBUG_STDOUT(get_name() << "Walking towards target...");
-            walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
+            set_status(BT::RUNNING);
 
-            if (walkingSucced)
+            // Perform action...
+            while (get_status() != BT::HALTED)
             {
-                DEBUG_STDOUT(get_name() << "Walk to target SUCCESS");
-                set_status(BT::SUCCESS);
+                head_pan_angle_ = getHeadPan();
+                head_tilt_angle_ = getHeadTilt();
+
+                this->setModule("walking_module");
+                ROS_TAGGED_ONCE_LOG("Walking towards target...");
+                walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
+
+                if (walkingSucced)
+                {
+                    ROS_SUCCESS_LOG("Walk to target SUCCESS");
+                    set_status(BT::SUCCESS);
+                }
             }
         }
     }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_angle)
@@ -91,5 +96,5 @@ void BT::WalkToTarget::Halt()
     stopWalking();
 
     set_status(BT::HALTED);
-    DEBUG_STDOUT("WalkToTarget HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("WalkToTarget HALTED: Stopped walking.");
 }

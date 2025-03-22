@@ -21,9 +21,9 @@ void BT::SearchBall::WaitForTick()
 {
     while (ros::ok())
     {
-        DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << "TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
         turn_cnt_ = 0;
 
@@ -65,7 +65,7 @@ void BT::SearchBall::WaitForTick()
                     {
                         turn_cnt_ = 0;
                         // turn2search(9);
-                        ROS_INFO("Couldn't find ball! Changing the search position...");
+                        ROS_COLORED_LOG("Couldn't find ball! Changing the search position...");
                         set_status(BT::FAILURE);
                     }
                 }
@@ -97,5 +97,5 @@ void BT::SearchBall::writeHeadJoint(double ang_value, bool is_pan)
 void BT::SearchBall::Halt()
 {
     set_status(BT::HALTED);
-    ROS_INFO("SearchBall HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("SearchBall HALTED: Stopped walking.");
 }

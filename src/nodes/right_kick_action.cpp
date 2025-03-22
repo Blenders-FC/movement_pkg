@@ -16,30 +16,35 @@ BT::RightKick::~RightKick() {}
 
 void BT::RightKick::WaitForTick()
 {
-    while (true)
+    while(ros::ok())
     {
-        // Waiting for the first tick to come
-        DEBUG_STDOUT(get_name() << " WAIT FOR TICK");
-        tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << " TICK RECEIVED");
-
-        // Running state
-        set_status(BT::RUNNING);
-
-        // Perform action...
-        if (get_status() != BT::HALTED)
+        while (true)
         {
-            goAction(83);  // right kick
-            ros::Duration(0.5).sleep();
-            
-            DEBUG_STDOUT(get_name() << "Right kick action SUCCESS");
-            set_status(BT::SUCCESS);
+            // Waiting for the first tick to come
+            ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+            tick_engine.Wait();
+            ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+
+            // Running state
+            set_status(BT::RUNNING);
+
+            // Perform action...
+            if (get_status() != BT::HALTED)
+            {
+                goAction(83);  // right kick
+                ros::Duration(0.5).sleep();
+                
+                ROS_SUCCESS_LOG("Right kick action SUCCESS");
+                set_status(BT::SUCCESS);
+            }
         }
     }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::RightKick::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("RightKick HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("RightKick HALTED: Stopped walking.");
 }

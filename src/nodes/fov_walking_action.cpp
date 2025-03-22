@@ -20,30 +20,33 @@ BT::FOVWalking::~FOVWalking() {}
 
 void BT::FOVWalking::WaitForTick()
 {
-    while (true)
+    while(ros::ok())
     {
-        DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
-        tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << "TICK RECEIVED");
+        while (true)
+        {
+            ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+            tick_engine.Wait();
+            ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        set_status(BT::RUNNING);
+            set_status(BT::RUNNING);
 
-        // Flow for walking to ball - using FOV calculation
-        
-        while (get_status() != BT::HALTED)
-        {   
-            this->setModule("walking_module");
-            DEBUG_STDOUT(get_name() << "Walking towards target...");
-            walkTowardsTarget();
+            // Flow for walking to ball - using FOV calculation
+            
+            while (get_status() != BT::HALTED)
+            {   
+                this->setModule("walking_module");
+                ROS_TAGGED_ONCE_LOG("Walking towards target...");
+                walkTowardsTarget();
 
-            if (walkingSucced)
-            {
-                ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager has reached the ball!" << RESET_TEXT);
-                set_status(BT::SUCCESS);
+                if (walkingSucced)
+                {
+                    ROS_SUCCESS_LOG("OP3 manager has reached the ball!");
+                    set_status(BT::SUCCESS);
+                }
             }
         }
     }
-    ROS_ERROR_COND(DEBUG_PRINT, "ROS HAS STOPPED UNEXPECTEDLY IN BALL DIRECTION CONDITION");
+    ROS_ERROR_LOG("ROS HAS STOPPED UNEXPECTEDLY IN BALL DIRECTION CONDITION");
     set_status(BT::FAILURE);
 }
 
@@ -90,5 +93,5 @@ void BT::FOVWalking::Halt()
     stopWalking();
 
     set_status(BT::HALTED);
-    DEBUG_STDOUT("FOVWalking HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("FOVWalking HALTED: Stopped walking.");
 }
