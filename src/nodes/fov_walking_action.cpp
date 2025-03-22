@@ -38,7 +38,7 @@ void BT::FOVWalking::WaitForTick()
 
             if (walkingSucced)
             {
-                ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager has reached the ball!" << RESET_TEXT);
+                ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager has reached the ball!" << DEFAULT_TEXT);
                 set_status(BT::SUCCESS);
             }
         }

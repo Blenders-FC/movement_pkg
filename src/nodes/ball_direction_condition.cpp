@@ -39,7 +39,7 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
             calcDistanceToTarget();     // Updates distance to ball
             distance_to_ball = ball->distance;
 
-            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager is able to walk towards the ball!" << RESET_TEXT);
+            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager is able to walk towards the ball!" << DEFAULT_TEXT);
             std::cout << "dist: " << distance_to_ball << "    pan: " << pan_angle_to_ball << std::endl;
             set_status(BT::SUCCESS);
             return BT::SUCCESS;

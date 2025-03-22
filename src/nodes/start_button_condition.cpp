@@ -23,7 +23,7 @@ BT::ReturnStatus BT::StartButtonCondition::Tick()
         if (start_button_flag_)
         {
             asm("NOP");
-            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] Start Button ready! Start moving..." << RESET_TEXT);
+            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] Start Button ready! Start moving..." << DEFAULT_TEXT);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         } 
