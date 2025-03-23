@@ -19,13 +19,13 @@ BT::ReturnStatus BT::ChooseKickFootCondition::Tick()
         
         if (head_pan_ > 0)
         {
-            ROS_COLORED_LOG("RIGHT KICK CHOSEN", DEFAULT, false); 
+            ROS_COLORED_LOG("RIGHT KICK CHOSEN", CYAN, false); 
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {
-            ROS_COLORED_LOG("RIGHT LEFT CHOSEN", DEFAULT, false);
+            ROS_COLORED_LOG("RIGHT LEFT CHOSEN", CYAN, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }

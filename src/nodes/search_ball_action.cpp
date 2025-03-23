@@ -33,7 +33,7 @@ void BT::SearchBall::WaitForTick()
 
         // Flow for searching ball - specially when distance to ball >= 1m
         
-        while (get_status() != BT::HALTED)
+        if (get_status() != BT::HALTED)
         {
             head_pan_angle_ = getHeadPan();
             angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
@@ -65,7 +65,7 @@ void BT::SearchBall::WaitForTick()
                     {
                         turn_cnt_ = 0;
                         // turn2search(9);
-                        ROS_COLORED_LOG("Couldn't find ball! Changing the search position...");
+                        ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);
                         set_status(BT::FAILURE);
                     }
                 }

@@ -20,29 +20,26 @@ void BT::WalkToTarget::WaitForTick()
 {
     while(ros::ok())
     {
-        while (true)
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        tick_engine.Wait();
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+
+        set_status(BT::RUNNING);
+
+        // Perform action...
+        IF (get_status() != BT::HALTED)
         {
-            ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
-            tick_engine.Wait();
-            ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+            head_pan_angle_ = getHeadPan();
+            head_tilt_angle_ = getHeadTilt();
 
-            set_status(BT::RUNNING);
+            this->setModule("walking_module");
+            ROS_TAGGED_ONCE_LOG("Walking towards target...");
+            walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
 
-            // Perform action...
-            while (get_status() != BT::HALTED)
+            if (walkingSucced)
             {
-                head_pan_angle_ = getHeadPan();
-                head_tilt_angle_ = getHeadTilt();
-
-                this->setModule("walking_module");
-                ROS_TAGGED_ONCE_LOG("Walking towards target...");
-                walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
-
-                if (walkingSucced)
-                {
-                    ROS_SUCCESS_LOG("Walk to target SUCCESS");
-                    set_status(BT::SUCCESS);
-                }
+                ROS_SUCCESS_LOG("Walk to target SUCCESS");
+                set_status(BT::SUCCESS);
             }
         }
     }
@@ -61,7 +58,7 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
     {
         double distance_to_target = calculateDistance(head_tilt_angle);
         if (distance_to_target < 0) distance_to_target *= (-1);
-        std::cout << "dist to ball: " << distance_to_target << std::endl;
+        ROS_COLORED_LOG("dist to ball: ", distance_to_target, CYAN, false);
         
         if (distance_to_target > distance_to_kick_)
         {
@@ -83,6 +80,7 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
             break;
         }
     }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
 }
 
 double BT::WalkToTarget::calculateDistance(double head_tilt)

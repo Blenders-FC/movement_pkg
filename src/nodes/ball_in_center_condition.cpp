@@ -21,13 +21,13 @@ BT::ReturnStatus BT::BallInCenterCondition::Tick()
         
         if ((xerror_ <= 20 || xerror_ >= -20) && (yerror_ <= 20 || yerror_ >= -20))
         {
-            ROS_COLORED_LOG("Ball NOT in center! Starting centering process!", DEFAULT, false);
+            ROS_COLORED_LOG("Ball NOT in center! Starting centering process!", YELLOW, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }
         else
         {
-            ROS_COLORED_LOG("Ball IN CENTER! Starting walking process!", DEFAULT, false);
+            ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!", DEFAULT, false);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }

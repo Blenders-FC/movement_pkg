@@ -18,28 +18,26 @@ void BT::GetUpForward::WaitForTick()
 {
     while(ros::ok())
     {
-        while (true)
+        // Waiting for the first tick to come
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        tick_engine.Wait();
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+
+        // Running state
+        set_status(BT::RUNNING);
+
+        // Perform action...
+        if (get_status() != BT::HALTED)
         {
-            // Waiting for the first tick to come
-            ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
-            tick_engine.Wait();
-            ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
-
-            // Running state
-            set_status(BT::RUNNING);
-
-            // Perform action...
-            if (get_status() != BT::HALTED)
-            {
-                goAction(122);  // get up forward
-                ros::Duration(0.5).sleep();
-                
-                ROS_SUCCESS_LOG("Get up forward action SUCCESS");
-                set_status(BT::SUCCESS);
-            }
+            goAction(1);  // straighten legs
+            ros::Duration(0.5).sleep();
+            goAction(122);  // get up forward
+            ros::Duration(0.5).sleep();
+            
+            ROS_SUCCESS_LOG("Get up forwards action");
+            set_status(BT::SUCCESS);
         }
     }
-
     ROS_ERROR_LOG("ROS stopped unexpectedly");
     return BT::FAILURE;
 }

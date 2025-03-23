@@ -46,7 +46,7 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
         }
         else
         {
-            ROS_TAGGED_ONCE_LOG("OP3 is NOT able to walk towards the ball! Turning...");
+            ROS_COLORED_LOG("OP3 is NOT able to walk towards the ball! Turning...", YELLOW, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }

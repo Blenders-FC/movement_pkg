@@ -19,33 +19,31 @@ BT::TurnRight::~TurnRight() {}
 
 void BT::TurnRight::WaitForTick()
 {
-    while(ros::ok()){
-        while (true)
+    while(ros::ok())
+    {
+        // Waiting for the first tick to come
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        tick_engine.Wait();
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+
+        // Running state
+        set_status(BT::RUNNING);
+
+        // Perform action...
+        if (get_status() != BT::HALTED)
         {
-            // Waiting for the first tick to come
-            ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
-            tick_engine.Wait();
-            ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
-
-            // Running state
-            set_status(BT::RUNNING);
-
-            // Perform action...
-            while (get_status() != BT::HALTED)
+            ROS_TAGGED_ONCE_LOG("Turning in place!");
+            //node loop
+            write_msg_.header.stamp = ros::Time::now();
+            
+            if (get_joint_module_client != "none")
             {
-                ROS_TAGGED_ONCE_LOG("Turning in place!");
-                //node loop
-                write_msg_.header.stamp = ros::Time::now();
-                
-                if (get_joint_module_client != "none")
-                {
-                    setModule("none");
-                    ros::Duration(1).sleep();
-                }
-
-                ros::Duration(0.1).sleep();
-                turn();
+                setModule("none");
+                ros::Duration(1).sleep();
             }
+
+            ros::Duration(0.1).sleep();
+            turn();
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly");

@@ -35,7 +35,6 @@ void BT::StandUp::WaitForTick()
             set_status(BT::SUCCESS);
         }
     }
-
     ROS_ERROR_LOG("ROS stopped unexpectedly");
     return BT::FAILURE;
 }

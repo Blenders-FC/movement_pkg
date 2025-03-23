@@ -24,19 +24,19 @@ BT::ReturnStatus BT::RobotFallenCondition::Tick()
 
         if (present_pitch_ > FALL_FORWARD_LIMIT)
         {
-            ROS_COLORED_LOG("Forward fall detected with pitch: %f", present_pitch_, DEFAULT, false);
+            ROS_COLORED_LOG("Forward fall detected with pitch: %f", present_pitch_, CYAN, false);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else if (present_pitch_ < FALL_BACKWARDS_LIMIT) 
         {
-            ROS_COLORED_LOG("Backwards fall detected with pitch: %f", present_pitch_, DEFAULT, false);
+            ROS_COLORED_LOG("Backwards fall detected with pitch: %f", present_pitch_, CYAN, false);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {
-            ROS_COLORED_LOG("Fall NOT detected.", DEFAULT, false);
+            ROS_COLORED_LOG("Fall NOT detected.", YELLOW, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }
