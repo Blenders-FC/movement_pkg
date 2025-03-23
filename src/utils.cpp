@@ -6,7 +6,7 @@
 #include "movement_pkg/utils.h"
 
 
-utils::utils() : nh(ros::this_node::getName()) 
+utils::utils() : nh(ros::this_node::getName()), blackboard()
 {
     nh.param<int>("robot_id", robot_id, 0);
     ROS_INFO("Loaded utils: robot_id=%d", robot_id);
@@ -88,15 +88,23 @@ std::vector<std::vector<float>> utils::loadPositions()
     return positions;
 }
 
+const char* utils::resolveColor(const std::string& color, bool bold) {
+    auto it = color_map.find(color);
+    if (it != color_map.end()) {
+        return bold ? it->second.second : it->second.first;
+    }
+    return DEFAULT_TEXT;
+}
+
 /*
  * Logs a message only once, with an optional tag, color, and boldness.
  * @param msg The message to log.
- * @param color_name The color name (e.g., CYAN, GREEN).
+ * @param color The color name (e.g., CYAN, GREEN).
  * @param bold Whether the message should be bold.
  * @param tag Optional tag. If empty, logs only once globally.
 */
 void utils::ROS_TAGGED_ONCE_LOG(const std::string& msg,
-    const std::string& color_name,
+    const std::string& color,
     bool bold,
     const std::string& tag) 
 {
@@ -104,7 +112,16 @@ void utils::ROS_TAGGED_ONCE_LOG(const std::string& msg,
     
     if (!already_logged_tags_[resolved_tag] && DEBUG_PRINT)
     {
-        ROS_COLORED_INFO_LOG("%s", color_name, bold, msg.c_str());
+        const char* resolved_color = resolveColor(color, bold);
+        ROS_COLORED_ONCE_LOG("%s", resolved_color, bold, msg.c_str());
         already_logged_tags_[resolved_tag] = true;
     }
 }
+
+std::unordered_map<std::string, std::pair<const char*, const char*>> utils::color_map = {
+    {"RED",    {RED_TEXT,    BOLD_RED_TEXT}},
+    {"GREEN",  {GREEN_TEXT,  BOLD_GREEN_TEXT}},
+    {"YELLOW", {YELLOW_TEXT, BOLD_YELLOW_TEXT}},
+    {"PINK",   {PINK_TEXT,   BOLD_PINK_TEXT}},
+    {"CYAN",   {CYAN_TEXT,   BOLD_CYAN_TEXT}},
+};

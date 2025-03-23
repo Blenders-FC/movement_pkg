@@ -234,6 +234,7 @@ add_library(cb_data_manager src/cb_data_manager.cpp)
 add_library(walking_controller src/walking_controller.cpp)
 add_library(utils src/utils.cpp)
 add_library(fov_calculation src/fov_calculation.cpp)
+add_library(blackboard src/blackboard.cpp)
 
 target_link_libraries(motion_controller_node
   ${catkin_LIBRARIES}
@@ -243,6 +244,7 @@ target_link_libraries(motion_controller_node
   walking_controller
   utils
   fov_calculation
+  blackboard
 )
 
 target_link_libraries(cb_data_manager

@@ -7,10 +7,6 @@
 #include <movement_pkg/fov_calculation.h>
 
 
-// Define and initialize static members outside the class
-double FOVCalculation::pan_angle = 0;
-double FOVCalculation::distance_to_target = 0;
-
 FOVCalculation::FOVCalculation(double ball_x, double ball_y, double head_pan, double head_tilt) 
     : utils(),
     focal_length_x(0),
@@ -63,7 +59,7 @@ void FOVCalculation::calcPanAngle(){
     phi = atan(diff_x / focal_length_x);  // Converting ratio into an angle
     pan_angle = current_head_pan + phi;  // Adding θ + β (head tilt + betha)
     
-    ball_info.pan = pan_angle;
+    ball_info.pan_angle = pan_angle;
     blackboard.setTarget("ball", ball_info);  // Update the blackboard
 }
 
