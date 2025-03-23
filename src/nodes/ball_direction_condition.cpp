@@ -39,19 +39,19 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
             calcDistanceToTarget();     // Updates distance to ball
             distance_to_ball = ball->distance;
 
-            ROS_INFO_STREAM_COND(DEBUG_PRINT, GREEN_TEXT << "[SUCCESS] OP3 manager is able to walk towards the ball!" << DEFAULT_TEXT);
-            std::cout << "dist: " << distance_to_ball << "    pan: " << pan_angle_to_ball << std::endl;
+            ROS_SUCCESS_LOG("OP3 manager is able to walk towards the ball!");
+            std::cout << "dist: " << distance_to_target << "    pan: " << pan_angle << std::endl;
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {
-            ROS_INFO_COND(DEBUG_PRINT, "OP3 is NOT able to walk towards the ball! Turning...");
+            ROS_COLORED_LOG("OP3 is NOT able to walk towards the ball! Turning...", YELLOW, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }
     }
 
-    ROS_ERROR_COND(DEBUG_PRINT, "ROS HAS STOPPED UNEXPECTEDLY IN BALL DIRECTION CONDITION");
-    return BT::FAILURE;  // ROS stopped unexpectedly 
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE; 
 }

@@ -19,20 +19,20 @@ BT::TurnLeft::~TurnLeft() {}
 
 void BT::TurnLeft::WaitForTick()
 {
-    while (true)
+    while(ros::ok())
     {
         // Waiting for the first tick to come
-        DEBUG_STDOUT(get_name() << " WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << " TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
         // Running state
         set_status(BT::RUNNING);
 
         // Perform action...
-        while (get_status() != BT::HALTED)
+        if (get_status() != BT::HALTED)
         {
-            DEBUG_STDOUT("Turning in place!");
+            ROS_TAGGED_ONCE_LOG("Turning in place!");
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
@@ -46,6 +46,8 @@ void BT::TurnLeft::WaitForTick()
             turn();
         }
     }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::TurnLeft::turn()
@@ -111,5 +113,5 @@ void BT::TurnLeft::turn()
 void BT::TurnLeft::Halt()
 {
     set_status(BT::HALTED);
-    DEBUG_STDOUT("TurnLeft HALTED: Stopped turning in place");
+    ROS_TAGGED_ONCE_LOG("TurnLeft HALTED: Stopped turning in place");
 }

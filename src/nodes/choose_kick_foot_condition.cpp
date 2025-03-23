@@ -13,19 +13,23 @@ BT::ChooseKickFootCondition::ChooseKickFootCondition(const std::string &name)
 BT::ReturnStatus BT::ChooseKickFootCondition::Tick()
 {
     // Condition checking and state update
-
-    head_pan_ = getHeadPan();
-    
-    if (head_pan_ > 0)
+    While(ros::ok())
     {
-        ROS_INFO("RIGHT KICK CHOSEN");
-        set_status(BT::SUCCESS);
-        return BT::SUCCESS;
+        head_pan_ = getHeadPan();
+        
+        if (head_pan_ > 0)
+        {
+            ROS_COLORED_LOG("RIGHT KICK CHOSEN", CYAN, false); 
+            set_status(BT::SUCCESS);
+            return BT::SUCCESS;
+        }
+        else
+        {
+            ROS_COLORED_LOG("RIGHT LEFT CHOSEN", CYAN, false);
+            set_status(BT::FAILURE);
+            return BT::FAILURE;
+        }
     }
-    else
-    {
-        ROS_INFO("RIGHT LEFT CHOSEN");
-        set_status(BT::FAILURE);
-        return BT::FAILURE;
-    }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }

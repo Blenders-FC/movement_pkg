@@ -21,7 +21,7 @@ void BT::CenterBall::WaitForTick()
 {
     while (ros::ok())
     {
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");  
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
@@ -75,8 +75,8 @@ void BT::CenterBall::WaitForTick()
             }
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
-    set_status(BT::FAILURE);
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)
@@ -104,5 +104,5 @@ void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)
 void BT::CenterBall::Halt()
 {
     set_status(BT::HALTED);
-    ROS_COLORED_LOG("CenterBall HALTED: Stopped walking.", GREEN, false);
+    ROS_COLORED_LOG("CenterBall HALTED: Stopped walking.", DEFAULT, false);
 }

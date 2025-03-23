@@ -18,22 +18,24 @@ BT::SimpleWalk::~SimpleWalk() {}
 
 void BT::SimpleWalk::WaitForTick()
 {
-    while (true)
+    while(ros::ok())
     {
-        DEBUG_STDOUT(get_name() << "WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
-        DEBUG_STDOUT(get_name() << "TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
         set_status(BT::RUNNING);
         
         // Perform action...
-        while (get_status() != BT::HALTED)
+        if (get_status() != BT::HALTED)
         {
-            DEBUG_STDOUT(get_name() << "Walking...");
+            ROS_TAGGED_ONCE_LOG("Walking...");
             walking_command_ = "start";
             goWalk(walking_command_);
         }
     }
+    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    return BT::FAILURE;
 }
 
 void BT::SimpleWalk::Halt()
@@ -41,5 +43,5 @@ void BT::SimpleWalk::Halt()
     stopWalking();
 
     set_status(BT::HALTED);
-    DEBUG_STDOUT("SimpleWalk HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("SimpleWalk HALTED: Stopped walking.");
 }
