@@ -30,19 +30,19 @@ void BT::SearchBall::WaitForTick()
         set_status(BT::RUNNING);
         setModule("direct_control_module");
         ros::Duration(1.0).sleep();
+        ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
 
         // Flow for searching ball - specially when distance to ball >= 1m
         
-        if (get_status() != BT::HALTED)
+        while (get_status() != BT::HALTED)
         {
             head_pan_angle_ = getHeadPan();
             angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
 
-            std::cout << angle_mov_x_ << std::endl;
             if (head_direction_ && angle_mov_x_ <= 70)
             {
                 angle_mov_x_ += 5;
-                std::cout << angle_mov_x_ << std::endl;
+                ROS_COLORED_LOG("New angle position: %f", CYAN, false, angle_mov_x_);
                 writeHeadJoint(angle_mov_x_, true);
                 ros::Duration(1.0).sleep();
                 if (angle_mov_x_ >= 70) head_direction_ = false;

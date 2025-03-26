@@ -81,7 +81,7 @@ void WalkingController::getWalkingParam() {
         ROS_INFO_COND(DEBUG_PRINT, "Get walking parameters");
         return;
     } else {
-        ROS_ERROR("Fail to get walking parameters.");
+        ROS_ERROR_LOG("Fail to get walking parameters", false);
         return;
     }
 }

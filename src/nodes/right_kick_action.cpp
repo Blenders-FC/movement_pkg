@@ -27,7 +27,7 @@ void BT::RightKick::WaitForTick()
         set_status(BT::RUNNING);
 
         // Perform action...
-        if (get_status() != BT::HALTED)
+        while (get_status() != BT::HALTED)
         {
             goAction(83);  // right kick
             ros::Duration(0.5).sleep();
@@ -36,8 +36,8 @@ void BT::RightKick::WaitForTick()
             set_status(BT::SUCCESS);
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
-    return BT::FAILURE;
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
+    set_status(BT::FAILURE);
 }
 
 void BT::RightKick::Halt()

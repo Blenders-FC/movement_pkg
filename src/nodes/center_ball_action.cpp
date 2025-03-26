@@ -75,8 +75,8 @@ void BT::CenterBall::WaitForTick()
             }
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
-    return BT::FAILURE;
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
+    set_status(BT::FAILURE);
 }
 
 void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)

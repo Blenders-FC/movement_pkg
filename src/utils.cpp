@@ -22,7 +22,7 @@ void utils::setModule(const std::string& module_name) {
 
     ros::Duration(1.0).sleep();  //wait for module DO NOT REMOVE!!!!
     if (set_joint_module_client.call(set_module_srv) == false) {
-        ROS_ERROR("Failed to set module");
+        ROS_ERROR_LOG("Failed to set module", false);
         return;
     }
     return;

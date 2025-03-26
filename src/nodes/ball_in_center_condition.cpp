@@ -27,11 +27,11 @@ BT::ReturnStatus BT::BallInCenterCondition::Tick()
         }
         else
         {
-            ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!", DEFAULT, false);
+            ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!");
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     return BT::FAILURE;
 }

@@ -21,7 +21,7 @@ BT::ReturnStatus BT::BallDetectedCondition::Tick()
         if ((ball_center_position_.x != 999 && ball_center_position_.x != 0) || (ball_center_position_.y != 999 && ball_center_position_.y != 0))
         {   
             ROS_SUCCESS_LOG("BALL detected!");
-            ROS_COLORED_LOG("Ball detected with positions: x=%f y=%f", ball_center_position_.x, ball_center_position_.y, CYAN, false);
+            ROS_COLORED_LOG("Ball detected with positions: x=%f y=%f", CYAN, false, ball_center_position_.x, ball_center_position_.y);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
@@ -32,6 +32,6 @@ BT::ReturnStatus BT::BallDetectedCondition::Tick()
             return BT::FAILURE;
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     return BT::FAILURE; 
 }

@@ -13,7 +13,7 @@ BT::ChooseKickFootCondition::ChooseKickFootCondition(const std::string &name)
 BT::ReturnStatus BT::ChooseKickFootCondition::Tick()
 {
     // Condition checking and state update
-    While(ros::ok())
+    while(ros::ok())
     {
         head_pan_ = getHeadPan();
         
@@ -30,6 +30,6 @@ BT::ReturnStatus BT::ChooseKickFootCondition::Tick()
             return BT::FAILURE;
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     return BT::FAILURE;
 }
