@@ -19,7 +19,7 @@ BT::ReturnStatus BT::ManagerDoneCondition::Tick()
 
         if (robot_status_.first == "Base" && robot_status_.second == "Finish Init Pose") 
         {
-            ROS_COLORED_LOG("OP3 manager has finished init pose succesfully!", DEFAULT, true);
+            ROS_SUCCESS_LOG("OP3 manager has finished init pose succesfully!");
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }

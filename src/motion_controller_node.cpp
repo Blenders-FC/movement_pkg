@@ -26,14 +26,16 @@ int main(int argc, char **argv)
         BT::BallDirectionCondition* ball_direction = new BT::BallDirectionCondition("BallDirection");
 
         // Create Control Nodes
-        BT::SequenceNodeWithMemory* root_sequence = new BT::SequenceNodeWithMemory("RootSequence");
+        BT::SequenceNodeWithMemory* root_node = new BT::SequenceNodeWithMemory("RootNode");
+        BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
+        BT::SequenceNodeWithMemory* main_sequence = new BT::SequenceNodeWithMemory("MainLoop");
         BT::FallbackNode* fallback_node = new BT::FallbackNode("FallbackDecision");
 
         // Build the Behavior Tree
-        root_sequence->AddChild(is_manager_running);
-        root_sequence->AddChild(is_manager_done);
-        root_sequence->AddChild(is_start_button);
-        root_sequence->AddChild(stand_up);
+        init_sequence->AddChild(is_manager_running);
+        init_sequence->AddChild(is_manager_done);
+        init_sequence->AddChild(is_start_button);
+        init_sequence->AddChild(stand_up);
 
         // Decision Making Structure
         BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
@@ -44,11 +46,15 @@ int main(int argc, char **argv)
         fallback_node->AddChild(ball_found_sequence);
         fallback_node->AddChild(search_ball);
 
-        // Attach the fallback node to the root sequence
-        root_sequence->AddChild(fallback_node);
+        // Attach the fallback node to the main sequence
+        main_sequence->AddChild(fallback_node);
+
+        // Root node sequence
+        root_node->AddChild(init_sequence);
+        root_node->AddChild(main_sequence);
 
         // Execute the tree with the given tick period
-        Execute(root_sequence, TickPeriodMilliseconds);
+        Execute(root_node, TickPeriodMilliseconds);
     }
     catch (BT::BehaviorTreeException &Exception) 
     {
