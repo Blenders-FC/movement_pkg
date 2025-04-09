@@ -103,7 +103,7 @@ void WalkingController::stopWalking()
     goWalk(stop_walking_command_);
 }
 
-void WalkingController::walkToPose(double x_goal, double y_goal, double theta_goal)
+bool WalkingController::walkToPose(double x_goal, double y_goal, double theta_goal)
 {
     std::vector<op3_online_walking_module_msgs::Step2D> steps;
 
@@ -112,10 +112,12 @@ void WalkingController::walkToPose(double x_goal, double y_goal, double theta_go
     {
         ROS_COLORED_LOG("Footstep plan successful. Sending footsteps to walking module...", CYAN, false);
         publishFootsteps(steps, 0.7); // 0.7s per step — tune as needed
+        return true;
     } 
     else 
     {
         ROS_ERROR_LOG("Footstep planning failed");
+        return false;
     }
 }
 

@@ -12,6 +12,10 @@
 #include "robotis_math/robotis_linear_algebra.h"
 #include "op3_walking_module_msgs/GetWalkingParam.h"
 #include "op3_walking_module_msgs/WalkingParam.h"
+#include "humanoid_nav_msgs/PlanFootsteps.h"
+#include "humanoid_nav_msgs/StepTarget.h"
+#include "op3_online_walking_module_msgs/Step2D.h"
+#include "op3_online_walking_module_msgs/Step2DArray.h"
 
 
 class WalkingController : public virtual utils
@@ -26,18 +30,23 @@ public:
     void stopWalking();
     void calcFootstep(double target_distance, double target_angle, double delta_time, double& fb_move, double& rl_angle);
     void setWalkingParam(double x_move, double y_move, double rotation_angle, bool balance);
+    bool walkToPose(double x_goal, double y_goal, double theta_goal);
 
     // Public publisher
     ros::Publisher walk_command_pub;
 
 private:
 
-    // Auxiliar method
+    // Auxiliar methods
     void getWalkingParam();
+    bool callFootstepPlanner(double x_goal, double y_goal, double theta_goal, std::vector<op3_online_walking_module_msgs::Step2D>& step_list);
+    void publishFootsteps(const std::vector<op3_online_walking_module_msgs::Step2D>& steps, double step_time);  
 
     // Private ros variables
     ros::ServiceClient get_param_client_;
+    ros::ServiceClient footstep_planner_client_;
     ros::Publisher set_walking_param_pub_;
+    ros::Publisher online_step_pub_;
     ros::Time prev_time_walk_;
     op3_walking_module_msgs::WalkingParam current_walking_param_;
 

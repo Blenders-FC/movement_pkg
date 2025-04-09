@@ -52,6 +52,7 @@ set(SOURCE_FILES
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
+  src/nodes/online_walk_to_target_action.cpp
 )
 
 
@@ -206,6 +207,7 @@ add_executable(motion_controller_node
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
+  src/nodes/online_walk_to_target_action.cpp
 )
 
 ## Add cmake target dependencies of the library
