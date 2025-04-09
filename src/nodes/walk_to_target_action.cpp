@@ -27,7 +27,7 @@ void BT::WalkToTarget::WaitForTick()
         set_status(BT::RUNNING);
 
         // Perform action...
-        IF (get_status() != BT::HALTED)
+        if (get_status() != BT::HALTED)
         {
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();
