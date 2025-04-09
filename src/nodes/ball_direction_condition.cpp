@@ -51,7 +51,6 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
             return BT::FAILURE;
         }
     }
-
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     return BT::FAILURE; 
 }

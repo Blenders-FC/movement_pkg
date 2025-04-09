@@ -30,7 +30,7 @@ void BT::FOVWalking::WaitForTick()
 
         // Flow for walking to ball - using FOV calculation
         
-        if (get_status() != BT::HALTED)
+        while (get_status() != BT::HALTED)
         {   
             this->setModule("walking_module");
             ROS_TAGGED_ONCE_LOG("Walking towards target...");
@@ -43,7 +43,7 @@ void BT::FOVWalking::WaitForTick()
             }
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     set_status(BT::FAILURE);
 }
 

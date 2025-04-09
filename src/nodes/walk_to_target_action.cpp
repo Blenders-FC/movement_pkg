@@ -27,7 +27,7 @@ void BT::WalkToTarget::WaitForTick()
         set_status(BT::RUNNING);
 
         // Perform action...
-        if (get_status() != BT::HALTED)
+        while (get_status() != BT::HALTED)
         {
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();
@@ -43,8 +43,8 @@ void BT::WalkToTarget::WaitForTick()
             }
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
-    return BT::FAILURE;
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
+    set_status(BT::FAILURE);
 }
 
 void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_angle)
@@ -58,7 +58,7 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
     {
         double distance_to_target = calculateDistance(head_tilt_angle);
         if (distance_to_target < 0) distance_to_target *= (-1);
-        ROS_COLORED_LOG("dist to ball: ", distance_to_target, CYAN, false);
+        ROS_COLORED_LOG("dist to ball: ", CYAN, false, distance_to_target);
         
         if (distance_to_target > distance_to_kick_)
         {
@@ -80,7 +80,8 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
             break;
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
+    set_status(BT::FAILURE);
 }
 
 double BT::WalkToTarget::calculateDistance(double head_tilt)

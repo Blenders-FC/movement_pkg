@@ -26,7 +26,7 @@ void BT::StandUp::WaitForTick()
 
         set_status(BT::RUNNING);
 
-        if (get_status() != BT::HALTED)
+        while (get_status() != BT::HALTED)
         {
             stopWalking();
             // ros::Duration(1.0).sleep();  // Verify if it's completely necessary
@@ -35,8 +35,8 @@ void BT::StandUp::WaitForTick()
             set_status(BT::SUCCESS);
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
-    return BT::FAILURE;
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
+    set_status(BT::FAILURE);
 }
 
 void BT::StandUp::Halt()
