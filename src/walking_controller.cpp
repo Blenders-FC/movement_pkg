@@ -12,9 +12,9 @@ WalkingController::WalkingController() : utils()
     // Publishers
     walk_command_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/walking/command", 10);
     set_walking_param_pub_ = nh.advertise<op3_walking_module_msgs::WalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/set_params",0);
+    balance_enable_pub_ = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/online_walking/wholebody_balance_msg", 1);
     online_step_pub_ = nh.advertise<op3_online_walking_module_msgs::Step2DArray>("/robotis_" + std::to_string(robot_id) + "/online_walking/footsteps_2d", 1);
     
-
     // Services
     get_param_client_ = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/get_params");
     footstep_planner_client_ = nh.serviceClient<humanoid_nav_msgs::PlanFootsteps>("/plan_footsteps");
@@ -22,10 +22,10 @@ WalkingController::WalkingController() : utils()
 
 WalkingController::~WalkingController() {}
   
-void WalkingController::goWalk(std::string& command)
+void WalkingController::goWalk(std::string& command, bool default_walk)
 {
-    this->setModule("walking_module");
-    if (command == "start") 
+    // this->setModule("walking_module");
+    if (command == "start" && default_walk) 
     {
         setWalkingParam(IN_PLACE_FB_STEP_, 0, 0, true);
     }
@@ -98,6 +98,11 @@ void WalkingController::getWalkingParam()
     }
 }
 
+void WalkingController::startWalking(bool default_walk)
+{
+    goWalk(start_walking_command_, default_walk);
+}
+
 void WalkingController::stopWalking()
 {
     goWalk(stop_walking_command_);
@@ -111,12 +116,15 @@ bool WalkingController::walkToPose(double x_goal, double y_goal, double theta_go
     if (success) 
     {
         ROS_COLORED_LOG("Footstep plan successful. Sending footsteps to walking module...", CYAN, false);
+        std_msgs::String balance_enable_msg;
+        balance_enable_msg.data = "balance_on";
+        balance_enable_pub_.publish(balance_enable_msg);
         publishFootsteps(steps, 0.7); // 0.7s per step — tune as needed
         return true;
     } 
     else 
     {
-        ROS_ERROR_LOG("Footstep planning failed");
+        ROS_ERROR_LOG("Footstep planning failed", false);
         return false;
     }
 }
@@ -136,13 +144,13 @@ bool WalkingController::callFootstepPlanner(double x_goal, double y_goal, double
 
     if (!footstep_planner_client_.call(srv))
     {
-        ROS_ERROR_LOG("Failed to call /plan_footsteps service");
+        ROS_ERROR_LOG("Failed to call /plan_footsteps service", false);
         return false;
     }
 
     if (!srv.response.result)
     {
-        ROS_ERROR_LOG("Footstep planner returned 'false' for result");
+        ROS_ERROR_LOG("Footstep planner returned 'false' for result", false);
         return false;
     }
 
@@ -177,5 +185,80 @@ void WalkingController::publishFootsteps(const std::vector<op3_online_walking_mo
     for (const auto& s : steps)
         msg.footsteps_2d.push_back(s);
 
-    step_pub_.publish(msg);
+    online_step_pub_.publish(msg);
+}
+
+bool WalkingController::walkFootstepPlan(const std::vector<humanoid_nav_msgs::StepTarget>& plan)
+{
+    for (size_t i = 1; i < plan.size(); ++i) {
+        
+        if (plan[i].leg != humanoid_nav_msgs::StepTarget::left)
+            continue;  // skip if not left foot
+
+        // Find the previous left foot step
+        size_t prev = i - 1;
+        while (prev > 0 && plan[prev].leg != humanoid_nav_msgs::StepTarget::left)
+            --prev;
+
+        if (plan[prev].leg != humanoid_nav_msgs::StepTarget::left)
+            continue;  // can't find previous left step, skip
+
+        double dx = plan[i].pose.x - plan[prev].pose.x;
+        double dy = plan[i].pose.y - plan[prev].pose.y;
+        double dtheta = plan[i].pose.theta - plan[prev].pose.theta;
+        
+        double forward = clamp(dx, -0.1, 0.1);      // in-place forward motion
+        double lateral = 0.0; // you can use dy if needed for sidesteps
+        double angle = 0.0; //clamp(dtheta, -0.1, 0.1);        // turn slowly
+
+        ROS_COLORED_LOG("forward: %f", CYAN, false, forward);
+        ROS_COLORED_LOG("lateral: %f", CYAN, false, lateral);
+        ROS_COLORED_LOG("angle: %f", CYAN, false, angle);
+        setWalkingParam(forward, lateral, angle, true);
+        startWalking(false);
+        ros::Duration(1).sleep();   // 700 ms step duration
+        stopWalking();
+    }
+    return true;
+}
+
+bool WalkingController::walkToGoalPose(double x_goal, double y_goal, double theta_goal)
+{
+    humanoid_nav_msgs::PlanFootsteps srv;
+
+    // Set the request
+    srv.request.start.x = 0.0;
+    srv.request.start.y = 0.0;
+    srv.request.start.theta = 0.0;
+
+    srv.request.goal.x = x_goal;
+    srv.request.goal.y = y_goal;
+    srv.request.goal.theta = theta_goal;
+
+    // Call the planner service
+    if (!footstep_planner_client_.call(srv)) {
+        ROS_ERROR_LOG("Failed to call /plan_footsteps service", false);
+        return false;
+    }
+
+    // Check the result
+    if (!srv.response.result) {
+        ROS_ERROR_LOG("Planner failed to produce a plan", false);
+        return false;
+    }
+
+    // output each footstep
+    ROS_INFO("[WalkingController] Footstep Plan Output:");
+    for (size_t i = 0; i < srv.response.footsteps.size(); ++i) {
+        const auto& step = srv.response.footsteps[i];
+        const char* foot = (step.leg == humanoid_nav_msgs::StepTarget::left) ? "LEFT" : "RIGHT";
+        ROS_INFO("Step %2lu: foot=%s, x=%.3f, y=%.3f, theta=%.3f",
+                 i, foot, step.pose.x, step.pose.y, step.pose.theta);
+    }
+
+    // Optionally print how many footsteps were generated
+    ROS_COLORED_LOG("Planner succeeded. Steps: %lu", CYAN, false, srv.response.footsteps.size());
+
+    // Walk the planned footsteps
+    return walkFootstepPlan(srv.response.footsteps);
 }

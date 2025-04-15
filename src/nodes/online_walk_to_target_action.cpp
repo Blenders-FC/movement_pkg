@@ -4,19 +4,19 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/walk_to_target_action.h"
+#include "movement_pkg/nodes/online_walk_to_target_action.h"
 
 
-BT::WalkToTarget::WalkToTarget(std::string name) 
+BT::OnlineWalkToTarget::OnlineWalkToTarget(std::string name) 
 : ActionNode::ActionNode(name), WalkingController()
 {
     type_ = BT::ACTION_NODE;
-    thread_ = std::thread(&WalkToTarget::WaitForTick, this);
+    thread_ = std::thread(&OnlineWalkToTarget::WaitForTick, this);
 }
 
-BT::WalkToTarget::~WalkToTarget() {}
+BT::OnlineWalkToTarget::~OnlineWalkToTarget() {}
 
-void BT::WalkToTarget::WaitForTick()
+void BT::OnlineWalkToTarget::WaitForTick()
 {
     while(ros::ok())
     {
@@ -32,23 +32,25 @@ void BT::WalkToTarget::WaitForTick()
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();
 
-            this->setModule("online_walking_module");
+            this->setModule("walking_module");
             ROS_TAGGED_ONCE_LOG("Walking towards target...");
-            walkingSucced = walkToPose(0.5, 0.0, 0.0);  // Move forward 50cm
 
-            if (walkingSucced)
-            {
-                ROS_SUCCESS_LOG("Walk to target SUCCESS");
+            // Somewhere in your loop or behavior tree...
+            bool result = walkToGoalPose(0.05, 0.0, 0.0);  // example goal
+
+            if (result)
+                ROS_SUCCESS_LOG("Walk to goal completed!");
+            else
+                ROS_ERROR_LOG("Walk to goal failed", false);
                 set_status(BT::SUCCESS);
-            }
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
-    return BT::FAILURE;
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
+    set_status(BT::FAILURE);
 }
 
 //////////////////////////////// Adapt em after tests ///////////////////////////////////
-void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_angle)
+void BT::OnlineWalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_angle)
 {
     ros::Time curr_time_walk = ros::Time::now();
     ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
@@ -59,7 +61,7 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
     {
         double distance_to_target = calculateDistance(head_tilt_angle);
         if (distance_to_target < 0) distance_to_target *= (-1);
-        ROS_COLORED_LOG("dist to ball: ", distance_to_target, CYAN, false);
+        ROS_COLORED_LOG("dist to ball: ", CYAN, false, distance_to_target);
         
         if (distance_to_target > distance_to_kick_)
         {
@@ -81,20 +83,20 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
             break;
         }
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly");
+    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
 }
 
-double BT::WalkToTarget::calculateDistance(double head_tilt)
+double BT::OnlineWalkToTarget::calculateDistance(double head_tilt)
 {
     double distance = CAMERA_HEIGHT_ * tan(M_PI * 0.5 + head_tilt - hip_pitch_offset_);
     return distance;
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 
-void BT::WalkToTarget::Halt()
+void BT::OnlineWalkToTarget::Halt()
 {
     stopWalking();
 
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("WalkToTarget HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("OnlineWalkToTarget HALTED: Stopped walking.");
 }

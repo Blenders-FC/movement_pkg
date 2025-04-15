@@ -26,11 +26,13 @@ public:
     ~WalkingController();
 
     // External methods
-    void goWalk(std::string& command);
+    void goWalk(std::string& command, bool default_walk = true);
+    void startWalking(bool default_walk = true);
     void stopWalking();
     void calcFootstep(double target_distance, double target_angle, double delta_time, double& fb_move, double& rl_angle);
     void setWalkingParam(double x_move, double y_move, double rotation_angle, bool balance);
     bool walkToPose(double x_goal, double y_goal, double theta_goal);
+    bool walkToGoalPose(double x_goal, double y_goal, double theta_goal);
 
     // Public publisher
     ros::Publisher walk_command_pub;
@@ -40,12 +42,14 @@ private:
     // Auxiliar methods
     void getWalkingParam();
     bool callFootstepPlanner(double x_goal, double y_goal, double theta_goal, std::vector<op3_online_walking_module_msgs::Step2D>& step_list);
-    void publishFootsteps(const std::vector<op3_online_walking_module_msgs::Step2D>& steps, double step_time);  
+    void publishFootsteps(const std::vector<op3_online_walking_module_msgs::Step2D>& steps, double step_time);
+    bool walkFootstepPlan(const std::vector<humanoid_nav_msgs::StepTarget>& plan);
 
     // Private ros variables
     ros::ServiceClient get_param_client_;
     ros::ServiceClient footstep_planner_client_;
     ros::Publisher set_walking_param_pub_;
+    ros::Publisher balance_enable_pub_;
     ros::Publisher online_step_pub_;
     ros::Time prev_time_walk_;
     op3_walking_module_msgs::WalkingParam current_walking_param_;
@@ -65,6 +69,7 @@ private:
     double current_x_move_ = 0.005;
     double current_r_angle_ = 0.0;
     std::string stop_walking_command_ = "stop";
+    std::string start_walking_command_ = "start";
 };
 
 #endif  // WALKING_CONTROLLER_H

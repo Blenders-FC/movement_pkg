@@ -14,12 +14,12 @@
 
 namespace BT
 {
-class WalkToTarget : public ActionNode, public WalkingController, public CBDataManager
+class OnlineWalkToTarget : public ActionNode, public WalkingController, public CBDataManager
 {
     public:
         // Constructor
-        explicit WalkToTarget(std::string name);
-        ~WalkToTarget();
+        explicit OnlineWalkToTarget(std::string name);
+        ~OnlineWalkToTarget();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
