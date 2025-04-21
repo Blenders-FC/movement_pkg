@@ -19,6 +19,9 @@
 #include "movement_pkg/nodes/search_ball_action.h"
 #include "movement_pkg/nodes/ball_direction_condition.h"
 #include "movement_pkg/walking_controller.h"
+#include "movement_pkg/nodes/timer_condition.h"
+#include "movement_pkg/nodes/simple_walk_action.h"
+#include <movement_pkg/nodes/turn_right_action.h>
 
 
 namespace BT

@@ -36,7 +36,7 @@ BT::ReturnStatus BT::TimerCondition::Tick()
         }
         else 
         {
-            ROS_COLORED_LOG("Waiting for timer: %f segs", CYAN, false, elapsed);
+            ROS_COLORED_LOG("Waiting for timer: %f secs", CYAN, false, elapsed);
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
