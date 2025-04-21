@@ -10,52 +10,18 @@ int main(int argc, char **argv)
 {
     // Initialize ROS
     ros::init(argc, argv, "motion_controller_node");
+    
+    // Set tick frequency (in milliseconds)
+    int TickPeriodMilliseconds = 100;  // Adjusted to 100ms for better real-time response
+    
     // ros::Rate rate(30);  // or your desired frequency
+    ros::spinOnce();
 
     try 
     {
-        // Set tick frequency (in milliseconds)
-        int TickPeriodMilliseconds = 100;  // Adjusted to 100ms for better real-time response
-
-        // Create Behavior Tree Nodes
-        BT::ManagerRunningCondition* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
-        BT::ManagerDoneCondition* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
-        BT::StartButtonCondition* is_start_button = new BT::StartButtonCondition("IsStartButton");
-        BT::StandUp* stand_up = new BT::StandUp("StandUp");
-        BT::BallDetectedCondition* ball_detected = new BT::BallDetectedCondition("BallDetected");
-        BT::SearchBall* search_ball = new BT::SearchBall("SearchBall");
-        BT::BallDirectionCondition* ball_direction = new BT::BallDirectionCondition("BallDirection");
-
-        // Create Control Nodes
-        BT::SequenceNodeWithMemory* root_node = new BT::SequenceNodeWithMemory("RootNode");
-        BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
-        BT::SequenceNodeWithMemory* main_sequence = new BT::SequenceNodeWithMemory("MainLoop");
-        BT::FallbackNode* fallback_node = new BT::FallbackNode("FallbackDecision");
-        BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
-
-        // Build the Behavior Tree
-        init_sequence->AddChild(is_manager_running);
-        init_sequence->AddChild(is_manager_done);
-        init_sequence->AddChild(is_start_button);
-        init_sequence->AddChild(stand_up);
-
-        // Decision Making Structure
-        ball_found_sequence->AddChild(ball_detected);
-        ball_found_sequence->AddChild(ball_direction);
-
-        // Add sequences to fallback
-        fallback_node->AddChild(ball_found_sequence);
-        fallback_node->AddChild(search_ball);
-
-        // Attach the fallback node to the main sequence
-        main_sequence->AddChild(fallback_node);
-
-        // Root node sequence
-        root_node->AddChild(init_sequence);
-        root_node->AddChild(main_sequence);
 
         // Execute the tree with the given tick period
-        ros::spinOnce();
+        auto* root_node = BT::BehaviorTreeBuilder::BuildTree();
         Execute(root_node, TickPeriodMilliseconds);
     }
     catch (BT::BehaviorTreeException &Exception) 
