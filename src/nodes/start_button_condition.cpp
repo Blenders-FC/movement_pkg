@@ -17,7 +17,6 @@ BT::ReturnStatus BT::StartButtonCondition::Tick()
     while (ros::ok())
     {
         set_status(BT::RUNNING);
-        ros::spinOnce();
         start_button_flag_ = getStartButtonState();
 
         if (start_button_flag_)

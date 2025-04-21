@@ -10,6 +10,7 @@ int main(int argc, char **argv)
 {
     // Initialize ROS
     ros::init(argc, argv, "motion_controller_node");
+    // ros::Rate rate(30);  // or your desired frequency
 
     try 
     {
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
         BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
         BT::SequenceNodeWithMemory* main_sequence = new BT::SequenceNodeWithMemory("MainLoop");
         BT::FallbackNode* fallback_node = new BT::FallbackNode("FallbackDecision");
+        BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
 
         // Build the Behavior Tree
         init_sequence->AddChild(is_manager_running);
@@ -38,7 +40,6 @@ int main(int argc, char **argv)
         init_sequence->AddChild(stand_up);
 
         // Decision Making Structure
-        BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
         ball_found_sequence->AddChild(ball_detected);
         ball_found_sequence->AddChild(ball_direction);
 
@@ -54,6 +55,7 @@ int main(int argc, char **argv)
         root_node->AddChild(main_sequence);
 
         // Execute the tree with the given tick period
+        ros::spinOnce();
         Execute(root_node, TickPeriodMilliseconds);
     }
     catch (BT::BehaviorTreeException &Exception) 

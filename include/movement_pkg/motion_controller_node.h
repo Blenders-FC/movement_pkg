@@ -18,6 +18,7 @@
 #include "nodes/ball_detected_condition.h"
 #include "movement_pkg/nodes/search_ball_action.h"
 #include "movement_pkg/nodes/ball_direction_condition.h"
+#include "movement_pkg/walking_controller.h"
 
 
 namespace BT
