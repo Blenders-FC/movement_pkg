@@ -36,11 +36,11 @@ void BT::TurnLeft::WaitForTick()
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
-            if (get_joint_module_client != "none")
-            {
-                setModule("none");
-                ros::Duration(1).sleep();
-            }
+            // if (get_joint_module_client != "none")
+            // {
+            //     setModule("none");
+            //     ros::Duration(1).sleep();
+            // }
 
             ros::Duration(0.1).sleep();
             turn();

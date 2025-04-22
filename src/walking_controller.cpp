@@ -24,11 +24,11 @@ WalkingController::~WalkingController() {}
   
 void WalkingController::goWalk(std::string& command, bool default_walk)
 {
-    if (this->getModule() != "walking_module")
+    if (this->getModule("r_knee") != "walking_module")
     {
         this->setModule("walking_module");
     }
-    this->setModule("walking_module");
+
     if (command == "start" && default_walk) 
     {
         setWalkingParam(IN_PLACE_FB_STEP_, 0, 0, true);

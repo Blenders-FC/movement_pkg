@@ -12,7 +12,7 @@ utils::utils() : nh(ros::this_node::getName()), blackboard()
     ROS_INFO("Loaded utils: robot_id=%d", robot_id);
     
     set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/set_present_ctrl_modules");
-    get_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/get_present_ctrl_modules");
+    get_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/get_present_joint_ctrl_modules");
     action_pose_pub_ = nh.advertise<std_msgs::Int32>("/robotis_" + std::to_string(robot_id) + "/action/page_num", 0);
 }
 
@@ -29,9 +29,26 @@ void utils::setModule(const std::string& module_name) {
     return;
 }
 
-std::string utils::getModule() {
-    return last_module;
+std::string utils::getModule(const std::string& joint_name)
+{
+    robotis_controller_msgs::GetJointModule get_module_srv;
+    get_module_srv.request.joint_name.push_back(joint_name);
+
+    if (!get_joint_module_client.call(get_module_srv))
+    {
+        ROS_ERROR_LOG("Failed to call service /get_present_joint_ctrl_modules for defined joint", false);
+        return "";
+    }
+
+    if (get_module_srv.response.module_name.empty())
+    {
+        ROS_ERROR_LOG("No module name returned for defined joint", false);
+        return "";
+    }
+
+    return get_module_srv.response.module_name.front();
 }
+
 
 void utils::goAction(int page) {
     setModule("action_module");

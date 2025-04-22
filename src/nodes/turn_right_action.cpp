@@ -36,15 +36,12 @@ void BT::TurnRight::WaitForTick()
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
-            if (get_joint_module_client != "none")
+            std::cout << getModule("r_knee") << std::endl;
+            if (getModule("r_knee") != "none")
             {
                 setModule("none");
                 ros::Duration(1).sleep();
             }
-
-            ros::Duration(0.1).sleep();
-            setModule("none");
-            ros::Duration(1).sleep();
 
             for (int i = 0; i < turns_num_; i++)
             {
