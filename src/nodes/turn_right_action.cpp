@@ -6,7 +6,7 @@
 
 #include <movement_pkg/nodes/turn_right_action.h>
 
-BT::TurnRight::TurnRight(std::string name) : ActionNode::ActionNode(name), utils()
+BT::TurnRight::TurnRight(std::string name) : ActionNode::ActionNode(name), utils(), duration_sec_(duration)
 {
     // Publisher
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
@@ -43,7 +43,11 @@ void BT::TurnRight::WaitForTick()
             }
 
             ros::Duration(0.1).sleep();
-            turn();
+
+            for (i = 0, i < duration_sec_, i++)
+            {
+                turn();
+            }
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
