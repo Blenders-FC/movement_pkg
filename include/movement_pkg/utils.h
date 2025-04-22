@@ -84,7 +84,8 @@ class utils
 
         void setModule(const std::string& module_name);
         void goAction(int page);
-        std::string getDataFilePath(const std::string& filename) ;
+        std::string getDataFilePath(const std::string& filename);
+        std::string getModule();
         std::vector<std::vector<float>> loadPositions();
 
         // ROS services
@@ -126,6 +127,7 @@ class utils
         const int cols_ = 6;
         
         static std::unordered_map<std::string, std::pair<const char*, const char*>> color_map;
+        std::string last_module;
     };
 
 #endif  // UTILS_H

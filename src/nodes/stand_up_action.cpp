@@ -24,11 +24,10 @@ void BT::StandUp::WaitForTick()
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        set_status(BT::RUNNING);
-
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
             stopWalking();
+            set_status(BT::RUNNING);
             // ros::Duration(1.0).sleep();  // Verify if it's completely necessary
 
             ROS_SUCCESS_LOG("Succeed to stand up!");

@@ -17,7 +17,7 @@ class TurnRight : public ActionNode, public virtual utils
 {
     public:
         // Constructor
-        explicit TurnRight(std::string name, double duration);
+        explicit TurnRight(std::string name, double turns);
         ~TurnRight();
 
         // The method that is going to be executed by the thread
@@ -30,9 +30,11 @@ class TurnRight : public ActionNode, public virtual utils
         
         ros::Publisher write_joint_pub_;
         sensor_msgs::JointState write_msg_;
-        double crouch_angle_ = 0.08726;  // 5°
         std::vector<std::vector<float>> positions = loadPositions();;
+        
+        double crouch_angle_ = 0.08726;  // 5°
         const int rows_ = 40;
+        int turns_num_;
 };
 }  // namespace BT
 

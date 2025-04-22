@@ -22,6 +22,7 @@
 #include "movement_pkg/nodes/timer_condition.h"
 #include "movement_pkg/nodes/turn_right_action.h"
 #include "movement_pkg/nodes/simple_walk_action.h"
+#include "movement_pkg/repeat_node.h"
 
 
 namespace BT

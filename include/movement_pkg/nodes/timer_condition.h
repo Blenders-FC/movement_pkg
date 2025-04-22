@@ -26,8 +26,8 @@ public:
 
 private:
     double duration_sec_;
-    std::chrono::steady_clock::time_point start_time_;
-bool started_ = false;
+    std::chrono::steady_clock::time_point _start_time;
+    bool timer_started_;
 };
 }  // namesapce BT
 

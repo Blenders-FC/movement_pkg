@@ -54,6 +54,7 @@ set(SOURCE_FILES
   src/nodes/walk_to_target_action.cpp
   src/nodes/online_walk_to_target_action.cpp
   src/nodes/timer_condition.cpp
+  src/repeat_node.cpp
 )
 
 set(SHARED_LIBRARIES
@@ -200,7 +201,6 @@ include_directories(
 #add_executable(${PROJECT_NAME}_node src/soccer_pkg_node.cpp)
 add_executable(motion_controller_node
   src/motion_controller_node.cpp
-<<<<<<< HEAD
   src/tree_builder.cpp
   ${SOURCE_FILES}
 )
@@ -210,30 +210,6 @@ add_executable(tree_visualization
   src/tree_builder.cpp
   ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/dot_bt.cpp
   ${SOURCE_FILES}
-=======
-  src/nodes/ball_detected_condition.cpp
-  src/nodes/ball_direction_condition.cpp
-  src/nodes/ball_in_center_condition.cpp
-  src/nodes/center_ball_action.cpp
-  src/nodes/choose_kick_foot_condition.cpp
-  src/nodes/fov_walking_action.cpp
-  src/nodes/get_up_backwards_action.cpp
-  src/nodes/get_up_forward_action.cpp
-  src/nodes/left_kick_action.cpp
-  src/nodes/manager_running_condition.cpp
-  src/nodes/manager_done_condition.cpp
-  src/nodes/right_kick_action.cpp
-  src/nodes/robot_fallen_condition.cpp
-  src/nodes/search_ball_action.cpp
-  src/nodes/simple_walk_action.cpp
-  src/nodes/stand_up_action.cpp
-  src/nodes/start_button_condition.cpp
-  src/nodes/turn_left_action.cpp
-  src/nodes/turn_right_action.cpp
-  src/nodes/walk_to_target_action.cpp
-  src/nodes/online_walk_to_target_action.cpp
-  src/nodes/timer_condition.cpp
->>>>>>> 2a850c746bb300967d061ecbdcf0e11bd55e265b
 )
 
 ## Add cmake target dependencies of the library
