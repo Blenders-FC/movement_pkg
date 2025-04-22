@@ -4,23 +4,29 @@
         Marlene Cobian
 */
 
-#include <fstream>
+#include "dot_bt.h"
 #include "movement_pkg/tree_builder.h"
 
-int main()
-{   
-    // execution command:
-    //dot -Tpng bt_tree.dot -o bt_tree.png
 
-    std::ofstream file("bt_tree.dot");
-    file << "digraph BehaviorTree {\n";
-    int node_id = 0;
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "tree_visualization");
+    ros::NodeHandle nh("~");
 
-    TreeNode* root_node = BT::TreeBuilder::BuildTree();
-    root_node->GetDotRepresentation(node_id, file);
+    std::string dot_path;
+    nh.param<std::string>("dot_output_path", dot_path, "bt_tree.dot");
 
-    file << "}\n";
+    BT::ControlNode* root_node = BT::TreeBuilder::BuildTree();
+    BT::DotBt dotbt(root_node);
+
+    dotbt.produceDot(root_node);  // Just generate the DOT string internally
+    std::string dot_representation = dotbt.getDotFile();  // Fetch it
+
+    std::ofstream file(dot_path);
+    file << dot_representation;
     file.close();
 
-    std::cout << "DOT file written to bt_tree.dot\n";
+    ROS_INFO_STREAM("DOT file written to: " << dot_path);
+    
+    return 0;
 }

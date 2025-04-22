@@ -99,6 +99,13 @@ class utils
 
         Blackboard blackboard;
 
+
+        template <typename T>
+        T clamp(T val, T min_val, T max_val)
+        {
+            return std::max(min_val, std::min(val, max_val));
+        }
+
     public:
         virtual ~utils() = default;
         Blackboard* getBlackboard() { return &blackboard; }

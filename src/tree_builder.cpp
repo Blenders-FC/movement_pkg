@@ -6,7 +6,7 @@
 
 #include "movement_pkg/tree_builder.h"
 
-TreeNode* TreeBuilder::BuildTree()
+BT::ControlNode* BT::TreeBuilder::BuildTree()
 {
 
     // Create Behavior Tree Nodes

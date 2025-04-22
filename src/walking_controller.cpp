@@ -207,7 +207,7 @@ bool WalkingController::walkFootstepPlan(const std::vector<humanoid_nav_msgs::St
         double dy = plan[i].pose.y - plan[prev].pose.y;
         double dtheta = plan[i].pose.theta - plan[prev].pose.theta;
         
-        double forward = clamp(dx, -0.1, 0.1);      // in-place forward motion
+        double forward = utils::clamp(dx, -0.1, 0.1);      // in-place forward motion
         double lateral = 0.0; // you can use dy if needed for sidesteps
         double angle = 0.0; //clamp(dtheta, -0.1, 0.1);        // turn slowly
 
@@ -262,3 +262,5 @@ bool WalkingController::walkToGoalPose(double x_goal, double y_goal, double thet
     // Walk the planned footsteps
     return walkFootstepPlan(srv.response.footsteps);
 }
+
+

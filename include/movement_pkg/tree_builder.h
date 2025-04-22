@@ -26,7 +26,7 @@ namespace BT
     class TreeBuilder
     {
     public:
-        static TreeNode* BuildTree();  // Shared between runtime & visualization
+        static BT::ControlNode* BuildTree();  // Shared between runtime & visualization
     };
 }
 
