@@ -40,7 +40,7 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
             distance_to_ball = ball->distance;
 
             ROS_SUCCESS_LOG("OP3 manager is able to walk towards the ball!");
-            std::cout << "dist: " << distance_to_target << "    pan: " << pan_angle << std::endl;
+            ROS_COLORED_LOG("distance to target: %f     pan angle: %f", PINK, false, distance_to_target, pan_angle);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }

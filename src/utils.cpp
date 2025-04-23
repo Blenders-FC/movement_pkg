@@ -12,7 +12,7 @@ utils::utils() : nh(ros::this_node::getName()), blackboard()
     ROS_INFO("Loaded utils: robot_id=%d", robot_id);
     
     set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/set_present_ctrl_modules");
-    get_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/get_present_joint_ctrl_modules");
+    get_joint_module_client = nh.serviceClient<robotis_controller_msgs::GetJointModule>("/robotis_" + std::to_string(robot_id) + "/get_present_joint_ctrl_modules");
     action_pose_pub_ = nh.advertise<std_msgs::Int32>("/robotis_" + std::to_string(robot_id) + "/action/page_num", 0);
 }
 
@@ -92,7 +92,7 @@ std::vector<std::vector<float>> utils::loadPositions()
         return {};  // Return empty vector if file fails to open
     }
 
-    std::cout << "File was opened!!!" << std::endl;
+    ROS_COLORED_LOG("StandUpPositions.txt file was opened!!!", PINK, true);
 
     // Create a 2D vector initialized with zeros
     std::vector<std::vector<float>> positions(rows_, std::vector<float>(cols_, 0.0f));

@@ -31,7 +31,7 @@ void WalkingController::goWalk(std::string& command, bool default_walk)
 
     if (command == "start" && default_walk) 
     {
-        setWalkingParam(IN_PLACE_FB_STEP_, 0, 0, true);
+        setWalkingParam(0.0125, 0, 0, true);  // 1.25 cm/step | y-place (lateral) | theta (rot) | balance
     }
 
     std_msgs::String command_msg;
