@@ -24,18 +24,17 @@ void BT::SearchBall::WaitForTick()
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
-
-        turn_cnt_ = 0;
-
-        set_status(BT::RUNNING);
-        setModule("direct_control_module");
-        ros::Duration(1.0).sleep();
-        ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
-
-        // Flow for searching ball - specially when distance to ball >= 1m
         
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
+            turn_cnt_ = 0;
+    
+            set_status(BT::RUNNING);
+            setModule("direct_control_module");
+            ros::Duration(1.0).sleep();
+            ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
+            // Flow for searching ball - specially when distance to ball >= 1m
+
             head_pan_angle_ = getHeadPan();
             angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
 

@@ -24,7 +24,7 @@ class RobotFallenCondition : public ConditionNode, public CBDataManager
     private:
         double pitch;
         double alpha = 0.4;
-        double present_pitch_;
+        double present_pitch_ = 0;
         const double FALL_FORWARD_LIMIT = 55;
         const double FALL_BACKWARDS_LIMIT = -55;
 };

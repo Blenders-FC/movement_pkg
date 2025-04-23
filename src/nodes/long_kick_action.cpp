@@ -26,17 +26,17 @@ void BT::LongKick::WaitForTick()
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        // Running state
-        set_status(BT::RUNNING);
-
         // Perform action...
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
+            // Running state
+            set_status(BT::RUNNING);
+
             ROS_TAGGED_ONCE_LOG("Long kicking!");
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
-            if (get_joint_module_client != "none")
+            if (getModule("r_knee") != "none")
             {
                 setModule("none");
                 ros::Duration(1).sleep();
@@ -54,7 +54,7 @@ void BT::LongKick::kick()
 {    
     //Detenerse
     write_msg_.name.push_back("r_ank_pitch");
-    write_msg.position.push_back(positions[rows_-1][0]);
+    write_msg_.position.push_back(positions[rows_-1][0]);
     write_msg_.name.push_back("r_knee");
     write_msg_.position.push_back(positions[rows_-1][1]);
     write_msg_.name.push_back("r_hip_pitch");

@@ -26,12 +26,12 @@ void BT::FOVWalking::WaitForTick()
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        set_status(BT::RUNNING);
-
         // Flow for walking to ball - using FOV calculation
         
-        while (get_status() != BT::HALTED)
-        {   
+        while (get_status() == BT::IDLE)
+        {
+            set_status(BT::RUNNING);
+
             this->setModule("walking_module");
             ROS_TAGGED_ONCE_LOG("Walking towards target...");
             walkTowardsTarget();

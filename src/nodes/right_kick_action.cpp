@@ -23,12 +23,12 @@ void BT::RightKick::WaitForTick()
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        // Running state
-        set_status(BT::RUNNING);
-
         // Perform action...
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
+            // Running state
+            set_status(BT::RUNNING);
+
             goAction(83);  // right kick
             ros::Duration(0.5).sleep();
             

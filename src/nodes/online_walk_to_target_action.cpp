@@ -24,11 +24,11 @@ void BT::OnlineWalkToTarget::WaitForTick()
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        set_status(BT::RUNNING);
-
         // Perform action...
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
+            set_status(BT::RUNNING);
+
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();
 

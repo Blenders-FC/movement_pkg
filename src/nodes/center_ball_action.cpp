@@ -25,12 +25,12 @@ void BT::CenterBall::WaitForTick()
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        set_status(BT::RUNNING);
-
         // Flow for searching ball - specially when distance to ball >= 1m
         
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
+            set_status(BT::RUNNING);
+
             ball_center_position_ = getBallPosition();
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();

@@ -40,6 +40,7 @@ set(SOURCE_FILES
   src/nodes/fov_walking_action.cpp
   src/nodes/get_up_backwards_action.cpp
   src/nodes/get_up_forward_action.cpp
+  src/nodes/get_up_combined_action.cpp
   src/nodes/left_kick_action.cpp
   src/nodes/manager_running_condition.cpp
   src/nodes/manager_done_condition.cpp
@@ -54,6 +55,7 @@ set(SOURCE_FILES
   src/nodes/walk_to_target_action.cpp
   src/nodes/online_walk_to_target_action.cpp
   src/nodes/timer_condition.cpp
+  src/nodes/long_kick_action.cpp
   src/repeat_node.cpp
 )
 

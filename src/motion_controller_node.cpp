@@ -19,7 +19,6 @@ int main(int argc, char **argv)
 
     try 
     {
-
         // Execute the tree with the given tick period
         auto* root_node = BT::TreeBuilder::BuildTree();
         Execute(root_node, TickPeriodMilliseconds);
