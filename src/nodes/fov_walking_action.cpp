@@ -61,7 +61,7 @@ void BT::FOVWalking::walkTowardsTarget()
         pan_angle_to_ball = ball->pan_angle;
 
         if (distance_to_ball < 0) distance_to_ball *= (-1);
-        std::cout << "dist to ball: " << distance_to_ball << std::endl;
+        ROS_COLORED_LOG("distance to ball: %f     pan angle: %f", PINK, false, distance_to_ball);
         
         if (distance_to_ball > distance_to_kick_)
         {

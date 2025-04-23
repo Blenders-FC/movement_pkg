@@ -23,6 +23,7 @@
 #include <sensor_msgs/Imu.h>
 
 #include "robotis_controller_msgs/SetModule.h"
+#include "robotis_controller_msgs/GetJointModule.h"
 #include <robotis_controller_msgs/StatusMsg.h>
 #include "movement_pkg/blackboard.h"
 
@@ -84,12 +85,9 @@ class utils
 
         void setModule(const std::string& module_name);
         void goAction(int page);
-        std::string getDataFilePath(const std::string& filename) ;
+        std::string getDataFilePath(const std::string& filename);
+        std::string getModule(const std::string& joint_name);
         std::vector<std::vector<float>> loadPositions();
-
-        // ROS services
-        ros::ServiceClient set_joint_module_client;
-        ros::ServiceClient get_joint_module_client;
 
         // ROS LOG ONCE
         void ROS_TAGGED_ONCE_LOG(const std::string& msg,
@@ -111,6 +109,10 @@ class utils
         Blackboard* getBlackboard() { return &blackboard; }
 
     private:
+        // ROS services
+        ros::ServiceClient set_joint_module_client;
+        ros::ServiceClient get_joint_module_client;
+
         // color function
         const char* resolveColor(const std::string& color, bool bold);
 
@@ -126,6 +128,7 @@ class utils
         const int cols_ = 6;
         
         static std::unordered_map<std::string, std::pair<const char*, const char*>> color_map;
+        std::string last_module;
     };
 
 #endif  // UTILS_H

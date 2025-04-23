@@ -53,6 +53,8 @@ set(SOURCE_FILES
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
   src/nodes/online_walk_to_target_action.cpp
+  src/nodes/timer_condition.cpp
+  src/repeat_node.cpp
 )
 
 set(SHARED_LIBRARIES

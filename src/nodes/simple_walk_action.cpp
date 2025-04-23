@@ -23,15 +23,17 @@ void BT::SimpleWalk::WaitForTick()
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
-
-        set_status(BT::RUNNING);
         
         // Perform action...
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
             ROS_TAGGED_ONCE_LOG("Walking...");
             walking_command_ = "start";
             goWalk(walking_command_);
+            set_status(BT::RUNNING);
+
+            ROS_SUCCESS_LOG("Simple walk has started successfully!");
+            set_status(BT::SUCCESS);
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);

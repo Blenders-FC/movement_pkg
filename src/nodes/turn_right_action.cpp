@@ -6,7 +6,8 @@
 
 #include <movement_pkg/nodes/turn_right_action.h>
 
-BT::TurnRight::TurnRight(std::string name) : ActionNode::ActionNode(name), utils()
+BT::TurnRight::TurnRight(std::string name, double turns)
+: ActionNode::ActionNode(name), utils(), turns_num_(turns)
 {
     // Publisher
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
@@ -26,30 +27,35 @@ void BT::TurnRight::WaitForTick()
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
-        // Running state
-        set_status(BT::RUNNING);
-
         // Perform action...
-        while (get_status() != BT::HALTED)
+        while (get_status() == BT::IDLE)
         {
             ROS_TAGGED_ONCE_LOG("Turning in place!");
+            // Running state
+            set_status(BT::RUNNING);
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
-            if (get_joint_module_client != "none")
+            if (getModule("r_knee") != "none")
             {
                 setModule("none");
                 ros::Duration(1).sleep();
             }
 
-            ros::Duration(0.1).sleep();
-            turn();
+            for (int i = 0; i < turns_num_; i++)
+            {
+                turn();
+            }
+
+            ROS_SUCCESS_LOG("Turning right has finished successfully!");
+            set_status(BT::SUCCESS);
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     set_status(BT::FAILURE);
 }
 
+// turning 15° in each cycle
 void BT::TurnRight::turn()
 {    
     // Getting right foot up

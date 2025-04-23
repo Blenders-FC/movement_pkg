@@ -23,11 +23,11 @@ public:
 
     // Behavior Tree Tick function
     BT::ReturnStatus Tick() override;
-    void halt() override;
 
 private:
     double duration_sec_;
-    std::optional<std::chrono::steady_clock::time_point> start_time_;
+    std::chrono::steady_clock::time_point _start_time;
+    bool timer_started_;
 };
 }  // namesapce BT
 
