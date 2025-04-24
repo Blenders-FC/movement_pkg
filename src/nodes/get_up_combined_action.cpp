@@ -19,7 +19,7 @@ void BT::GetUpCombined::WaitForTick()
     while(ros::ok())
     {
         // Waiting for the first tick to come
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_getup_comb");
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 

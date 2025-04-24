@@ -20,7 +20,7 @@ void BT::SimpleWalk::WaitForTick()
 {
     while(ros::ok())
     {
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_simple_walk");
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
         

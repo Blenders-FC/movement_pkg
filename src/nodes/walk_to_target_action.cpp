@@ -20,7 +20,7 @@ void BT::WalkToTarget::WaitForTick()
 {
     while(ros::ok())
     {
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_walk_target");
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 

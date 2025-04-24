@@ -28,7 +28,7 @@ BT::ReturnStatus BT::StartButtonCondition::Tick()
         } 
         else 
         {
-            ROS_TAGGED_ONCE_LOG("Waiting for start button");
+            ROS_TAGGED_ONCE_LOG("Waiting for start button", "DEFAULT", false, "start_button");
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);

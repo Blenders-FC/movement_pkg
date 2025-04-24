@@ -28,23 +28,49 @@
 #include "movement_pkg/blackboard.h"
 
 // ===== ANSI COLOR CODES =====
+#define RED_TEXT            "\033[91m"
+#define BOLD_RED_TEXT       "\033[1;91m"
+#define RED_BG_TEXT         "\033[41m"
+
+#define GREEN_TEXT          "\033[92m"
+#define BOLD_GREEN_TEXT     "\033[1;92m"
+#define GREEN_BG_TEXT       "\033[42m"
+
+#define YELLOW_TEXT         "\033[93m"
+#define BOLD_YELLOW_TEXT    "\033[1;93m"
+#define YELLOW_BG_TEXT      "\033[43m"
+
+#define BLUE_TEXT           "\033[34m"
+#define BOLD_BLUE_TEXT      "\033[1;34m"
+#define BLUE_BG_TEXT        "\033[44m"
+
+#define MAGENTA_TEXT        "\033[95m"
+#define BOLD_MAGENTA_TEXT   "\033[1;95m"
+#define MAGENTA_BG_TEXT     "\033[45m"
+
+#define CYAN_TEXT           "\033[96m"
+#define BOLD_CYAN_TEXT      "\033[1;96m"
+#define CYAN_BG_TEXT        "\033[46m"
+
+#define ORANGE_TEXT         "\033[38;5;208m"
+#define BOLD_ORANGE_TEXT    "\033[1;38;5;208m"
+#define ORANGE_BG_TEXT      "\033[48;5;208m"
+
+#define VIOLET_TEXT         "\033[38;5;129m"
+#define BOLD_VIOLET_TEXT    "\033[1;38;5;129m"
+#define VIOLET_BG_TEXT      "\033[48;5;129m"
+
+#define PINK_TEXT           "\033[38;5;213m"
+#define BOLD_PINK_TEXT      "\033[1;38;5;213m"
+
+#define TEAL_TEXT           "\033[38;5;30m"
+#define BOLD_TEAL_TEXT      "\033[1;38;5;30m"
+#define TEAL_BG_TEXT        "\033[48;5;30m"
+
+#define BLACK_BG_TEXT       "\033[40m"
+#define GRAY_BG_TEXT        "\033[100m"
+#define BROWN_BG_TEXT       "\033[48;5;94m"
 #define DEFAULT_TEXT        "\033[0m"
-#define BOLD_DEFAULT_TEXT   "\033[1;0m"
-
-#define RED_TEXT            "\033[31m"
-#define BOLD_RED_TEXT       "\033[1;31m"
-
-#define GREEN_TEXT          "\033[32m"
-#define BOLD_GREEN_TEXT     "\033[1;32m"
-
-#define YELLOW_TEXT         "\033[33m"
-#define BOLD_YELLOW_TEXT    "\033[1;33m"
-
-#define PINK_TEXT           "\033[35m"
-#define BOLD_PINK_TEXT      "\033[1;35m"
-
-#define CYAN_TEXT           "\033[36m"
-#define BOLD_CYAN_TEXT      "\033[1;36m"
 
 // ===== Filename utility =====
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
@@ -96,7 +122,6 @@ class utils
             const std::string& tag = "");
 
         Blackboard blackboard;
-
 
         template <typename T>
         T clamp(T val, T min_val, T max_val)

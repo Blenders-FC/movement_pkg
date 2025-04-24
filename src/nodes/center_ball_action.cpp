@@ -21,9 +21,9 @@ void BT::CenterBall::WaitForTick()
 {
     while (ros::ok())
     {
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_centerball");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_centerball");
 
         // Flow for searching ball - specially when distance to ball >= 1m
         

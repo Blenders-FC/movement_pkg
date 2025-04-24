@@ -22,7 +22,7 @@ void BT::LongKick::WaitForTick()
     while(ros::ok())
     {
         // Waiting for the first tick to come
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_long_kick");
         tick_engine.Wait();
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
 
