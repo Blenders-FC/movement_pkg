@@ -9,7 +9,7 @@
 BT::PenaltyKick::PenaltyKick(std::string name) : ActionNode::ActionNode(name), utils()
 {
     // Publisher
-    write_joint_pub__ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
+    write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
 
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&PenaltyKick::WaitForTick, this);
@@ -34,7 +34,7 @@ void BT::PenaltyKick::WaitForTick()
 
             ROS_TAGGED_ONCE_LOG("Penalty kicking!");
             //node loop
-            write_msg__.header.stamp = ros::Time::now();
+            write_msg_.header.stamp = ros::Time::now();
             
             if (getModule("r_knee") != "none")
             {
