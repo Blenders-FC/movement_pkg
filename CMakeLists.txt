@@ -56,6 +56,7 @@ set(SOURCE_FILES
   src/nodes/online_walk_to_target_action.cpp
   src/nodes/timer_condition.cpp
   src/nodes/long_kick_action.cpp
+  src/nodes/penalty_kick_action.cpp
   src/repeat_node.cpp
 )
 
