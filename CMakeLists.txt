@@ -22,13 +22,13 @@ find_package(catkin REQUIRED
 
 # Add Behavior Tree Core source files
 set(BT_SOURCE_FILES
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/action_node.cpp
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/condition_node.cpp
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/control_node.cpp
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/decorator_node.cpp
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/leaf_node.cpp
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/tree_node.cpp
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/dot_bt.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/action_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/condition_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/control_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/decorator_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/leaf_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/tree_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/dot_bt.cpp
 )
 
 set(SOURCE_FILES
@@ -190,8 +190,8 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/include
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_leaves/include
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/include
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_leaves/include
 )
 
 ## Declare a C++ library
@@ -210,7 +210,7 @@ add_executable(motion_controller_node
 add_executable(tree_visualization
   src/tree_visualization.cpp
   src/tree_builder.cpp
-  ${PROJECT_SOURCE_DIR}/../ROS-Behavior-Tree/behavior_tree_core/src/dot_bt.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/dot_bt.cpp
   ${SOURCE_FILES}
 )
 
