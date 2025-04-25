@@ -24,7 +24,7 @@ void BT::LongKick::WaitForTick()
         // Waiting for the first tick to come
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_long_kick");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_long_kick");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -32,7 +32,7 @@ void BT::LongKick::WaitForTick()
             // Running state
             set_status(BT::RUNNING);
 
-            ROS_TAGGED_ONCE_LOG("Long kicking!");
+            ROS_COLORED_LOG("Long kicking!", TEAL, false);
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
@@ -143,5 +143,5 @@ void BT::LongKick::kick()
 void BT::LongKick::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("LongKick HALTED: Stopped long kick");
+    ROS_TAGGED_ONCE_LOG("LongKick HALTED: Stopped long kick", "ORANGE", false, "Halted_long_kick");
 }

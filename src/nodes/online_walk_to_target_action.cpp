@@ -22,7 +22,7 @@ void BT::OnlineWalkToTarget::WaitForTick()
     {
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_online_walk");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_online_walk");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -33,7 +33,7 @@ void BT::OnlineWalkToTarget::WaitForTick()
             head_tilt_angle_ = getHeadTilt();
 
             this->setModule("walking_module");
-            ROS_TAGGED_ONCE_LOG("Walking towards target...");
+            ROS_TAGGED_ONCE_LOG("Walking towards target...", "PINK", true, "walk_towards_target");
 
             // Somewhere in your loop or behavior tree...
             bool result = walkToGoalPose(0.05, 0.0, 0.0);  // example goal
@@ -98,5 +98,5 @@ void BT::OnlineWalkToTarget::Halt()
     stopWalking();
 
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("OnlineWalkToTarget HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("OnlineWalkToTarget HALTED: Stopped online walking", "ORANGE", false, "Halted_online_walking");
 }

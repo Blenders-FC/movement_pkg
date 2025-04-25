@@ -32,7 +32,13 @@ BT::ReturnStatus BT::RobotFallenCondition::Tick()
         }
         else
         {
-            ROS_COLORED_LOG("Fall NOT detected.", YELLOW, false);
+            // ROS_TAGGED_ONCE_LOG(
+            //     "Fall not detected",
+            //     "BLUE",
+            //     false,
+            //     "not_fallen_robot_fallen"
+            // );
+
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }

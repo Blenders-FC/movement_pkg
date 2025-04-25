@@ -14,6 +14,9 @@ RepeatNode::RepeatNode(std::string name)
 
 BT::ReturnStatus RepeatNode::Tick()
 {
+    // Reset all log tags at the beginning of the repeat cycle
+    utils::resetLoggedTags();
+
     // This version only supports 1 child
     if (children_nodes_.size() != 1)
     {

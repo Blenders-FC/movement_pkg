@@ -25,7 +25,7 @@ BT::ReturnStatus BT::ManagerRunningCondition::Tick()
         }
         else
         {
-            ROS_TAGGED_ONCE_LOG("Waiting for op3 manager to connect...");
+            ROS_TAGGED_ONCE_LOG("Waiting for op3 manager to connect...", "DEFAULT", false, "Wait_manager_run");
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);

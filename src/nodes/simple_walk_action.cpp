@@ -22,12 +22,12 @@ void BT::SimpleWalk::WaitForTick()
     {
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_simple_walk");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_simple_walk");
         
         // Perform action...
         while (get_status() == BT::IDLE)
         {
-            ROS_TAGGED_ONCE_LOG("Walking...");
+            ROS_TAGGED_ONCE_LOG("Walking...", "TEAL", true, "Start_simple_walk");
             walking_command_ = "start";
             goWalk(walking_command_);
             set_status(BT::RUNNING);
@@ -45,5 +45,5 @@ void BT::SimpleWalk::Halt()
     stopWalking();
 
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("SimpleWalk HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("SimpleWalk HALTED: Stopped simple walking", "ORANGE", false, "Halted_simple_walking");
 }

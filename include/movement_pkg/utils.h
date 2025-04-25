@@ -111,6 +111,7 @@ class utils
 
         void setModule(const std::string& module_name);
         void goAction(int page);
+
         std::string getDataFilePath(const std::string& filename);
         std::string getModule(const std::string& joint_name);
         std::vector<std::vector<float>> loadPositions();
@@ -132,6 +133,8 @@ class utils
     public:
         virtual ~utils() = default;
         Blackboard* getBlackboard() { return &blackboard; }
+        
+        static void resetLoggedTags();
 
     private:
         // ROS services
@@ -146,7 +149,7 @@ class utils
         std_msgs::Int32 action_msg_;
 
         // ROS LOG ONCE
-        std::unordered_map<std::string, bool> already_logged_tags_;
+        static std::unordered_map<std::string, bool> already_logged_tags_;
         
         //standing up txt
         const int rows_ = 40;

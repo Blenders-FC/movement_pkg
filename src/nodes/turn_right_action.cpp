@@ -25,12 +25,12 @@ void BT::TurnRight::WaitForTick()
         // Waiting for the first tick to come
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_turn_r");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_turn_r");
 
         // Perform action...
         while (get_status() == BT::IDLE)
         {
-            ROS_TAGGED_ONCE_LOG("Turning in place!");
+            ROS_TAGGED_ONCE_LOG("Turning in place!", "CYAN", false, "Turn_r");
             // Running state
             set_status(BT::RUNNING);
             //node loop
@@ -118,5 +118,5 @@ void BT::TurnRight::turn()
 void BT::TurnRight::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("TurnRight HALTED: Stopped turning in place");
+    ROS_TAGGED_ONCE_LOG("TurnRight HALTED: Stopped turning in place", "ORANGE", false, "Halted_turn_r");
 }

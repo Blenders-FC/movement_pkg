@@ -24,7 +24,7 @@ void BT::TurnLeft::WaitForTick()
         // Waiting for the first tick to come
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_turn_l");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_turn_l");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -32,7 +32,7 @@ void BT::TurnLeft::WaitForTick()
             // Running state
             set_status(BT::RUNNING);
 
-            ROS_TAGGED_ONCE_LOG("Turning in place!");
+            ROS_TAGGED_ONCE_LOG("Turning in place!", "CYAN", false, "Turn_l");
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
@@ -113,5 +113,5 @@ void BT::TurnLeft::turn()
 void BT::TurnLeft::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("TurnLeft HALTED: Stopped turning in place");
+    ROS_TAGGED_ONCE_LOG("TurnLeft HALTED: Stopped turning in place", "ORANGE", false, "Halted_turn_l");
 }

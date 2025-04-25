@@ -24,7 +24,7 @@ void BT::PenaltyKick::WaitForTick()
         // Waiting for the first tick to come
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_penalty_kick");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_penalty_kick");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -32,7 +32,7 @@ void BT::PenaltyKick::WaitForTick()
             // Running state
             set_status(BT::RUNNING);
 
-            ROS_TAGGED_ONCE_LOG("Penalty kicking!");
+            ROS_TAGGED_ONCE_LOG("Penalty kicking!", "TEAL", false, "penalty_kick");
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
@@ -143,5 +143,5 @@ void BT::PenaltyKick::kick()
 void BT::PenaltyKick::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("PenaltyKick HALTED: Stopped penalty kick");
+    ROS_TAGGED_ONCE_LOG("PenaltyKick HALTED: Stopped penalty kick", "ORANGE", false, "Halted_penalty_kick");
 }

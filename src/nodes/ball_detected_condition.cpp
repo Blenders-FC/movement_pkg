@@ -27,7 +27,7 @@ BT::ReturnStatus BT::BallDetectedCondition::Tick()
         }
         else
         {   
-            ROS_TAGGED_ONCE_LOG("BALL NOT detected", "RED", false, "ball_not_detected_condition");
+            ROS_TAGGED_ONCE_LOG("BALL NOT detected", "RED_BG", false, "ball_not_detected_condition");
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }

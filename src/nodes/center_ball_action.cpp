@@ -104,5 +104,5 @@ void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)
 void BT::CenterBall::Halt()
 {
     set_status(BT::HALTED);
-    ROS_COLORED_LOG("CenterBall HALTED: Stopped walking.", DEFAULT, false);
+    ROS_COLORED_LOG("CenterBall HALTED: Stopped centering ball", ORANGE, false);
 }

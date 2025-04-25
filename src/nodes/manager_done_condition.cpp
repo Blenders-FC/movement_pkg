@@ -25,7 +25,7 @@ BT::ReturnStatus BT::ManagerDoneCondition::Tick()
         }
         else
         {
-            ROS_TAGGED_ONCE_LOG("Waiting for op3 manager to finish init pose");
+            ROS_TAGGED_ONCE_LOG("Waiting for op3 manager to finish init pose", "DEFAULT", false, "Wait_op3_manager");
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);

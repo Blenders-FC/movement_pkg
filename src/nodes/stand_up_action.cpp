@@ -22,7 +22,7 @@ void BT::StandUp::WaitForTick()
     {
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_standup");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_standup");
 
         while (get_status() == BT::IDLE)
         {
@@ -41,5 +41,5 @@ void BT::StandUp::WaitForTick()
 void BT::StandUp::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("StandUp HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("StandUp HALTED: Stopped stand up", "ORANGE", false, "Halted_standup");
 }

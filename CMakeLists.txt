@@ -70,6 +70,7 @@ set(SHARED_LIBRARIES
   fov_calculation
   blackboard
   tree_builder
+  repeat_node
 )
 
 
@@ -243,6 +244,7 @@ add_library(utils src/utils.cpp)
 add_library(fov_calculation src/fov_calculation.cpp)
 add_library(blackboard src/blackboard.cpp)
 add_library(tree_builder src/tree_builder.cpp)
+add_library(repeat_node src/repeat_node.cpp)
 
 target_link_libraries(motion_controller_node
   ${SHARED_LIBRARIES}

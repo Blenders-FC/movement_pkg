@@ -22,7 +22,7 @@ void BT::WalkToTarget::WaitForTick()
     {
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_walk_target");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_walk_target");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -33,7 +33,7 @@ void BT::WalkToTarget::WaitForTick()
             head_tilt_angle_ = getHeadTilt();
 
             this->setModule("walking_module");
-            ROS_TAGGED_ONCE_LOG("Walking towards target...");
+            ROS_TAGGED_ONCE_LOG("Walking towards target...", "CYAN", true, "Walk_target");
             walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
 
             if (walkingSucced)
@@ -95,5 +95,5 @@ void BT::WalkToTarget::Halt()
     stopWalking();
 
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("WalkToTarget HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("WalkToTarget HALTED: Stopped walking towards target", "ORANGE", false, "Halted_walk_target");
 }

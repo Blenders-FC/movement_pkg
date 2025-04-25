@@ -5,6 +5,8 @@
 
 #include "movement_pkg/utils.h"
 
+// Definition of static variables
+std::unordered_map<std::string, bool> utils::already_logged_tags_;
 
 utils::utils() : nh(ros::this_node::getName()), blackboard()
 {
@@ -148,3 +150,8 @@ std::unordered_map<std::string, std::pair<const char*, const char*>> utils::colo
     {"PINK",   {PINK_TEXT,   BOLD_PINK_TEXT}},
     {"CYAN",   {CYAN_TEXT,   BOLD_CYAN_TEXT}},
 };
+
+void utils::resetLoggedTags()
+{
+    already_logged_tags_.clear();
+}

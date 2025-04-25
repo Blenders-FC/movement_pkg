@@ -22,9 +22,9 @@ void BT::FOVWalking::WaitForTick()
 {
     while(ros::ok())
     {
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_centerball");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_fov_walking");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_centerball");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_fov_walking");
 
         // Flow for walking to ball - using FOV calculation
         
@@ -33,7 +33,7 @@ void BT::FOVWalking::WaitForTick()
             set_status(BT::RUNNING);
 
             this->setModule("walking_module");
-            ROS_TAGGED_ONCE_LOG("Walking towards target...");
+            ROS_COLORED_LOG("Walking towards target...", BLUE, false);
             walkTowardsTarget();
 
             if (walkingSucced)
@@ -90,5 +90,5 @@ void BT::FOVWalking::Halt()
     stopWalking();
 
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("FOVWalking HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("FOVWalking HALTED: Stopped fov walking", "ORANGE", false, "Halted_fov_walking");
 }

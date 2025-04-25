@@ -21,7 +21,7 @@ void BT::LeftKick::WaitForTick()
         // Waiting for the first tick to come
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_l_kick");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_l_kick");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -43,5 +43,5 @@ void BT::LeftKick::WaitForTick()
 void BT::LeftKick::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("LeftKick HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("LeftKick HALTED: Stopped left kicking", "ORANGE", false, "Halted_l_kick");
 }

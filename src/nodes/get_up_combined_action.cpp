@@ -21,7 +21,7 @@ void BT::GetUpCombined::WaitForTick()
         // Waiting for the first tick to come
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_getup_comb");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_getup_comb");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -60,7 +60,7 @@ void BT::GetUpCombined::WaitForTick()
             }
             else
             {
-                ROS_COLORED_LOG("Fall NOT detected", YELLOW, false);
+                ROS_TAGGED_ONCE_LOG("Fall not detected", "YELLOW", false, "fall_not_detect_getup_comb");
                 set_status(BT::FAILURE);
             }
         }
@@ -72,5 +72,5 @@ void BT::GetUpCombined::WaitForTick()
 void BT::GetUpCombined::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("GetUpCombined HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("GetUpCombined HALTED: Stopped get up combined", "ORANGE", false, "Halted_getup_comb");
 }

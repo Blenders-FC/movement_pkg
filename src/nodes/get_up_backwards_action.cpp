@@ -21,7 +21,7 @@ void BT::GetUpBackwards::WaitForTick()
         // Waiting for the first tick to come
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_getup_back");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_getup_back");
 
         // Perform action...
         while (get_status() == BT::IDLE)
@@ -45,5 +45,5 @@ void BT::GetUpBackwards::WaitForTick()
 void BT::GetUpBackwards::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("GetUpBackwards HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("GetUpBackwards HALTED: Stopped get up backwards", "ORANGE", false, "Halted_getup_back");
 }

@@ -23,7 +23,7 @@ void BT::SearchBall::WaitForTick()
     {
         ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_searchball");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_searchball");
         
         while (get_status() == BT::IDLE)
         {
@@ -96,5 +96,5 @@ void BT::SearchBall::writeHeadJoint(double ang_value, bool is_pan)
 void BT::SearchBall::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("SearchBall HALTED: Stopped walking.");
+    ROS_TAGGED_ONCE_LOG("SearchBall HALTED: Stopped search ball", "ORANGE", false, "Halted_searchball");
 }

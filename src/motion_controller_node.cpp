@@ -17,7 +17,6 @@ int main(int argc, char **argv)
     // ros::Rate rate(30);  // or your desired frequency
     ros::spinOnce();
     std::cout << DEFAULT_TEXT       << "DEFAULT_TEXT" << DEFAULT_TEXT << std::endl;
-    std::cout << BOLD_DEFAULT_TEXT  << "BOLD_DEFAULT_TEXT" << DEFAULT_TEXT << std::endl;
 
     std::cout << RED_TEXT           << "RED_TEXT" << DEFAULT_TEXT << std::endl;
     std::cout << BOLD_RED_TEXT      << "BOLD_RED_TEXT" << DEFAULT_TEXT << std::endl;
