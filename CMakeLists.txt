@@ -19,6 +19,7 @@ find_package(catkin REQUIRED
 #   message_generation
     robotis_framework_common
 )
+find_package(OpenCV REQUIRED)
 
 # Add Behavior Tree Core source files
 set(BT_SOURCE_FILES
@@ -214,6 +215,12 @@ add_executable(tree_visualization
   src/tree_builder.cpp
   ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/dot_bt.cpp
   ${SOURCE_FILES}
+)
+
+add_executable(bt_tree_image_publisher src/publish_bt_image.cpp)
+target_link_libraries(bt_tree_image_publisher
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )
 
 ## Add cmake target dependencies of the library

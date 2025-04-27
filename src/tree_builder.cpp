@@ -9,35 +9,19 @@
 BT::ControlNode* BT::TreeBuilder::BuildTree()
 {
     // Create Behavior Tree Nodes
-    auto* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
-    auto* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
-    auto* is_start_button = new BT::StartButtonCondition("IsStartButton");
-    auto* stand_up = new BT::StandUp("StandUp");
-    auto* stop_walking = new BT::StandUp("StopWalking");
-    auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
-    auto* walk_node = new BT::SimpleWalk("SimpleWalk");
-    auto* turn_right = new BT::TurnRight("TurnRight", 6);  // turning 90° (6 cycles of 15° each)
-    auto* is_fallen = new BT::RobotFallenCondition("IsFallen");
-    auto* get_up = new BT::GetUpCombined("GetUp");
+    BT::ManagerRunningCondition* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
+    BT::ManagerDoneCondition* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
+    BT::StartButtonCondition* is_start_button = new BT::StartButtonCondition("IsStartButton");
+    BT::StandUp* stand_up = new BT::StandUp("StandUp");
+    BT::BallDetectedCondition* ball_detected = new BT::BallDetectedCondition("BallDetected");
+    BT::SearchBall* search_ball = new BT::SearchBall("SearchBall");
+    BT::BallDirectionCondition* ball_direction = new BT::BallDirectionCondition("BallDirection");
 
     // Create Control Nodes
-    auto* root_node = new BT::SequenceNodeWithMemory("RootNode");
-    auto* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
-    auto* main_sequence = new BT::SequenceNodeWithMemory("MainLoop");
-    auto* parallel_walk_timer = new BT::ParallelNode("ParallelWalkTimer", 2); // success_threshold=1, failure_threshold=1
-    auto* repeat_main_loop = new BT::RepeatNode("MainLoopLoop");
-    auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");  // acts like ReactiveFallback
-    auto* recovery_sequence = new BT::SequenceNodeWithMemory("RecoverySequence");
-
-
-    // Recovery from fall sequence
-    recovery_sequence->AddChild(is_fallen);
-    recovery_sequence->AddChild(get_up);
-    reactive_fallback->AddChild(recovery_sequence);
-
-    // Parallel node: walk and time concurrently
-    parallel_walk_timer->AddChild(walk_node);
-    parallel_walk_timer->AddChild(timer_condition);
+    BT::SequenceNodeWithMemory* root_node = new BT::SequenceNodeWithMemory("RootNode");
+    BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
+    BT::SequenceNodeWithMemory* main_sequence = new BT::SequenceNodeWithMemory("MainLoop");
+    BT::FallbackNode* fallback_node = new BT::FallbackNode("FallbackDecision");
 
     // Build the Behavior Tree
     init_sequence->AddChild(is_manager_running);
@@ -45,18 +29,21 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_start_button);
     init_sequence->AddChild(stand_up);
 
-    // Attach the fallback node to the main sequence
-    main_sequence->AddChild(parallel_walk_timer);
-    main_sequence->AddChild(stop_walking);
-    main_sequence->AddChild(turn_right);
+    // Decision Making Structure
+    BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
+    ball_found_sequence->AddChild(ball_detected);
+    ball_found_sequence->AddChild(ball_direction);
 
-    // Repeat main sequence
-    reactive_fallback->AddChild(main_sequence);
-    repeat_main_loop->AddChild(reactive_fallback);
+    // Add sequences to fallback
+    fallback_node->AddChild(ball_found_sequence);
+    fallback_node->AddChild(search_ball);
+
+    // Attach the fallback node to the main sequence
+    main_sequence->AddChild(fallback_node);
 
     // Root node sequence
     root_node->AddChild(init_sequence);
-    root_node->AddChild(repeat_main_loop);
+    root_node->AddChild(main_sequence);
 
     return root_node;
 }

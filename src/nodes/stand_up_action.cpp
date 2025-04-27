@@ -28,7 +28,7 @@ void BT::StandUp::WaitForTick()
         {
             stopWalking();
             set_status(BT::RUNNING);
-            // ros::Duration(1.0).sleep();  // Verify if it's completely necessary
+            ros::Duration(5.0).sleep();  // Verify if it's completely necessary
 
             ROS_SUCCESS_LOG("Succeed to stand up!");
             set_status(BT::SUCCESS);

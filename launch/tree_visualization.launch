@@ -11,6 +11,7 @@
 
   <!-- Image viewer -->
   <node pkg="movement_pkg" type="view_bt_tree.sh" name="tree_image_viewer" output="screen" args="$(arg output_path)" />
+  <node pkg="movement_pkg" type="bt_tree_image_publisher" name="bt_tree_image_publisher" output="screen"/>
 
   <!-- Optional cleanup -->
   <node pkg="movement_pkg" type="cleanup_bt_image.sh" name="bt_image_cleanup" output="screen"

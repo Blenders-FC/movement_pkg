@@ -50,7 +50,10 @@ double FOVCalculation::getVerticalAngle(){
     */
     diff_y = ball_position_y - H_CENTER_DEF_RES;
     betha = atan(diff_y / focal_length_y);  // Converting ratio into an angle
-    tilt_angle = current_head_tilt + betha;  // Adding θ + β (head tilt + betha)
+    tilt_angle = betha - current_head_tilt;  // (betha - (-head tilt)) <- head_tilt has an inverted y-axis so this is actually an additon
+    std::cout << betha << std::endl;
+    std::cout << current_head_tilt << std::endl;
+    std::cout << tilt_angle << std::endl;
     return tilt_angle;
 }
 
