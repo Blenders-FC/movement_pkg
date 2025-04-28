@@ -54,6 +54,7 @@ set(SOURCE_FILES
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_target_action.cpp
+  src/nodes/walk_to_point_action.cpp
   src/nodes/online_walk_to_target_action.cpp
   src/nodes/timer_condition.cpp
   src/nodes/long_kick_action.cpp
