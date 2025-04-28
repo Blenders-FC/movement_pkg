@@ -18,26 +18,6 @@ public:
     // Virtual destructor for inheritance
     virtual ~FOVCalculation();
 
-protected:
-    // External functions
-    void calcFocalLength_y();
-    void calcFocalLength_x();
-    void calcPanAngle();
-    void calcDistanceToTarget();
-
-    // Write-only variables
-    float ball_position_x;
-    float ball_position_y;
-    double current_head_pan;
-    double current_head_tilt;
-
-    // Read-only variables
-    double pan_angle;
-    double distance_to_target;
-    
-    // Blackboard
-    TargetInfo ball_info;
-
 private:
     // Internal functions
     double getVerticalAngle();
@@ -87,6 +67,26 @@ private:
     // Focal lengths
     double focal_length_x;
     double focal_length_y;
+
+protected:
+    // External functions
+    void calcFocalLength_y();
+    void calcFocalLength_x();
+    void calcPanAngle();
+    void calcDistanceToTarget();
+
+    // Write-only variables
+    float ball_position_x;
+    float ball_position_y;
+    double current_head_pan;
+    double current_head_tilt;
+
+    // Read-only variables
+    double pan_angle;
+    double distance_to_target;
+    
+    // Blackboard
+    TargetInfo ball_info;
 };
 
 #endif  // FOV_CALCULATION_H

@@ -66,7 +66,8 @@ private:
     const double SPOT_ANGLE_OFFSET_ = 0.0;
     double accum_period_time_ = 0.0;
     double current_period_time_ = 0.6;
-    double current_x_move_ = 0.005;
+    // double current_x_move_ = 0.005;
+    double current_x_move_ = 0.0125;
     double current_r_angle_ = 0.0;
     std::string stop_walking_command_ = "stop";
     std::string start_walking_command_ = "start";

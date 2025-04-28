@@ -94,7 +94,7 @@ void WalkingController::getWalkingParam()
         current_walking_param_ = walking_param_msg.response.parameters;
   
         // update ui
-        ROS_INFO_COND(DEBUG_PRINT, "Get walking parameters");
+        ROS_INFO_COND(false, "Get walking parameters");  // true -> print
         return;
     } else {
         ROS_ERROR_LOG("Fail to get walking parameters", false);

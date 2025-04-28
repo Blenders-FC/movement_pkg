@@ -25,6 +25,7 @@
 #include "movement_pkg/repeat_node.h"
 #include "movement_pkg/nodes/robot_fallen_condition.h"
 #include "movement_pkg/nodes/get_up_combined_action.h"
+#include "movement_pkg/nodes/walk_to_point_action.h"
 
 
 namespace BT

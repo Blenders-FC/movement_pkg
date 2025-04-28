@@ -27,11 +27,11 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
         this->ball_position_y = ball_center_position_.y;
         this->current_head_pan = getHeadPan();
         this->current_head_tilt = getHeadTilt();
-
-        pan_angle_to_ball = ball->pan_angle;
         
         calcFocalLength_x();        // Updates focal length in x axis
         calcPanAngle();             // Updates pan_angle to the ball in body's frame
+        
+        pan_angle_to_ball = ball->pan_angle;
 
         if (std::abs(pan_angle_to_ball) <= 0.2618)  // 15°
         {
@@ -40,7 +40,7 @@ BT::ReturnStatus BT::BallDirectionCondition::Tick()
             distance_to_ball = ball->distance;
 
             ROS_SUCCESS_LOG("OP3 manager is able to walk towards the ball!");
-            ROS_COLORED_LOG("distance to target: %f     pan angle: %f", PINK, false, distance_to_target, pan_angle);
+            ROS_COLORED_LOG("distance to target: %f     pan angle: %f", PINK, false, this->distance_to_target, this->pan_angle);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }

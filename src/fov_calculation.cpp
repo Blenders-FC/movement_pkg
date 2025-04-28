@@ -51,9 +51,9 @@ double FOVCalculation::getVerticalAngle(){
     diff_y = ball_position_y - H_CENTER_DEF_RES;
     betha = atan(diff_y / focal_length_y);  // Converting ratio into an angle
     tilt_angle = betha - current_head_tilt;  // (betha - (-head tilt)) <- head_tilt has an inverted y-axis so this is actually an additon
-    std::cout << betha << std::endl;
-    std::cout << current_head_tilt << std::endl;
-    std::cout << tilt_angle << std::endl;
+    std::cout << "betha" << betha << std::endl;
+    std::cout << "current_head_tilt" << current_head_tilt << std::endl;
+    std::cout << "tilt_angle" << tilt_angle << std::endl;
     return tilt_angle;
 }
 
@@ -61,6 +61,9 @@ void FOVCalculation::calcPanAngle(){
     diff_x = ball_position_x - W_CENTER_DEF_RES;
     phi = atan(diff_x / focal_length_x);  // Converting ratio into an angle
     pan_angle = current_head_pan + phi;  // Adding θ + β (head tilt + betha)
+    std::cout << "phi" << phi << std::endl;
+    std::cout << "current_head_pan" << current_head_pan << std::endl;
+    std::cout << "pan_angle" << pan_angle << std::endl;
     
     ball_info.pan_angle = pan_angle;
     blackboard.setTarget("ball", ball_info);  // Update the blackboard

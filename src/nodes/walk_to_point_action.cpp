@@ -6,7 +6,7 @@
 
 #include "movement_pkg/nodes/walk_to_point_action.h"
 
-
+int steps_cnt = 0;
 BT::WalkToPoint::WalkToPoint(std::string name) 
 : ActionNode::ActionNode(name), WalkingController()
 {
@@ -29,17 +29,31 @@ void BT::WalkToPoint::WaitForTick()
         {
             set_status(BT::RUNNING);
 
-            head_pan_angle_ = getHeadPan();
-            head_tilt_angle_ = getHeadTilt();
+            if (ball && std::isfinite(ball->distance) && std::isfinite(ball->pan_angle)
+                && ball->distance > 0 && std::abs(ball->pan_angle) <= M_PI)
+            {
+                distance_to_ball = ball->distance;
+                pan_angle_to_ball = ball->pan_angle;
+                ROS_COLORED_LOG("Ball data loaded from blackboard!", GREEN, false);
+            }
+            else
+            {
+                ROS_COLORED_LOG("Invalid or missing ball data. Using default values", ORANGE, false);
+            }
 
             this->setModule("walking_module");
-            ROS_TAGGED_ONCE_LOG("Walking towards point...", "CYAN", true, "Walk_point");
-            walkTowardsPoint(head_pan_angle_, head_tilt_angle_);
+            ROS_COLORED_LOG("Walking towards point in distance: %.4f and angle: %.4f", CYAN, true, distance_to_ball, pan_angle_to_ball);
+            walkTowardsPoint();
 
             if (walkingSucced)
             {
-                ROS_SUCCESS_LOG("Walk to point SUCCESS");
+                ROS_SUCCESS_LOG("Walking to point process has finished successfully!");
+                std::cout << "steps_cnt: " << steps_cnt << std::endl;
                 set_status(BT::SUCCESS);
+            }
+            else{
+                ROS_ERROR_LOG("Walk to point FAILED", false);
+                set_status(BT::FAILURE);
             }
         }
     }
@@ -47,47 +61,58 @@ void BT::WalkToPoint::WaitForTick()
     set_status(BT::FAILURE);
 }
 
-void BT::WalkToPoint::walkTowardsPoint(double head_pan_angle, double head_tilt_angle)
+void BT::WalkToPoint::walkTowardsPoint()
 {
-    ros::Time curr_time_walk = ros::Time::now();
-    ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
-    double delta_time_walk = dur_walk.nsec * 0.000000001 + dur_walk.sec;
-    prev_time_walk_ = curr_time_walk;
-
     while (ros::ok())
     {
-        double distance_to_target = calculateDistance(head_tilt_angle);
-        if (distance_to_target < 0) distance_to_target *= (-1);
-        ROS_COLORED_LOG("dist to ball: ", CYAN, false, distance_to_target);
+        ros::Time curr_time_walk = ros::Time::now();
+        ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
         
-        if (distance_to_target > distance_to_kick_)
+        if (dur_walk.toSec() == curr_time_walk.toSec())
         {
-            fb_move = 0.0;
-            rl_angle = 0.0;
-            distance_to_walk = distance_to_target - distance_to_kick_;
-
-            calcFootstep(distance_to_walk, head_pan_angle, delta_time_walk, fb_move, rl_angle);
-            setWalkingParam(fb_move, 0, rl_angle, true);
-
-            walk_command.data = "start";
-            walk_command_pub.publish(walk_command);
-
-            ros::Duration(0.1).sleep();
+            prev_time_walk_ = curr_time_walk;
+            return;
         }
-        else{
+
+        double delta_time_walk = dur_walk.toSec();
+        prev_time_walk_ = curr_time_walk;
+    
+        if (distance_to_ball < 0)
+        {
+            distance_to_ball *= (-1);
+        }
+    
+        double distance_to_kick = 0;// 0.30;  //0.22
+        double distance_to_walk = distance_to_ball - distance_to_kick;
+        std::cout << "walked_distance: " << walked_distance << std::endl;
+    
+        if (walked_distance >= distance_to_walk)
+        {
             stopWalking();
             walkingSucced = true;
-            break;
+            return;
         }
+    
+        double fb_move = 0.0, rl_angle = 0.0;
+    
+        // std::cout << walked_distance << std::endl;
+        // std::cout << distance_to_walk - walked_distance << std::endl;
+        // std::cout << current_x_move_ << std::endl;
+        // std::cout << delta_time_walk << std::endl;
+    
+        calcFootstep(distance_to_walk - walked_distance, 0, delta_time_walk, fb_move, rl_angle);  // pan = 0
+        walked_distance += fabs(fb_move);
+        std::cout << "fb_move: " << fb_move << std::endl;
+        setWalkingParam(fb_move, 0, rl_angle, true);
+        
+        std_msgs::String command_msg;
+        command_msg.data = "start";
+        walk_command_pub.publish(command_msg);
+        ros::Duration(0.1).sleep();
+        steps_cnt++;
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     set_status(BT::FAILURE);
-}
-
-double BT::WalkToPoint::calculateDistance(double head_tilt)
-{
-    double distance = CAMERA_HEIGHT_ * tan(M_PI * 0.5 + head_tilt - hip_pitch_offset_);
-    return distance;
 }
 
 void BT::WalkToPoint::Halt()
