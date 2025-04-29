@@ -34,6 +34,8 @@ class WalkToPoint : public ActionNode, public WalkingController
         double distance_to_ball = 1.0;  // Default value
         double pan_angle_to_ball = 0.0;  // Default value
         double walked_distance = 0.0;
+        double accum_rotation = 0.0;
+        double prev_delta_angle = 0.0;
         double fb_move;
         double rl_angle;
         double distance_to_walk;

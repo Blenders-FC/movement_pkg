@@ -92,6 +92,16 @@ void BT::WalkToPoint::walkTowardsPoint()
             walkingSucced = true;
             return;
         }
+
+        double delta_angle = pan_angle_to_ball - accum_rotation;
+
+        // checking sign chance to avoid oscillation  ||  angle between a range of error
+        if (delta_angle * prev_delta_angle < 0 || std::abs(delta_angle) < 0.01)
+        {
+            delta_angle = 0.0;  // Stop turning
+        }
+
+        prev_delta_angle = delta_angle;
     
         double fb_move = 0.0, rl_angle = 0.0;
     
@@ -100,8 +110,9 @@ void BT::WalkToPoint::walkTowardsPoint()
         // std::cout << current_x_move_ << std::endl;
         // std::cout << delta_time_walk << std::endl;
     
-        calcFootstep(distance_to_walk - walked_distance, 0, delta_time_walk, fb_move, rl_angle);  // pan = 0
+        calcFootstep(distance_to_walk - walked_distance, delta_angle, delta_time_walk, fb_move, rl_angle);  // pan = 0
         walked_distance += fabs(fb_move);
+        accum_rotation += rl_angle;
         std::cout << "fb_move: " << fb_move << std::endl;
         setWalkingParam(fb_move, 0, rl_angle, true);
         
