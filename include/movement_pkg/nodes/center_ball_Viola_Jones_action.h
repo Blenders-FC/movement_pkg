@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef CENTER_BALL_ACTION_H
-#define CENTER_BALL_ACTION_H
+#ifndef CENTER_BALL_VIOLA_JONES_ACTION_H
+#define CENTER_BALL_VIOLA_JONES_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
 #include <action_node.h>
@@ -13,12 +13,12 @@
 
 namespace BT
 {
-class CenterBall : public ActionNode, public CBDataManager
+class CenterBallViolaJones : public ActionNode, public CBDataManager
 {
     public:
         // Constructor
-        explicit CenterBall(std::string name);
-        ~CenterBall();
+        explicit CenterBallViolaJones(std::string name);
+        ~CenterBallViolaJones();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
@@ -46,4 +46,4 @@ class CenterBall : public ActionNode, public CBDataManager
 };
 }  // namespace BT
 
-#endif  // CENTER_BALL_ACTION_H
+#endif  // CENTER_BALL_VIOLA_JONES_ACTION_H

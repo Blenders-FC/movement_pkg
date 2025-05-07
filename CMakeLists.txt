@@ -36,7 +36,9 @@ set(SOURCE_FILES
   src/nodes/ball_detected_condition.cpp
   src/nodes/ball_direction_condition.cpp
   src/nodes/ball_in_center_condition.cpp
-  src/nodes/center_ball_action.cpp
+  src/nodes/center_ball_Viola_Jones_action.cpp
+  src/nodes/center_ball_YOLO_CPU_action.cpp
+  src/nodes/center_ball_YOLO_Jetson_action.cpp
   src/nodes/choose_kick_foot_condition.cpp
   src/nodes/fov_walking_action.cpp
   src/nodes/get_up_backwards_action.cpp

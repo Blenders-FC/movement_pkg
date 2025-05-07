@@ -4,26 +4,26 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/center_ball_action.h"
+#include "movement_pkg/nodes/center_ball_YOLO_Jetson_action.h"
 
 
-BT::CenterBall::CenterBall(std::string name) 
+BT::CenterBallYOLOJetson::CenterBallYOLOJetson(std::string name) 
 : ActionNode::ActionNode(name)
 {
     type_ = BT::ACTION_NODE;
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
-    thread_ = std::thread(&CenterBall::WaitForTick, this);
+    thread_ = std::thread(&CenterBallYOLOJetson::WaitForTick, this);
 }
 
-BT::CenterBall::~CenterBall() {}
+BT::CenterBallYOLOJetson::~CenterBallYOLOJetson() {}
 
-void BT::CenterBall::WaitForTick()
+void BT::CenterBallYOLOJetson::WaitForTick()
 {
     while (ros::ok())
     {
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_centerball");
+        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_CenterBallYOLOJetson");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_centerball");
+        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_CenterBallYOLOJetson");
 
         // Flow for searching ball - specially when distance to ball >= 1m
         
@@ -79,7 +79,7 @@ void BT::CenterBall::WaitForTick()
     set_status(BT::FAILURE);
 }
 
-void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)
+void BT::CenterBallYOLOJetson::writeHeadJoint(double ang_value, bool is_pan)
 {
     setModule("direct_control_module");
     write_msg_;
@@ -101,8 +101,8 @@ void BT::CenterBall::writeHeadJoint(double ang_value, bool is_pan)
     write_joint_pub_.publish(write_msg_);
 }
 
-void BT::CenterBall::Halt()
+void BT::CenterBallYOLOJetson::Halt()
 {
     set_status(BT::HALTED);
-    ROS_COLORED_LOG("CenterBall HALTED: Stopped centering ball", ORANGE, false);
+    ROS_COLORED_LOG("CenterBallYOLOJetson HALTED: Stopped centering ball", ORANGE, false);
 }
