@@ -42,25 +42,25 @@ set(SOURCE_FILES
   src/nodes/choose_kick_foot_condition.cpp
   src/nodes/fov_walking_action.cpp
   src/nodes/get_up_backwards_action.cpp
-  src/nodes/get_up_forward_action.cpp
   src/nodes/get_up_combined_action.cpp
+  src/nodes/get_up_forward_action.cpp
   src/nodes/left_kick_action.cpp
-  src/nodes/manager_running_condition.cpp
+  src/nodes/long_kick_action.cpp
   src/nodes/manager_done_condition.cpp
+  src/nodes/manager_running_condition.cpp
+  src/nodes/online_walk_to_target_action.cpp
+  src/nodes/penalty_kick_action.cpp
   src/nodes/right_kick_action.cpp
   src/nodes/robot_fallen_condition.cpp
   src/nodes/search_ball_action.cpp
   src/nodes/simple_walk_action.cpp
   src/nodes/stand_up_action.cpp
   src/nodes/start_button_condition.cpp
+  src/nodes/timer_condition.cpp
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
-  src/nodes/walk_to_target_action.cpp
   src/nodes/walk_to_point_action.cpp
-  src/nodes/online_walk_to_target_action.cpp
-  src/nodes/timer_condition.cpp
-  src/nodes/long_kick_action.cpp
-  src/nodes/penalty_kick_action.cpp
+  src/nodes/walk_to_target_action.cpp
   src/repeat_node.cpp
 )
 

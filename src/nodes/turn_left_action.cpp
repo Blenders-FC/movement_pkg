@@ -6,7 +6,8 @@
 
 #include <movement_pkg/nodes/turn_left_action.h>
 
-BT::TurnLeft::TurnLeft(std::string name) : ActionNode::ActionNode(name), utils()
+BT::TurnLeft::TurnLeft(std::string name)
+: ActionNode::ActionNode(name), utils(), turns_num_(turns)
 {
     // Publisher
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
@@ -29,21 +30,27 @@ void BT::TurnLeft::WaitForTick()
         // Perform action...
         while (get_status() == BT::IDLE)
         {
+            ROS_TAGGED_ONCE_LOG("Turning left in place!", "CYAN", false, "Turn_l");
+
             // Running state
             set_status(BT::RUNNING);
 
-            ROS_TAGGED_ONCE_LOG("Turning in place!", "CYAN", false, "Turn_l");
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
-            if (getModule("r_knee") != "none")
+            if (getModule("l_knee") != "none")
             {
                 setModule("none");
                 ros::Duration(1).sleep();
             }
 
-            ros::Duration(0.1).sleep();
-            turn();
+            for (int i = 0; i < turns_num_; i++)
+            {
+                turn();
+            }
+
+            ROS_SUCCESS_LOG("Turning left has finished successfully!");
+            set_status(BT::SUCCESS);
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);

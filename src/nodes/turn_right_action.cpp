@@ -30,9 +30,11 @@ void BT::TurnRight::WaitForTick()
         // Perform action...
         while (get_status() == BT::IDLE)
         {
-            ROS_TAGGED_ONCE_LOG("Turning in place!", "CYAN", false, "Turn_r");
+            ROS_TAGGED_ONCE_LOG("Turning right in place!", "CYAN", false, "Turn_r");
+            
             // Running state
             set_status(BT::RUNNING);
+            
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             

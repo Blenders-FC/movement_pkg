@@ -30,7 +30,7 @@ class TurnRight : public ActionNode, public virtual utils
         
         ros::Publisher write_joint_pub_;
         sensor_msgs::JointState write_msg_;
-        std::vector<std::vector<float>> positions = loadPositions();;
+        std::vector<std::vector<float>> positions = loadPositions();
         
         double crouch_angle_ = 0.08726;  // 5°
         const int rows_ = 40;

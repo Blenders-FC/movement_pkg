@@ -15,7 +15,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* stand_up = new BT::StandUp("StandUp");
     auto* ball_detected = new BT::BallDetectedCondition("BallDetected");
     auto* search_ball = new BT::SearchBall("SearchBall");
-    auto* ball_direction = new BT::BallDirectionCondition("BallDirection");
+    auto* center_ball = new BT::CenterBallViolaJones("CenterBallViolaJones");
     auto* walk_to_point = new BT::WalkToPoint("WalkToPoint");
 
     // Create Control Nodes
