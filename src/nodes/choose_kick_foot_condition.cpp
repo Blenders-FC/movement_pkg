@@ -25,7 +25,7 @@ BT::ReturnStatus BT::ChooseKickFootCondition::Tick()
         }
         else
         {
-            ROS_COLORED_LOG("RIGHT LEFT CHOSEN", CYAN, false);
+            ROS_COLORED_LOG("LEFT KICK CHOSEN", CYAN, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }
