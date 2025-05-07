@@ -47,12 +47,12 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(stand_up);
 
     // Right Kick Sequence
-    right_kick_seq->AddChild(kick_selector)
-    right_kick_seq->AddChild(right_kick)
+    right_kick_seq->AddChild(kick_selector);
+    right_kick_seq->AddChild(right_kick);
 
     // Kick fallback
-    fallback_kick_selector->AddChild(right_kick_seq)
-    fallback_kick_selector->AddChild(left_kick)
+    fallback_kick_selector->AddChild(right_kick_seq);
+    fallback_kick_selector->AddChild(left_kick);
 
     // Walk to ball sequence
     ball_found_sequence->AddChild(ball_detected);

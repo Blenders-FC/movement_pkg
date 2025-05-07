@@ -6,7 +6,7 @@
 
 #include <movement_pkg/nodes/turn_left_action.h>
 
-BT::TurnLeft::TurnLeft(std::string name)
+BT::TurnLeft::TurnLeft(std::string name, double turns)
 : ActionNode::ActionNode(name), utils(), turns_num_(turns)
 {
     // Publisher
@@ -57,6 +57,7 @@ void BT::TurnLeft::WaitForTick()
     set_status(BT::FAILURE);
 }
 
+// turning 15° in each cycle
 void BT::TurnLeft::turn()
 {    
     // Getting left foot up
@@ -71,7 +72,6 @@ void BT::TurnLeft::turn()
     write_msg_.position.push_back(0.1746*1.5);
     write_msg_.name.push_back("l_hip_yaw");
     write_msg_.position.push_back(-0.1746*1.5);
-    write_joint_pub_.publish(write_msg_);
     
     write_msg_.name.push_back("l_hip_roll");
     write_msg_.position.push_back(-0.0873);
@@ -105,6 +105,7 @@ void BT::TurnLeft::turn()
     write_msg_.position.push_back(0);
     write_msg_.name.push_back("l_hip_yaw");
     write_msg_.position.push_back(0);
+    write_joint_pub_.publish(write_msg_);
 
     // Getting right foot down
     ros::Duration(0.1).sleep();

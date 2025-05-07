@@ -17,7 +17,7 @@ class TurnLeft : public ActionNode, public virtual utils
 {
     public:
         // Constructor
-        explicit TurnLeft(std::string name);
+        explicit TurnLeft(std::string name, double turns);
         ~TurnLeft();
 
         // The method that is going to be executed by the thread

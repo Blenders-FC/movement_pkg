@@ -61,6 +61,7 @@ void BT::TurnRight::WaitForTick()
 void BT::TurnRight::turn()
 {    
     // Getting right foot up
+    ros::Duration(0.1).sleep();
     write_msg_.name.push_back("r_ank_pitch");
     write_msg_.position.push_back(-0.7091);
     write_msg_.name.push_back("r_knee");
