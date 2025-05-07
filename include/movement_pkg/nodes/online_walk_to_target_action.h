@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef WALKING_TO_TARGET_ACTION_H
-#define WALKING_TO_TARGET_ACTION_H
+#ifndef ONLINE_WALKING_TO_TARGET_ACTION_H
+#define ONLINE_WALKING_TO_TARGET_ACTION_H
 
 #include "movement_pkg/walking_controller.h"
 #include "movement_pkg/cb_data_manager.h"
@@ -47,4 +47,4 @@ class OnlineWalkToTarget : public ActionNode, public WalkingController, public C
 };
 }  // namespace BT
 
-#endif  // WALKING_TO_TARGET_ACTION_H
+#endif  // ONLINE_WALKING_TO_TARGET_ACTION_H
