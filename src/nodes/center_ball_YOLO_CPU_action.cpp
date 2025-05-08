@@ -81,7 +81,7 @@ void BT::CenterBallYOLOCPU::WaitForTick()
 
 void BT::CenterBallYOLOCPU::writeHeadJoint(double ang_value, bool is_pan)
 {
-    if (getModule("head_pan") != "direct_control_module")
+    if (getModule("r_knee") != "direct_control_module")
     {
         setModule("direct_control_module");
         ros::Duration(1).sleep();
