@@ -33,6 +33,9 @@ class WalkToTarget : public ActionNode, public WalkingController, public CBDataM
         double calculateDistance(double head_tilt);
 
         // Variables
+        double walked_distance = 0.0;
+        double accum_rotation = 0.0;
+        double prev_delta_angle = 0.0;
         double head_pan_angle_;
         double head_tilt_angle_;
         double fb_move;

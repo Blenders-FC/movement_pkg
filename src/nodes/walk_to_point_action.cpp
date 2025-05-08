@@ -27,7 +27,7 @@ void BT::WalkToPoint::WaitForTick()
         // Perform action...
         while (get_status() == BT::IDLE)
         {
-            set_status(BT::RUNNING);
+            // set_status(BT::RUNNING);
 
             if (ball && std::isfinite(ball->distance) && std::isfinite(ball->pan_angle)
                 && ball->distance > 0 && std::abs(ball->pan_angle) <= M_PI)

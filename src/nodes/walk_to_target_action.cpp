@@ -33,7 +33,7 @@ void BT::WalkToTarget::WaitForTick()
             head_tilt_angle_ = getHeadTilt();
 
             this->setModule("walking_module");
-            ROS_TAGGED_ONCE_LOG("Walking towards target...", "CYAN", true, "Walk_target");
+            ROS_TAGGED_ONCE_LOG("Walking towards target...", "BROWN_BG", true, "Walk_target");
             walkTowardsTarget(head_pan_angle_, head_tilt_angle_);
 
             if (walkingSucced)
@@ -49,36 +49,66 @@ void BT::WalkToTarget::WaitForTick()
 
 void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_angle)
 {
-    ros::Time curr_time_walk = ros::Time::now();
-    ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
-    double delta_time_walk = dur_walk.nsec * 0.000000001 + dur_walk.sec;
-    prev_time_walk_ = curr_time_walk;
-
+    double distance_to_ball = calculateDistance(head_tilt_angle);
+    ROS_COLORED_LOG("dist to ball: %f   ang to ball: %f", YELLOW, true, distance_to_ball, head_pan_angle);
     while (ros::ok())
     {
-        double distance_to_target = calculateDistance(head_tilt_angle);
-        if (distance_to_target < 0) distance_to_target *= (-1);
-        ROS_COLORED_LOG("dist to ball: ", CYAN, false, distance_to_target);
+        ros::Time curr_time_walk = ros::Time::now();
+        ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
         
-        if (distance_to_target > distance_to_kick_)
+        if (dur_walk.toSec() == curr_time_walk.toSec())
         {
-            fb_move = 0.0;
-            rl_angle = 0.0;
-            distance_to_walk = distance_to_target - distance_to_kick_;
-
-            calcFootstep(distance_to_walk, head_pan_angle, delta_time_walk, fb_move, rl_angle);
-            setWalkingParam(fb_move, 0, rl_angle, true);
-
-            walk_command.data = "start";
-            walk_command_pub.publish(walk_command);
-
-            ros::Duration(0.1).sleep();
+            prev_time_walk_ = curr_time_walk;
+            return;
         }
-        else{
+
+        double delta_time_walk = dur_walk.toSec();
+        prev_time_walk_ = curr_time_walk;
+    
+        if (distance_to_ball < 0)
+        {
+            distance_to_ball *= (-1);
+        }
+    
+        double distance_to_kick = 0; // 0.30;  //0.22
+        double distance_to_walk = distance_to_ball - distance_to_kick;
+        double delta_distance = distance_to_walk - walked_distance;
+    
+        if (walked_distance >= distance_to_walk)
+        {
             stopWalking();
             walkingSucced = true;
-            break;
+            return;
         }
+
+        double delta_angle = head_pan_angle - accum_rotation;
+
+        // checking sign chance to avoid oscillation  ||  angle between a range of error
+        if (delta_angle * prev_delta_angle < 0 || std::abs(delta_angle) < 0.01)
+        {
+            delta_angle = 0.0;  // Stop turning
+        }
+
+        prev_delta_angle = delta_angle;
+    
+        double fb_move = 0.0, rl_angle = 0.0;
+    
+        // std::cout << walked_distance << std::endl;
+        // std::cout << distance_to_walk - walked_distance << std::endl;
+        // std::cout << current_x_move_ << std::endl;
+        // std::cout << delta_time_walk << std::endl;
+    
+        calcFootstep(delta_distance, delta_angle, delta_time_walk, fb_move, rl_angle);  // pan = 0
+        ROS_COLORED_LOG("curr dist to ball: %f   curr ang to ball: %f", CYAN, false, delta_distance, delta_angle);
+
+        walked_distance += fabs(fb_move);
+        accum_rotation += rl_angle;
+        setWalkingParam(fb_move, 0, rl_angle, true);
+        
+        std_msgs::String command_msg;
+        command_msg.data = "start";
+        walk_command_pub.publish(command_msg);
+        ros::Duration(0.1).sleep();
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     set_status(BT::FAILURE);
