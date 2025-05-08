@@ -29,7 +29,7 @@ void BT::SearchBall::WaitForTick()
         {
             turn_cnt_ = 0;
     
-            // set_status(BT::RUNNING);
+            set_status(BT::RUNNING);
             if (getModule("head_pan") != "direct_control_module")
             {
                 setModule("direct_control_module");
