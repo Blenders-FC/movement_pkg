@@ -4,7 +4,7 @@
 #include <eigen3/Eigen/Eigen>
 
 #include "movement_pkg/utils.h"
-#include "soccer_pkg/referee.h"
+// #include "soccer_pkg/referee.h"
 #include "robotis_math/robotis_linear_algebra.h"
 
 class CBDataManager : public virtual utils
