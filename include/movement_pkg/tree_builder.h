@@ -20,6 +20,8 @@
 #include "nodes/turn_left_action.h"
 #include "nodes/turn_right_action.h"
 #include "nodes/choose_kick_foot_condition.h"
+#include "nodes/long_kick_action.h"
+
 
 
 // Includes de acciones
