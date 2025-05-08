@@ -43,13 +43,15 @@ void BT::SearchBall::WaitForTick()
             angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
             angle_mov_y_ = head_tilt_angle_ * 57.2958;  // RadToDeg -> 180/pi
             limit_x_error_ = abs(70 - angle_mov_x_);
+            limit_y_error_ = abs(-50 - angle_mov_y_);
 
             ROS_COLORED_LOG("X: %f  Y: %f", TEAL, false, angle_mov_x_, angle_mov_y_);
-            if (limit_x_error_ <= 5 && angle_mov_y_ <= -50){
+            if (limit_x_error_ <= 5 && limit_y_error_ <= 5){
                 turn_cnt_ = 0;
                 // turn2search(9);
                 ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);
                 set_status(BT::FAILURE);
+                head_direction_ = true;
                 break;
             }
             if (head_direction_ && angle_mov_x_ <= 70)
@@ -86,22 +88,24 @@ void BT::SearchBall::WaitForTick()
 
 void BT::SearchBall::writeHeadJoint(double ang_value, bool is_pan)
 {
-    write_msg_.header.stamp = ros::Time::now();
+    write_msg_x_.header.stamp = ros::Time::now();
+    write_msg_y_.header.stamp = ros::Time::now();
         
     ang_value *= 0.0174533;  // DegToRad -> pi/180
   
     if (is_pan){
       if (ang_value >= 1.2217) ang_value = 1.2217;            //70 deg
       else if (ang_value <= -1.2217) ang_value = -1.2217;     //-70 deg
-      write_msg_.name.push_back("head_pan");
-      write_msg_.position.push_back(ang_value);
+      write_msg_x_.name.push_back("head_pan");
+      write_msg_x_.position.push_back(ang_value);
+      write_joint_pub_.publish(write_msg_x_);
     }else{
       if (ang_value >= 0.34906) ang_value = 0.34906;        //20 deg
       else if (ang_value <= -1.2217) ang_value = -1.2217;   //-70 deg
-      write_msg_.name.push_back("head_tilt");
-      write_msg_.position.push_back(ang_value);
+      write_msg_y_.name.push_back("head_tilt");
+      write_msg_y_.position.push_back(ang_value);
+      write_joint_pub_.publish(write_msg_y_);
     }
-    write_joint_pub_.publish(write_msg_);
 }
 
 void BT::SearchBall::Halt()

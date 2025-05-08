@@ -40,8 +40,10 @@ class SearchBall : public ActionNode, public CBDataManager
         double head_pan_angle_;
         double head_tilt_angle_;
         double limit_x_error_;
+        double limit_y_error_;
         int turn_cnt_ = 0;
-        sensor_msgs::JointState write_msg_;
+        sensor_msgs::JointState write_msg_x_;
+        sensor_msgs::JointState write_msg_y_;
 };
 }  // namespace BT
 

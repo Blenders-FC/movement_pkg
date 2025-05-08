@@ -34,7 +34,7 @@ void BT::HeadToHome::WaitForTick()
 
             writeHeadJoint(0, true);
             writeHeadJoint(-10, false);
-            ros::Duration(1).sleep();
+            ros::Duration(2).sleep();
 
             ROS_SUCCESS_LOG("Head in home position!");
             set_status(BT::SUCCESS);
