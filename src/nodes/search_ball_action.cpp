@@ -40,12 +40,12 @@ void BT::SearchBall::WaitForTick()
             // Flow for searching ball - specially when distance to ball >= 1m
             head_pan_angle_ = getHeadPan();
             head_tilt_angle_ = getHeadTilt();
-            angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
+            head_pan_angle_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
             angle_mov_y_ = head_tilt_angle_ * 57.2958;  // RadToDeg -> 180/pi
             limit_x_error_ = abs(70 - angle_mov_x_);
             limit_y_error_ = abs(-50 - angle_mov_y_);
 
-            ROS_COLORED_LOG("X: %f  Y: %f", TEAL, false, angle_mov_x_, angle_mov_y_);
+            ROS_COLORED_LOG("X: %f  Y: %f", TEAL, false, head_pan_angle_, angle_mov_y_);
             if (limit_x_error_ <= 5 && limit_y_error_ <= 5){
                 turn_cnt_ = 0;
                 // turn2search(9);
@@ -94,14 +94,14 @@ void BT::SearchBall::writeHeadJoint(double ang_value, bool is_pan)
     ang_value *= 0.0174533;  // DegToRad -> pi/180
   
     if (is_pan){
-      if (ang_value >= 1.2217) ang_value = 1.2217;            //70 deg
-      else if (ang_value <= -1.2217) ang_value = -1.2217;     //-70 deg
+      if (ang_value >= 1.22173) ang_value = 1.22173;            //70 deg
+      else if (ang_value <= -1.22173) ang_value = -1.22173;     //-70 deg
       write_msg_x_.name.push_back("head_pan");
       write_msg_x_.position.push_back(ang_value);
       write_joint_pub_.publish(write_msg_x_);
     }else{
       if (ang_value >= 0.34906) ang_value = 0.34906;        //20 deg
-      else if (ang_value <= -1.2217) ang_value = -1.2217;   //-70 deg
+      else if (ang_value <= -1.22173) ang_value = -1.22173;   //-70 deg
       write_msg_y_.name.push_back("head_tilt");
       write_msg_y_.position.push_back(ang_value);
       write_joint_pub_.publish(write_msg_y_);
