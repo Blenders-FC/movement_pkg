@@ -22,8 +22,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* kick_selector = new BT::ChooseKickFootCondition("ChooseKickFootCondition");
     auto* left_kick = new BT::LeftKick("LeftKick");
     auto* right_kick = new BT::RightKick("RightKick");
-    auto* is_fallen = new BT::RobotFallenCondition("IsFallen");
-    auto* get_up = new BT::GetUpCombined("GetUp");
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     
@@ -32,7 +30,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
     auto* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
     auto* right_kick_seq = new BT::SequenceNodeWithMemory("RightKickSeq");
-    auto* recovery_sequence = new BT::SequenceNodeWithMemory("RecoverySequence");
     auto* fallback_search_ball = new BT::FallbackNode("FallbackSearchBall");
     auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
     auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");
@@ -69,14 +66,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     main_fallback->AddChild(ball_found_sequence);
     main_fallback->AddChild(fallback_search_ball);
 
-    // Recovery from fall sequence
-    recovery_sequence->AddChild(is_fallen);
-    recovery_sequence->AddChild(get_up);
-
     // Repeat main sequence
-    reactive_fallback->AddChild(recovery_sequence);
-    reactive_fallback->AddChild(main_fallback);
-    repeat_main_loop->AddChild(reactive_fallback);
+    repeat_main_loop->AddChild(main_fallback);
 
     // Root node sequence
     root_node->AddChild(init_sequence);

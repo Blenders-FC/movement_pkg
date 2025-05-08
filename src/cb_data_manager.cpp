@@ -30,7 +30,30 @@ void CBDataManager::ballCenterCallback(const geometry_msgs::Point& msg)
 // Updating IMU state
 void CBDataManager::imuCallback(const sensor_msgs::Imu::ConstPtr& msg)
 {
-    imu_orientation_ = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+    Eigen::Quaterniond orientation(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+    Eigen::MatrixXd rpy_orientation = robotis_framework::convertQuaternionToRPY(orientation);
+    rpy_orientation *= (180 / 3.141516);
+    
+    pitch = rpy_orientation.coeff(1, 0);
+
+    if (present_pitch_ == 0) 
+        present_pitch_ = pitch;
+    else
+        present_pitch_ = present_pitch_ * (1 - alpha) + pitch * alpha;
+    // std::cout << present_pitch_ << std::endl;
+    if (present_pitch_ > FALL_FORWARD_LIMIT) 
+    {
+        goAction(122);
+        setModule("none");
+    } 
+    else if (present_pitch_ < FALL_BACK_LIMIT) 
+    {
+        goAction(1);
+        setModule("none");
+        ros::Duration(1.0).sleep();
+        goAction(82);
+        setModule("none");
+    }
 }
 
 // Updating head pan and tilt

@@ -49,6 +49,14 @@ private:
     bool start_button_flag_;
     std::string module_name_;
     std::string status_msg_;
+
+    //imu
+    double alpha = 0.4;
+    double pitch;
+    double rpy_orientation;
+    const double FALL_FORWARD_LIMIT = 55;
+    const double FALL_BACK_LIMIT = -55;
+    double present_pitch_ = 0;
 };
 
 #endif  // CB_DATA_MANAGER_H
