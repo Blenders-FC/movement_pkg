@@ -25,6 +25,7 @@ void BT::WalkToTarget::WaitForTick()
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_walk_target");
 
         // Perform action...
+        walked_distance = 0;  // Resets in each cycle
         while (get_status() == BT::IDLE)
         {
             set_status(BT::RUNNING);
