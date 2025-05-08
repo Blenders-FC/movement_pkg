@@ -71,7 +71,7 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
             distance_to_ball *= (-1);
         }
     
-        double distance_to_walk = distance_to_ball - distance_to_kick;
+        double distance_to_walk = distance_to_ball - distance_to_kick_;
         double delta_distance = distance_to_walk - walked_distance;
         ROS_COLORED_LOG("walked dist: %f", ORANGE, false, walked_distance);
     
