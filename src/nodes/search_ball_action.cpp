@@ -30,11 +30,14 @@ void BT::SearchBall::WaitForTick()
             turn_cnt_ = 0;
     
             // set_status(BT::RUNNING);
-            setModule("direct_control_module");
-            ros::Duration(1.0).sleep();
-            ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
+            if (getModule("head_pan") != "direct_control_module")
+            {
+                setModule("direct_control_module");
+                ros::Duration(1).sleep();
+                ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
+            }
+            
             // Flow for searching ball - specially when distance to ball >= 1m
-
             head_pan_angle_ = getHeadPan();
             angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
 

@@ -27,6 +27,7 @@ int main(int argc, char** argv)
     }
 
     ROS_INFO_STREAM("[publisher] Found PNG file. Loading...");
+    ros::Duration(0.5).sleep();  // 500ms
 
     cv::Mat image = cv::imread(image_path, cv::IMREAD_COLOR);
 

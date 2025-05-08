@@ -34,6 +34,7 @@ set(BT_SOURCE_FILES
 
 set(SOURCE_FILES
   src/nodes/ball_detected_condition.cpp
+  src/nodes/ball_detected_Viola_Jones_condition.cpp
   src/nodes/ball_direction_condition.cpp
   src/nodes/ball_in_center_condition.cpp
   src/nodes/center_ball_Viola_Jones_action.cpp

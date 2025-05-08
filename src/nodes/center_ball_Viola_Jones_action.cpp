@@ -81,7 +81,12 @@ void BT::CenterBallViolaJones::WaitForTick()
 
 void BT::CenterBallViolaJones::writeHeadJoint(double ang_value, bool is_pan)
 {
-    setModule("direct_control_module");
+    if (getModule("head_pan") != "direct_control_module")
+    {
+        setModule("direct_control_module");
+        ros::Duration(1).sleep();
+        ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
+    }
     write_msg_;
     write_msg_.header.stamp = ros::Time::now();
         
