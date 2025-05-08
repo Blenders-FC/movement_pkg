@@ -33,16 +33,19 @@ void BT::TurnRight::WaitForTick()
             ROS_TAGGED_ONCE_LOG("Turning right in place!", "CYAN", false, "Turn_r");
             
             // Running state
-            set_status(BT::RUNNING);
+            // set_status(BT::RUNNING);
             
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
-            if (getModule("r_knee") != "none")
-            {
-                setModule("none");
-                ros::Duration(1).sleep();
-            }
+            // if (getModule("r_knee") != "none" or getModule("head_pan") != "none")
+            // {
+            //     setModule("none");
+            //     ros::Duration(1).sleep();
+            // }
+            setModule("none");
+            ROS_COLORED_LOG("Set Module to none", YELLOW, false);
+            ros::Duration(1).sleep();
 
             for (int i = 0; i < turns_num_; i++)
             {

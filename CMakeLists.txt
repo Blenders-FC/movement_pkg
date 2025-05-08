@@ -54,6 +54,7 @@ set(SOURCE_FILES
   src/nodes/right_kick_action.cpp
   src/nodes/robot_fallen_condition.cpp
   src/nodes/search_ball_action.cpp
+  src/nodes/send_head_to_home_action.cpp
   src/nodes/simple_walk_action.cpp
   src/nodes/stand_up_action.cpp
   src/nodes/start_button_condition.cpp

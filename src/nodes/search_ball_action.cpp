@@ -30,7 +30,7 @@ void BT::SearchBall::WaitForTick()
             turn_cnt_ = 0;
     
             // set_status(BT::RUNNING);
-            if (getModule("head_pan") != "direct_control_module")
+            if (getModule("r_knee") != "direct_control_module")
             {
                 setModule("direct_control_module");
                 ros::Duration(1).sleep();
@@ -39,8 +39,19 @@ void BT::SearchBall::WaitForTick()
             
             // Flow for searching ball - specially when distance to ball >= 1m
             head_pan_angle_ = getHeadPan();
+            head_tilt_angle_ = getHeadTilt();
             angle_mov_x_ = head_pan_angle_ * 57.2958;  // RadToDeg -> 180/pi
+            angle_mov_y_ = head_tilt_angle_ * 57.2958;  // RadToDeg -> 180/pi
+            limit_x_error_ = abs(70 - angle_mov_x_);
 
+            ROS_COLORED_LOG("X: %f  Y: %f", TEAL, false, angle_mov_x_, angle_mov_y_);
+            if (limit_x_error_ <= 5 && angle_mov_y_ <= -50){
+                turn_cnt_ = 0;
+                // turn2search(9);
+                ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);
+                set_status(BT::FAILURE);
+                break;
+            }
             if (head_direction_ && angle_mov_x_ <= 70)
             {
                 angle_mov_x_ += 5;
@@ -64,13 +75,6 @@ void BT::SearchBall::WaitForTick()
                         angle_mov_y_ = -50;
                         ROS_COLORED_LOG("New tilt angle position: %f", TEAL, false, angle_mov_y_);
                         writeHeadJoint(angle_mov_y_, false);
-                    }
-                    else if (turn_cnt_ == 2) 
-                    {
-                        turn_cnt_ = 0;
-                        // turn2search(9);
-                        ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);
-                        set_status(BT::FAILURE);
                     }
                 }
             }

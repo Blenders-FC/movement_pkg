@@ -34,6 +34,7 @@
 #include "nodes/right_kick_action.h"
 #include "nodes/robot_fallen_condition.h"
 #include "nodes/search_ball_action.h"
+#include "nodes/send_head_to_home_action.h"
 #include "nodes/simple_walk_action.h"
 #include "nodes/stand_up_action.h"
 #include "nodes/start_button_condition.h"
