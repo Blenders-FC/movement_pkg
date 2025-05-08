@@ -36,6 +36,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* fallback_search_ball = new BT::FallbackNode("FallbackSearchBall");
     auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
     auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");
+    auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
     auto* main_fallback = new BT::FallbackNode("MainFallback");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
 

@@ -21,15 +21,15 @@ void BT::SearchBall::WaitForTick()
 {
     while (ros::ok())
     {
-        ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_searchball");
+        // ROS_TAGGED_ONCE_LOG("WAIT FOR TICK", "DEFAULT", false, "Wait_searchball");
         tick_engine.Wait();
-        ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_searchball");
+        // ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_searchball");
         
         while (get_status() == BT::IDLE)
         {
             turn_cnt_ = 0;
     
-            set_status(BT::RUNNING);
+            // set_status(BT::RUNNING);
             if (getModule("head_pan") != "direct_control_module")
             {
                 setModule("direct_control_module");
@@ -44,7 +44,7 @@ void BT::SearchBall::WaitForTick()
             if (head_direction_ && angle_mov_x_ <= 70)
             {
                 angle_mov_x_ += 5;
-                ROS_COLORED_LOG("New angle position: %f", CYAN, false, angle_mov_x_);
+                ROS_COLORED_LOG("New pan angle position: %f", CYAN, false, angle_mov_x_);
                 writeHeadJoint(angle_mov_x_, true);
                 ros::Duration(1.0).sleep();
                 if (angle_mov_x_ >= 70) head_direction_ = false;
@@ -52,6 +52,7 @@ void BT::SearchBall::WaitForTick()
             else if (!head_direction_ && angle_mov_x_ >= -70)
             {
                 angle_mov_x_ -= 5;
+                ROS_COLORED_LOG("New pan angle position: %f", CYAN, false, angle_mov_x_);
                 writeHeadJoint(angle_mov_x_, true);
                 ros::Duration(1.0).sleep();
                 if (angle_mov_x_ <= -70)
@@ -61,6 +62,7 @@ void BT::SearchBall::WaitForTick()
                     if (turn_cnt_ == 1)
                     {
                         angle_mov_y_ = -50;
+                        ROS_COLORED_LOG("New tilt angle position: %f", TEAL, false, angle_mov_y_);
                         writeHeadJoint(angle_mov_y_, false);
                     }
                     else if (turn_cnt_ == 2) 
@@ -72,6 +74,8 @@ void BT::SearchBall::WaitForTick()
                     }
                 }
             }
+            ROS_SUCCESS_LOG("Searching Ball!");
+            set_status(BT::SUCCESS);
         }
     }
 }
