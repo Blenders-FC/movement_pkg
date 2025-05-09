@@ -16,7 +16,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     BT::KickSideDeciderCondition* kick_side_decider_condition = new BT::KickSideDeciderCondition("KickSideDeciderCondition");
     BT::LeftLongKick* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
     BT::RightLongKick* right_long_kick_action = new  BT::RightLongKick("RightLongKick");
-
+	BT::PenaltyKick* penalty_kick = new BT::PenaltyKick("PenaltyKick");
 
     // Nodos de control
     BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
@@ -33,15 +33,15 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_timer_condition_done);
 
     // Secuencia derecha
-    right_sequence->AddChild(turn_right);
+    //right_sequence->AddChild(turn_right);
     //right_sequence->AddChild(left_kick);
     right_sequence->AddChild(left_long_kick_action);
 
     // Secuencia izquierda
-    left_sequence->AddChild(kick_side_decider_condition);
-    left_sequence->AddChild(turn_left);
+   // left_sequence->AddChild(kick_side_decider_condition);
+    //left_sequence->AddChild(turn_left);
     //left_sequence->AddChild(right_kick);
-    left_sequence->AddChild(right_long_kick_action);
+    left_sequence->AddChild(penalty_kick);
 
     // Elección aleatoria (implementada como Fallback con condiciones)
     random_choice->AddChild(left_sequence);   // Si falla, va a izquierda

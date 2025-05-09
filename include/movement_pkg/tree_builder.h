@@ -29,7 +29,7 @@
 
 // Includes de acciones
 #include "nodes/stand_up_action.h"  // Añadido para StandUp
-//#include "nodes/penalty_kick_action.h"     // Para PenaltyKick
+#include "nodes/penalty_kick_action.h"     // Para PenaltyKick
 #include "nodes/right_kick_action.h" //Para penalty v2
 #include "nodes/left_kick_action.h" //Para penalty v2
 
