@@ -4,20 +4,20 @@
         Marlene Cobian
 */
 
-#include <movement_pkg/nodes/long_kick_action.h>
+#include <movement_pkg/nodes/right_long_kick_action.h>
 
-BT::LongKick::LongKick(std::string name) : ActionNode::ActionNode(name), utils()
+BT::RightLongKick::RightLongKick(std::string name) : ActionNode::ActionNode(name), utils()
 {
     // Publisher
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
 
     type_ = BT::ACTION_NODE;
-    thread_ = std::thread(&LongKick::WaitForTick, this);
+    thread_ = std::thread(&RightLongKick::WaitForTick, this);
 }
 
-BT::LongKick::~LongKick() {}
+BT::RightLongKick::~RightLongKick() {}
 
-void BT::LongKick::WaitForTick()
+void BT::RightLongKick::WaitForTick()
 {
     while(ros::ok())
     {
@@ -32,7 +32,7 @@ void BT::LongKick::WaitForTick()
             // Running state
             set_status(BT::RUNNING);
 
-            ROS_COLORED_LOG("Long kicking!", TEAL, false);
+            ROS_COLORED_LOG("Right long kicking!", TEAL, false);
             //node loop
             write_msg_.header.stamp = ros::Time::now();
             
@@ -50,7 +50,7 @@ void BT::LongKick::WaitForTick()
     set_status(BT::FAILURE);
 }
 
-void BT::LongKick::kick()
+void BT::RightLongKick::kick()
 {    
     //Detenerse
     write_msg_.name.push_back("r_ank_pitch");
@@ -73,50 +73,50 @@ void BT::LongKick::kick()
     write_msg_.position.push_back(0.17);
     write_msg_.name.push_back("r_hip_roll");
     write_msg_.position.push_back(0.17);
-    write_msg_.name.push_back("r_ank_roll");
-    write_msg_.position.push_back(-0.15);
     write_msg_.name.push_back("l_ank_roll");
+    write_msg_.position.push_back(-0.15);
+    write_msg_.name.push_back("r_ank_roll");
     write_msg_.position.push_back(-0.45);
     write_joint_pub_.publish(write_msg_);
      
     //Posicion de seguridad
     ros::Duration(0.1).sleep();
-    write_msg_.name.push_back("l_ank_pitch");
-    write_msg_.position.push_back(0.7091);
-    write_msg_.name.push_back("l_knee");
-    write_msg_.position.push_back(1.5287);
-    write_msg_.name.push_back("l_hip_pitch");
-    write_msg_.position.push_back(-0.9474 - crouch_angle_);
-    write_msg_.name.push_back("l_ank_roll");
+    write_msg_.name.push_back("r_ank_pitch");
+    write_msg_.position.push_back(-0.7091);
+    write_msg_.name.push_back("r_knee");
+    write_msg_.position.push_back(-1.5287);
+    write_msg_.name.push_back("r_hip_pitch");
+    write_msg_.position.push_back(0.9474 + crouch_angle_);
+    write_msg_.name.push_back("r_ank_roll");
     write_msg_.position.push_back(0);
     write_joint_pub_.publish(write_msg_);
      
     //Patada
     ros::Duration(0.1).sleep();
-    write_msg_.name.push_back("l_ank_pitch");
-    write_msg_.position.push_back(0.0046);
-    write_msg_.name.push_back("l_knee");
-    write_msg_.position.push_back(0.7420);
-    write_msg_.name.push_back("l_hip_pitch");
-    write_msg_.position.push_back(-1.2287 - crouch_angle_);
+    write_msg_.name.push_back("r_ank_pitch");
+    write_msg_.position.push_back(-0.0046);
+    write_msg_.name.push_back("r_knee");
+    write_msg_.position.push_back(-0.7420);
+    write_msg_.name.push_back("r_hip_pitch");
+    write_msg_.position.push_back(1.2287 + crouch_angle_);
     write_joint_pub_.publish(write_msg_);
 
     ros::Duration(0.05).sleep();
-    write_msg_.name.push_back("l_knee");
+    write_msg_.name.push_back("r_knee");
     write_msg_.position.push_back(0);
-    write_msg_.name.push_back("l_hip_pitch");
-    write_msg_.position.push_back(-1.5 - crouch_angle_);
+    write_msg_.name.push_back("r_hip_pitch");
+    write_msg_.position.push_back(1.5 + crouch_angle_);
     write_joint_pub_.publish(write_msg_);
      
     //Posiciòn de seguridad
     ros::Duration(0.1).sleep();
-    write_msg_.name.push_back("l_ank_pitch");
-    write_msg_.position.push_back(0.7091);
-    write_msg_.name.push_back("l_knee");
-    write_msg_.position.push_back(1.8);
-    write_msg_.name.push_back("l_hip_pitch");
-    write_msg_.position.push_back(-1.4 - crouch_angle_);
-    write_msg_.name.push_back("l_ank_roll");
+    write_msg_.name.push_back("r_ank_pitch");
+    write_msg_.position.push_back(-0.7091);
+    write_msg_.name.push_back("r_knee");
+    write_msg_.position.push_back(-1.8);
+    write_msg_.name.push_back("r_hip_pitch");
+    write_msg_.position.push_back(1.4 + crouch_angle_);
+    write_msg_.name.push_back("r_ank_roll");
     write_msg_.position.push_back(0);
     write_joint_pub_.publish(write_msg_);
      
@@ -131,17 +131,17 @@ void BT::LongKick::kick()
     write_msg_.name.push_back("r_ank_roll");
     write_msg_.position.push_back(0.0873);
     
-    write_msg_.name.push_back("l_ank_pitch");
-    write_msg_.position.push_back(positions[rows_-1][3]);
-    write_msg_.name.push_back("l_knee");
-    write_msg_.position.push_back(positions[rows_-1][4]);
-    write_msg_.name.push_back("l_hip_pitch");
-    write_msg_.position.push_back(positions[rows_-1][5] - crouch_angle_);
+    write_msg_.name.push_back("r_ank_pitch");
+    write_msg_.position.push_back(positions[rows_-1][0]);
+    write_msg_.name.push_back("r_knee");
+    write_msg_.position.push_back(positions[rows_-1][1]);
+    write_msg_.name.push_back("r_hip_pitch");
+    write_msg_.position.push_back(positions[rows_-1][2] + crouch_angle_);
     write_joint_pub_.publish(write_msg_);
 }
 
-void BT::LongKick::Halt()
+void BT::RightLongKick::Halt()
 {
     set_status(BT::HALTED);
-    ROS_TAGGED_ONCE_LOG("LongKick HALTED: Stopped long kick", "ORANGE", false, "Halted_long_kick");
+    ROS_TAGGED_ONCE_LOG("RightLongKick HALTED: Stopped long kick", "ORANGE", false, "Halted_long_kick");
 }

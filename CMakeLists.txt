@@ -46,7 +46,8 @@ set(SOURCE_FILES
   src/nodes/get_up_combined_action.cpp
   src/nodes/get_up_forward_action.cpp
   src/nodes/left_kick_action.cpp
-  src/nodes/long_kick_action.cpp
+  src/nodes/left_long_kick_action.cpp
+  src/nodes/right_long_kick_action.cpp
   src/nodes/manager_done_condition.cpp
   src/nodes/manager_running_condition.cpp
   src/nodes/online_walk_to_target_action.cpp

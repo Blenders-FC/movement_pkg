@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef LONG_KICK_ACTION_H
-#define LONG_KICK_ACTION_H
+#ifndef LEFT_LONG_KICK_ACTION_H
+#define LEFT_LONG_KICK_ACTION_H
 
 #include <movement_pkg/utils.h>
 #include <action_node.h>
@@ -13,12 +13,12 @@
 
 namespace BT
 {
-class LongKick : public ActionNode, public virtual utils
+class LeftLongKick : public ActionNode, public virtual utils
 {
     public:
         // Constructor
-        explicit LongKick(std::string name);
-        ~LongKick();
+        explicit LeftLongKick(std::string name);
+        ~LeftLongKick();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
@@ -36,4 +36,4 @@ class LongKick : public ActionNode, public virtual utils
 };
 }  // namespace BT
 
-#endif  // LONG_LEFT_ACTION_H
+#endif  // LEFT_LONG_KICK_ACTION_H
