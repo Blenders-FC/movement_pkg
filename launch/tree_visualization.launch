@@ -1,0 +1,19 @@
+<!-- launch/tree_visualization.launch -->
+<launch>
+  <!-- Parameters -->
+  <arg name="output_path"       default="$(find movement_pkg)/config/bt_tree.dot" />
+  <arg name="delete_on_exit"    default="true" />
+
+  <!-- Behavior tree visualizer -->
+  <node pkg="movement_pkg" type="tree_visualization" name="tree_visualization_node" output="screen">
+    <param name="dot_output_path" value="$(arg output_path)" />
+  </node>
+
+  <!-- Image viewer -->
+  <node pkg="movement_pkg" type="view_bt_tree.sh" name="tree_image_viewer" output="screen" args="$(arg output_path)" />
+  <node pkg="movement_pkg" type="bt_tree_image_publisher" name="bt_tree_image_publisher" output="screen"/>
+
+  <!-- Optional cleanup -->
+  <node pkg="movement_pkg" type="cleanup_bt_image.sh" name="bt_image_cleanup" output="screen"
+        args="$(arg output_path) $(arg delete_on_exit)" launch-prefix="bash" />
+</launch>

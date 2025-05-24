@@ -16,7 +16,70 @@ find_package(catkin REQUIRED
     op3_action_module_msgs
     robotis_math
     op3_walking_module_msgs
+#   message_generation
+    robotis_framework_common
 )
+find_package(OpenCV REQUIRED)
+
+# Add Behavior Tree Core source files
+set(BT_SOURCE_FILES
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/action_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/condition_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/control_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/decorator_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/leaf_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/tree_node.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/dot_bt.cpp
+)
+
+set(SOURCE_FILES
+  src/nodes/ball_detected_condition.cpp
+  src/nodes/ball_detected_Viola_Jones_condition.cpp
+  src/nodes/ball_direction_condition.cpp
+  src/nodes/ball_in_center_condition.cpp
+  src/nodes/center_ball_Viola_Jones_action.cpp
+  src/nodes/center_ball_YOLO_CPU_action.cpp
+  src/nodes/center_ball_YOLO_Jetson_action.cpp
+  src/nodes/choose_kick_foot_condition.cpp
+  src/nodes/fov_walking_action.cpp
+  src/nodes/get_up_backwards_action.cpp
+  src/nodes/get_up_combined_action.cpp
+  src/nodes/get_up_forward_action.cpp
+  src/nodes/left_kick_action.cpp
+  src/nodes/left_long_kick_action.cpp
+  src/nodes/right_long_kick_action.cpp
+  src/nodes/manager_done_condition.cpp
+  src/nodes/manager_running_condition.cpp
+  src/nodes/online_walk_to_target_action.cpp
+  src/nodes/penalty_kick_action.cpp
+  src/nodes/right_kick_action.cpp
+  src/nodes/robot_fallen_condition.cpp
+  src/nodes/search_ball_action.cpp
+  src/nodes/send_head_to_home_action.cpp
+  src/nodes/simple_walk_action.cpp
+  src/nodes/stand_up_action.cpp
+  src/nodes/start_button_condition.cpp
+  src/nodes/timer_condition.cpp
+  src/nodes/turn_left_action.cpp
+  src/nodes/turn_right_action.cpp
+  src/nodes/walk_to_point_action.cpp
+  src/nodes/walk_to_target_action.cpp
+  src/repeat_node.cpp
+)
+
+set(SHARED_LIBRARIES
+  ${catkin_LIBRARIES}
+  ${Eigen3_LIBRARIES}
+  behavior_tree_core
+  cb_data_manager
+  walking_controller
+  utils
+  fov_calculation
+  blackboard
+  tree_builder
+  repeat_node
+)
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -56,6 +119,7 @@ find_package(catkin REQUIRED
 #   FILES
 #   Message1.msg
 #   Message2.msg
+#   referee.msg
 # )
 
 ## Generate services in the 'srv' folder
@@ -109,6 +173,8 @@ find_package(catkin REQUIRED
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  INCLUDE_DIRS
+    include
   CATKIN_DEPENDS
     roscpp
     robotis_controller_msgs
@@ -121,6 +187,7 @@ catkin_package(
     op3_action_module_msgs
     robotis_math
     op3_walking_module_msgs
+#    message_runtime
 )
 ###########
 ## Build ##
@@ -129,24 +196,42 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/include
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_leaves/include
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/movement_pkg.cpp
+#   src/${PROJECT_NAME}/soccer_pkg.cpp
 # )
 
 ## Declare a C++ executable
-#add_executable(${PROJECT_NAME}_node src/movement_pkg_node.cpp)
-add_executable(movement_node
-  src/movement_node.cpp
+#add_executable(${PROJECT_NAME}_node src/soccer_pkg_node.cpp)
+add_executable(motion_controller_node
+  src/motion_controller_node.cpp
+  src/tree_builder.cpp
+  ${SOURCE_FILES}
+)
+
+add_executable(tree_visualization
+  src/tree_visualization.cpp
+  src/tree_builder.cpp
+  ${PROJECT_SOURCE_DIR}/../Behavior_Trees_Blenders/behavior_tree_core/src/dot_bt.cpp
+  ${SOURCE_FILES}
+)
+
+add_executable(bt_tree_image_publisher src/publish_bt_image.cpp)
+target_link_libraries(bt_tree_image_publisher
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )
 
 ## Add cmake target dependencies of the library
 #add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(movement_node
+add_dependencies(motion_controller_node
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
 )
@@ -166,9 +251,26 @@ add_dependencies(movement_node
 #   ${catkin_LIBRARIES}
 #)
 
-target_link_libraries(movement_node
+add_library(cb_data_manager src/cb_data_manager.cpp)
+add_library(walking_controller src/walking_controller.cpp)
+add_library(utils src/utils.cpp)
+add_library(fov_calculation src/fov_calculation.cpp)
+add_library(blackboard src/blackboard.cpp)
+add_library(tree_builder src/tree_builder.cpp)
+add_library(repeat_node src/repeat_node.cpp)
+
+target_link_libraries(motion_controller_node
+  ${SHARED_LIBRARIES}
+)
+
+target_link_libraries(cb_data_manager
   ${catkin_LIBRARIES}
-  ${Eigen3_LIBRARIES}
+  ${Boost_LIBRARIES}
+  robotis_framework_common
+)
+
+target_link_libraries(tree_visualization
+  ${SHARED_LIBRARIES}
 )
 
 #############
@@ -192,7 +294,7 @@ target_link_libraries(movement_node
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 #)
 
-install(TARGETS movement_node
+install(TARGETS motion_controller_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -220,7 +322,7 @@ install(DIRECTORY launch
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_movement_pkg.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_soccer_pkg.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
