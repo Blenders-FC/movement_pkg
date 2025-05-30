@@ -29,7 +29,7 @@ class CenterBallYOLOCPU : public ActionNode, public CBDataManager
     private:
         //  Auxiliar methods
         void writeHeadJoint(double ang_value, bool is_pan);
-        double calculateDistance(double head_tilt)
+        double calculateDistance(double head_tilt);
 
         // ROS variable
         ros::Publisher write_joint_pub_;

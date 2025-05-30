@@ -108,7 +108,7 @@ void BT::CenterBallYOLOCPU::writeHeadJoint(double ang_value, bool is_pan)
     write_joint_pub_.publish(write_msg_);
 }
 
-double BT::WalkToTarget::calculateDistance(double head_tilt)
+double BT::CenterBallYOLOCPU::calculateDistance(double head_tilt)
 {
     double distance = CAMERA_HEIGHT_ * tan(M_PI * 0.5 + head_tilt - hip_pitch_offset_);
     return distance;
