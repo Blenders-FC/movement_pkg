@@ -71,6 +71,8 @@ void BT::CenterBallYOLOCPU::WaitForTick()
             else
             {
                 ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!");
+                double distance_to_ball = calculateDistance(head_tilt_angle_);
+                ROS_COLORED_LOG("dist to ball: %f   ang to ball: %f", YELLOW, true, distance_to_ball, head_pan_angle);
                 set_status(BT::SUCCESS);
             }
         }
@@ -104,6 +106,12 @@ void BT::CenterBallYOLOCPU::writeHeadJoint(double ang_value, bool is_pan)
       write_msg_.position.push_back(ang_value);
     }
     write_joint_pub_.publish(write_msg_);
+}
+
+double BT::WalkToTarget::calculateDistance(double head_tilt)
+{
+    double distance = CAMERA_HEIGHT_ * tan(M_PI * 0.5 + head_tilt - hip_pitch_offset_);
+    return distance;
 }
 
 void BT::CenterBallYOLOCPU::Halt()

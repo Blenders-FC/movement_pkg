@@ -29,6 +29,7 @@ class CenterBallYOLOCPU : public ActionNode, public CBDataManager
     private:
         //  Auxiliar methods
         void writeHeadJoint(double ang_value, bool is_pan);
+        double calculateDistance(double head_tilt)
 
         // ROS variable
         ros::Publisher write_joint_pub_;
@@ -43,6 +44,8 @@ class CenterBallYOLOCPU : public ActionNode, public CBDataManager
         double xerror_;
         double yerror_;
         sensor_msgs::JointState write_msg_;
+        const double CAMERA_HEIGHT_ = 0.46;
+        const double hip_pitch_offset_ = 0.12217305; //7°
 };
 }  // namespace BT
 
