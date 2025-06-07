@@ -43,6 +43,7 @@
 #include "nodes/turn_right_action.h"
 #include "nodes/walk_to_point_action.h"
 #include "nodes/walk_to_target_action.h"
+#include "nodes/repeat_n_times.h"
 
 
 namespace BT
