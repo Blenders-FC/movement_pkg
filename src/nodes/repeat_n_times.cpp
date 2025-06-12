@@ -1,12 +1,11 @@
-#include "movement_pkg/repeat_n_times.h"
+#include "movement_pkg/nodes/repeat_n_times.h"
 #include "movement_pkg/utils.h"
 
-namespace BT
-{
-Repeat_n_times::Repeat_n_times(std::string name, unsigned int num_repeats)
+
+BT::Repeat_n_times::Repeat_n_times(std::string name, unsigned int num_repeats)
     : ControlNode(name), num_repeats_(num_repeats), current_count_(0) {}
 
-BT::ReturnStatus Repeat_n_times::Tick()
+BT::ReturnStatus BT::Repeat_n_times::Tick()
 {
     // Reiniciar contador si no está en ejecución
     if (get_status() != BT::RUNNING) {
@@ -45,24 +44,23 @@ BT::ReturnStatus Repeat_n_times::Tick()
     }
 }
 
-void Repeat_n_times::Halt()
+void BT::Repeat_n_times::Halt()
 {
     current_count_ = 0;
     ControlNode::Halt();
 }
 
-int Repeat_n_times::DrawType()
+int BT::Repeat_n_times::DrawType()
 {
     return BT::REPEAT;
 }
 
-void Repeat_n_times::setNumRepeats(unsigned int num_repeats)
+void BT::Repeat_n_times::setNumRepeats(unsigned int num_repeats)
 {
     num_repeats_ = num_repeats;
 }
 
-unsigned int Repeat_n_times::getNumRepeats() const
+unsigned int BT::Repeat_n_times::getNumRepeats() const
 {
     return num_repeats_;
 }
-} // namespace BT

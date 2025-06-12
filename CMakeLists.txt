@@ -65,6 +65,7 @@ set(SOURCE_FILES
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
   src/repeat_node.cpp
+  src/nodes/repeat_n_times.cpp
 )
 
 set(SHARED_LIBRARIES

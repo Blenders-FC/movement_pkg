@@ -25,7 +25,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
-    
     // Create Control Nodes
     auto* root_node = new BT::SequenceNodeWithMemory("RootNode");
     auto* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
@@ -38,6 +37,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
     auto* main_fallback = new BT::FallbackNode("MainFallback");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
+    //auto* turn_right = new BT::TurnRight("turn_right");         // Acción para girar 
+    auto* repeat_turn_right = new BT::Repeat_n_times("RepeatTurnRight", 5);
 
 
     // Build the Behavior Tree
@@ -60,8 +61,12 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     ball_found_sequence->AddChild(walk_to_target);
     ball_found_sequence->AddChild(fallback_kick_selector);
 
+    //Turn 5 times sequence
+    repeat_turn_right->AddChild(turn_right);
+
     // Turning and Head to Home sequence
-    turning_head_home_seq->AddChild(turn_right);
+    //turning_head_home_seq->AddChild(turn_right);
+    turning_head_home_seq->AddChild(repeat_turn_right);
     turning_head_home_seq->AddChild(head_to_home);
 
     // Search ball fallback
