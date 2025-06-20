@@ -67,6 +67,7 @@ void BT::CenterBallYOLOCPU::WaitForTick()
                   angle_mov_y_ += 1;
                 }
                 writeHeadJoint(angle_mov_y_, false);
+                ROS_COLORED_LOG("New tilt angle position from CPU: %f", TEAL, false, angle_mov_y_);
             }
             else
             {

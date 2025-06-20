@@ -27,7 +27,7 @@ void BT::SearchBall::WaitForTick()
         
         while (get_status() == BT::IDLE)
         {
-            turn_cnt_ = 0;
+            // turn_cnt_ = 0;
     
             // set_status(BT::RUNNING);
             if (getModule("r_knee") != "direct_control_module")
@@ -75,7 +75,7 @@ void BT::SearchBall::WaitForTick()
                     if (turn_cnt_ == 1)
                     {
                         angle_mov_y_ = -50;
-                        ROS_COLORED_LOG("New tilt angle position: %f", TEAL, false, angle_mov_y_);
+                        ROS_COLORED_LOG("New tilt angle position from search_ball: %f", TEAL, false, angle_mov_y_);
                         writeHeadJoint(angle_mov_y_, false);
                     }
                 }

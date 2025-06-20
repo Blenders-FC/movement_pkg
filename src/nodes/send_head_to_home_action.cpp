@@ -34,6 +34,7 @@ void BT::HeadToHome::WaitForTick()
 
             writeHeadJoint(0, true);
             writeHeadJoint(-10, false);
+            ROS_COLORED_LOG("New tilt angle position from head2home: %f", TEAL, false, -10);
             ros::Duration(2).sleep();
 
             ROS_SUCCESS_LOG("Head in home position!");
