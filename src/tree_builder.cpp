@@ -23,6 +23,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* left_kick = new BT::LeftKick("LeftKick");
     auto* right_kick = new BT::RightKick("RightKick");
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
+    auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     // Create Control Nodes
@@ -35,10 +36,9 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
     auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
+    auto* fallback_turns = new BT::FallbackNode("Fallback");
     auto* main_fallback = new BT::FallbackNode("MainFallback");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
-    //auto* turn_right = new BT::TurnRight("turn_right");         // Acción para girar 
-    auto* repeat_turn_right = new BT::Repeat_n_times("RepeatTurnRight", 5);
 
 
     // Build the Behavior Tree
@@ -62,16 +62,23 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     ball_found_sequence->AddChild(fallback_kick_selector);
 
     //Turn 5 times sequence
-    repeat_turn_right->AddChild(turn_right);
+    //repeat_turn_right->AddChild(turn_right);
 
     // Turning and Head to Home sequence
-    //turning_head_home_seq->AddChild(turn_right);
-    turning_head_home_seq->AddChild(repeat_turn_right);
+    turning_head_home_seq->AddChild(turn_n_times);
+    turning_head_home_seq->AddChild(turn_right);
+    //turning_head_home_seq->AddChild(repeat_turn_right);
     turning_head_home_seq->AddChild(head_to_home);
 
     // Search ball fallback
     fallback_search_ball->AddChild(search_ball);
-    fallback_search_ball->AddChild(turning_head_home_seq);
+    fallback_search_ball->AddChild(fallback_turns);
+    //fallback_search_ball->AddChild(turning_head_home_seq);
+
+    //add sequence to fallback turns
+    fallback_turns->AddChild(turning_head_home_seq);
+    fallback_turns->AddChild(turn_left);
+
 
     // Add sequences to fallback
     main_fallback->AddChild(ball_found_sequence);

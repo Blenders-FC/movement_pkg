@@ -1,30 +1,28 @@
 #ifndef REPEAT_N_TIMES_H
 #define REPEAT_N_TIMES_H
 
-#include <control_node.h>
+#include "condition_node.h"
 #include <string>
-
+#include "movement_pkg/utils.h"
 namespace BT
 {
-class Repeat_n_times : public ControlNode
+class RepeatNTimes : public ConditionNode, public virtual utils
 {
-private:
-    unsigned int num_repeats_;  // Número de repeticiones (0 = infinito)
-    unsigned int current_count_; // Contador actual
-    
-public:
-    // Constructor modificado para aceptar parámetros
-    Repeat_n_times(std::string name, unsigned int num_repeats = 0);
-    ~Repeat_n_times();
+    public:
+        explicit RepeatNTimes(const std::string &name);  // Constructor
 
-    BT::ReturnStatus Tick() override;
-    void Halt() override;
-    int DrawType() override;
-    
-    // Métodos para configurar las repeticiones
-    void setNumRepeats(unsigned int num_repeats);
-    unsigned int getNumRepeats() const;
+        // Behavior Tree Tick function
+        BT::ReturnStatus Tick() override;
+
+    private:
+        bool already_logged_ = false;
+        //std::pair<std::string, std::string> robot_status_;
+        int m_turncnt=0;
+        int m_turns=2; 
+
 };
-} // namespace BT
+}  // namesapce BT
+
+
 
 #endif // REPEAT_N_TIMES_H
