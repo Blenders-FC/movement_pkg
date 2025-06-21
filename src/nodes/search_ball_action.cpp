@@ -44,9 +44,10 @@ void BT::SearchBall::WaitForTick()
             angle_mov_y_ = head_tilt_angle_ * 57.2958;  // RadToDeg -> 180/pi
             limit_x_error_ = abs(70 - angle_mov_x_);
             limit_y_error_ = abs(-50 - angle_mov_y_);
+            ROS_COLORED_LOG("limit_x_error_: %f  limit_y_error_: %f", ORANGE, false, limit_x_error_, limit_y_error_);
 
             ROS_COLORED_LOG("X: %f  Y: %f", TEAL, false, head_pan_angle_, angle_mov_y_);
-            if (limit_x_error_ <= 5 && limit_y_error_ <= 5){
+            if (limit_x_error_ <= 5 && limit_y_error_ <= 8){
                 turn_cnt_ = 0;
                 // turn2search(9);
                 ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);
