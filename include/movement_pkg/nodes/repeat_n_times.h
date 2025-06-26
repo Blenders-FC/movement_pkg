@@ -17,10 +17,14 @@ class RepeatNTimes : public ConditionNode, public virtual utils
     private:
         bool already_logged_ = false;
         //std::pair<std::string, std::string> robot_status_;
-        int m_turncnt=0;
-        int m_turns=2; 
+        //int m_turncnt=0;
+        const TargetInfo* m_turncnt = blackboard.getTarget("m_turncnt");
+        int m_turns = 2; 
+        TargetInfo m_cnt;
+        int cnt_init = 0;
 
 };
+
 }  // namesapce BT
 
 

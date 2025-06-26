@@ -16,11 +16,13 @@ struct TargetInfo {
     double distance = 0.0;  // Distance from the robot
     double tilt = 0.0;      // Tilt angle
     double pan_angle = 0.0;       // Pan angle
+    int turncnt =0;
 
     void reset() {
         distance = 0.0;
         tilt = 0.0;
         pan_angle = 0.0;
+        turncnt =0;
     }
 };
 
@@ -44,6 +46,7 @@ private:
     TargetInfo ball;
     TargetInfo left_goalpost;
     TargetInfo right_goalpost;
+    TargetInfo m_turncnt;
 };
 
 #endif // BLACKBOARD_H
