@@ -26,7 +26,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* head_to_home_reset = new BT::HeadToHomeReset("HeadToHomeReset");
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
-    auto* walk_n_times  = new BT::RepeatNTimes("RepeatNTimes");
+    //auto* walk_n_times  = new BT::RepeatNTimes("RepeatNTimes");
+    auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     //walking node TESTI
@@ -43,6 +44,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
     auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
+    auto* parallel_walk_timer = new BT::ParallelNode("ParallelWalkTimer", 2); // success_threshold=1, failure_threshold=1
     auto* fallback_turns = new BT::FallbackNode("Fallback");
     auto* main_fallback = new BT::FallbackNode("MainFallback");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
@@ -77,10 +79,14 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     //turning_head_home_seq->AddChild(repeat_turn_right);
     turning_head_home_seq->AddChild(head_to_home);
 
+    // Parallel node: walk and time concurrently
+    parallel_walk_timer->AddChild(simple_walk_action);
+    parallel_walk_timer->AddChild(timer_condition);
+
     // Walking and Head to Home sequence
     // walk_head_home_seq->AddChild(left_kick_m); TESTI
     //walk_head_home_seq->AddChild(walk_n_times);
-    walk_head_home_seq->AddChild(simple_walk_action);
+    walk_head_home_seq->AddChild(parallel_walk_timer);
     walk_head_home_seq->AddChild(head_to_home_reset);
 
     // Search ball fallback

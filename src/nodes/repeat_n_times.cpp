@@ -14,7 +14,7 @@ BT::ReturnStatus BT::RepeatNTimes::Tick()
         {
             ROS_COLORED_LOG("turns: %d are LESSER than threshold ", CYAN, true, m_cnt.turncnt);
             cnt_init += 1;
-            blackboard.setTarget("m_turncnt",m_cnt);
+            //blackboard.setTarget("m_turncnt",m_cnt);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
