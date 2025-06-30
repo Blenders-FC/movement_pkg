@@ -3,13 +3,13 @@
         Victor Gil
 */
 
-#include "movement_pkg/nodes/ball_in_center_condition.h"
+#include "movement_pkg/nodes/ball_close_condition.h"
 
 
-BT::BallInCenterCondition::BallInCenterCondition(const std::string &name) 
+BT::BallCloseCondition::BallCloseCondition(const std::string &name) 
 : BT::ConditionNode(name) {}
 
-BT::ReturnStatus BT::BallInCenterCondition::Tick()
+BT::ReturnStatus BT::BallCloseCondition::Tick()
 {
     // Condition checking and state update
     while(ros::ok())

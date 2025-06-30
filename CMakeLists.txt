@@ -65,7 +65,8 @@ set(SOURCE_FILES
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
-  src/nodes/ball_detected_action.cpp
+  src/nodes/ball_in_center_condition.cpp
+  src/nodes/ball_close_condition.cpp
   src/repeat_node.cpp
 )
 

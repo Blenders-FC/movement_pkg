@@ -27,7 +27,7 @@ void CBDataManager::ballCenterCallback(const geometry_msgs::Point& msg)
     ball_position_.y = msg.y; // 240) - 1;
 }
 
-void CBDataManager::ballAreaCallback(const geometry_msgs::Point::ConstPtr& msg)
+void CBDataManager::ballAreaCallback(const geometry_msgs::Point& msg)
 {
     ball_position_.z = msg.z; // Ball area
 }
@@ -106,7 +106,7 @@ geometry_msgs::Point CBDataManager::getBallPosition()
     return ball_position_;
 }
 
-geometry_msgs::Point CBDataManager::getBallArea()
+double CBDataManager::getBallArea()
 {
     
     return ball_position_.z;  // Area of the ball

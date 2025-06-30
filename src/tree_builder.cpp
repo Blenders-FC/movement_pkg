@@ -13,7 +13,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     
     // Actions
     auto* stand_up = new BT::StandUp("StandUp");
-    auto* search_ball = new BT::SearchBall("SearchBall");
+    //auto* search_ball = new BT::SearchBall("SearchBall");
     auto* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
 	auto* penalty_kick = new BT::PenaltyKick("PenaltyKick");
 
@@ -21,8 +21,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
     BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
     BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
-    BT::SequenceNodeWithMemory* ball_close_sequence = new Bt::SequenceNodeWithMemory("BallCloseSequence");
-    BT::SequenceNodeWithMemory* kick_sequence = new Bt::SequenceNodeWithMemory("KickSequence");
+    BT::SequenceNodeWithMemory* ball_close_sequence = new BT::SequenceNodeWithMemory("BallCloseSequence");
+    BT::SequenceNodeWithMemory* kick_sequence = new BT::SequenceNodeWithMemory("KickSequence");
 
     // Secuencia de inicio
     init_sequence->AddChild(is_manager_running);
@@ -30,8 +30,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(stand_up);
     init_sequence->AddChild(is_start_button);
 
-    // Search ball
-    ball_found_sequence->AddChild(ball_detected);
+    // Search ballS
+    ball_found_sequence->AddChild(ball_detected_condition);
     // does ball have to be centered? 
 
 

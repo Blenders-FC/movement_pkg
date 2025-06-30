@@ -14,6 +14,7 @@ public:
 
     // External functions
     geometry_msgs::Point getBallPosition();
+    double getBallArea();
     double getRobotPitch();
     double getHeadPan();
     double getHeadTilt();
@@ -25,6 +26,7 @@ private:
 
     // Callbacks
     void ballCenterCallback(const geometry_msgs::Point& msg);
+    void ballAreaCallback(const geometry_msgs::Point& msg);
     void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
     void jointStatesCallback(const sensor_msgs::JointState& msg);
     // void refereeCallback(const soccer_pkg::referee& msg);
