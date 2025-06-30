@@ -27,6 +27,10 @@ void CBDataManager::ballCenterCallback(const geometry_msgs::Point& msg)
     ball_position_.y = msg.y; // 240) - 1;
 }
 
+void CBDataManager::ballAreaCallback(const geometry_msgs::Point::ConstPtr& msg)
+{
+    ball_position_.z = msg.z; // Ball area
+}
 // Updating IMU state
 void CBDataManager::imuCallback(const sensor_msgs::Imu::ConstPtr& msg)
 {
@@ -100,6 +104,13 @@ void CBDataManager::statusCallback(const robotis_controller_msgs::StatusMsg::Con
 geometry_msgs::Point CBDataManager::getBallPosition()
 {
     return ball_position_;
+}
+
+geometry_msgs::Point CBDataManager::getBallArea()
+{
+    
+    return ball_position_.z;  // Area of the ball
+
 }
 
 double CBDataManager::getRobotPitch()

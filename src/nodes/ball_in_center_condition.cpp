@@ -4,7 +4,7 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/ball_in_center_condition.h"
+#include "movement_pkg/nodes/ball_close_condition.h"
 
 
 BT::BallInCenterCondition::BallInCenterCondition(const std::string &name) 

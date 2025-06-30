@@ -3,53 +3,53 @@
 
 BT::ControlNode* BT::TreeBuilder::BuildTree()
 {
-    // Condiciones
-    BT::ManagerRunningCondition* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
-    BT::ManagerDoneCondition* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
-    BT::StartButtonCondition* is_start_button = new BT::StartButtonCondition("IsStartButton");
-    BT::TimerCondition* is_timer_condition_done = new BT::TimerCondition("TimerCondition",5);
-    
-    // Acciones
-    BT::StandUp* stand_up = new BT::StandUp("StandUp");
-    BT::TurnRight* turn_right = new BT::TurnRight("TurnRight",1);
-    BT::TurnLeft* turn_left = new BT::TurnLeft("TurnLeft",1);
-    BT::KickSideDeciderCondition* kick_side_decider_condition = new BT::KickSideDeciderCondition("KickSideDeciderCondition");
-    BT::LeftLongKick* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
-    BT::RightLongKick* right_long_kick_action = new  BT::RightLongKick("RightLongKick");
-	BT::PenaltyKick* penalty_kick = new BT::PenaltyKick("PenaltyKick");
+    // Conditions
+    auto* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
+    auto* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
+    auto* is_start_button = new BT::StartButtonCondition("IsStartButton");
 
-    // Nodos de control
+    auto* ball_detected_condition = new BT::BallDetectedCondition("BallDetectedCondition");
+    auto* ball_close_condition = new BT::BallCloseCondition("IsBallClose");
+    
+    // Actions
+    auto* stand_up = new BT::StandUp("StandUp");
+    auto* search_ball = new BT::SearchBall("SearchBall");
+    auto* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
+	auto* penalty_kick = new BT::PenaltyKick("PenaltyKick");
+
+    // Control nodes
     BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
     BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
-    BT::FallbackNode* random_choice = new BT::FallbackNode("RandomChoice");
-    BT::SequenceNodeWithMemory* right_sequence = new BT::SequenceNodeWithMemory("RightSequence");
-    BT::SequenceNodeWithMemory* left_sequence = new BT::SequenceNodeWithMemory("LeftSequence");
+    BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
+    BT::SequenceNodeWithMemory* ball_close_sequence = new Bt::SequenceNodeWithMemory("BallCloseSequence");
+    BT::SequenceNodeWithMemory* kick_sequence = new Bt::SequenceNodeWithMemory("KickSequence");
 
     // Secuencia de inicio
     init_sequence->AddChild(is_manager_running);
     init_sequence->AddChild(is_manager_done);
     init_sequence->AddChild(stand_up);
     init_sequence->AddChild(is_start_button);
-    init_sequence->AddChild(is_timer_condition_done);
 
-    // Secuencia derecha
-    //right_sequence->AddChild(turn_right);
-    //right_sequence->AddChild(left_kick);
-    right_sequence->AddChild(left_long_kick_action);
+    // Search ball
+    ball_found_sequence->AddChild(ball_detected);
+    // does ball have to be centered? 
 
-    // Secuencia izquierda
-   // left_sequence->AddChild(kick_side_decider_condition);
-    //left_sequence->AddChild(turn_left);
-    //left_sequence->AddChild(right_kick);
-    left_sequence->AddChild(penalty_kick);
 
-    // Elección aleatoria (implementada como Fallback con condiciones)
-    random_choice->AddChild(left_sequence);   // Si falla, va a izquierda
-    random_choice->AddChild(right_sequence);  // Primero intenta derecha
+    // is distance from ball (ball area) big enough
+    ball_close_sequence->AddChild(ball_close_condition);
+    
+
+    //if true then perform kick
+    kick_sequence->AddChild(penalty_kick); // or left_long_kick_action? 
+
+    //is that it? 
+
 
     // Construcción final
     root->AddChild(init_sequence);
-    root->AddChild(random_choice);
+    root->AddChild(ball_found_sequence);
+    root->AddChild(ball_close_sequence);
+    root->AddChild(kick_sequence);
 
     return root;
 }

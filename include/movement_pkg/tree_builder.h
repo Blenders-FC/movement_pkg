@@ -16,11 +16,10 @@
 #include "nodes/manager_running_condition.h"
 #include "nodes/manager_done_condition.h"
 #include "nodes/start_button_condition.h"
-#include "nodes/timer_condition.h"
-#include "nodes/turn_left_action.h"
-#include "nodes/turn_right_action.h"
+#include "nodes/ball_close_condition.h"
+
 //#include "nodes/long_kick_action.h"
-#include "nodes/kick_side_decider_condition.h"
+#include "nodes/ball_detected_condition.h"
 #include "nodes/right_long_kick_action.h"
 #include "nodes/left_long_kick_action.h"
 
