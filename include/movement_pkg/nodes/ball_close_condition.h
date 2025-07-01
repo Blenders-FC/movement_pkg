@@ -22,7 +22,7 @@ class BallCloseCondition : public ConditionNode, public CBDataManager
 
     private:
         geometry_msgs::Point ball_area_position_;
-        double ballArea = 0.0;
+        double ballArea;
 };
 }  // namesapce BT
 

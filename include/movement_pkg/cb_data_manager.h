@@ -35,6 +35,7 @@ private:
 
     // Subscribers
     ros::Subscriber ball_sub_;
+    ros::Subscriber ball_a_sub;
     ros::Subscriber imu_sub_;
     ros::Subscriber read_joint_sub_;
     // ros::Subscriber ref_sub_;

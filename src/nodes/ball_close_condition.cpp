@@ -19,6 +19,7 @@ BT::ReturnStatus BT::BallCloseCondition::Tick()
         if (ballArea < 500) // ??
         {
             ROS_COLORED_LOG("Ball NOT CLOSE enough!", YELLOW, false);
+            ROS_COLORED_LOG("Ball area: %f",YELLOW, false,  ballArea);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }
