@@ -12,23 +12,25 @@ BT::BallCloseCondition::BallCloseCondition(const std::string &name)
 BT::ReturnStatus BT::BallCloseCondition::Tick()
 {
     // Condition checking and state update
+    
     while(ros::ok())
     {
-        ballArea = getBallArea();
         
-        if (ballArea < 500) // ??
+        ball = getBallArea();
+        ROS_COLORED_LOG("Ball y: %f",YELLOW, false,  ball.y);
+        ROS_COLORED_LOG("Ball area: %f",YELLOW, false,  ball.z);
+        while (ball.y > 998.0 || ball.z < 22000)
         {
+
             ROS_COLORED_LOG("Ball NOT CLOSE enough!", YELLOW, false);
-            ROS_COLORED_LOG("Ball area: %f",YELLOW, false,  ballArea);
-            set_status(BT::FAILURE);
-            return BT::FAILURE;
+            ball = getBallArea();
         }
-        else
-        {
-            ROS_SUCCESS_LOG("Ball is CLOSE");
-            set_status(BT::SUCCESS);
-            return BT::SUCCESS;
-        }
+        ROS_SUCCESS_LOG("Ball is CLOSE");
+        ROS_COLORED_LOG("Ball y: %f",YELLOW, false,  ball.y);
+        ROS_COLORED_LOG("Ball area: %f",YELLOW, false,  ball.z);
+        set_status(BT::SUCCESS);
+        return BT::SUCCESS;
+
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     return BT::FAILURE;

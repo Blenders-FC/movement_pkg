@@ -67,6 +67,7 @@ set(SOURCE_FILES
   src/nodes/walk_to_target_action.cpp
   src/nodes/ball_in_center_condition.cpp
   src/nodes/ball_close_condition.cpp
+  src/nodes/lower_head_action.cpp
   src/repeat_node.cpp
 )
 

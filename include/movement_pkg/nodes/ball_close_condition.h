@@ -21,8 +21,9 @@ class BallCloseCondition : public ConditionNode, public CBDataManager
         BT::ReturnStatus Tick() override;
 
     private:
-        geometry_msgs::Point ball_area_position_;
+        geometry_msgs::Point ball;
         double ballArea;
+        double y;
 };
 }  // namesapce BT
 

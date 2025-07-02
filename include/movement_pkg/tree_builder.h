@@ -22,6 +22,7 @@
 #include "nodes/ball_detected_condition.h"
 #include "nodes/right_long_kick_action.h"
 #include "nodes/left_long_kick_action.h"
+#include "repeat_node.h"
 
 
 
@@ -31,6 +32,7 @@
 #include "nodes/penalty_kick_action.h"     // Para PenaltyKick
 #include "nodes/right_kick_action.h" //Para penalty v2
 #include "nodes/left_kick_action.h" //Para penalty v2
+#include "nodes/lower_head_action.h"
 
 namespace BT
 {

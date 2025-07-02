@@ -16,40 +16,52 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     //auto* search_ball = new BT::SearchBall("SearchBall");
     auto* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
 	auto* penalty_kick = new BT::PenaltyKick("PenaltyKick");
+    auto* lower_head = new BT::LowerHead("LowerHead");
 
     // Control nodes
     BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
     BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
     BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
     BT::SequenceNodeWithMemory* ball_close_sequence = new BT::SequenceNodeWithMemory("BallCloseSequence");
+    BT::SequenceNodeWithMemory* main_sequence = new BT::SequenceNodeWithMemory("MainSequence");
+    BT::FallbackNode* ball_found_fallback = new BT::FallbackNode("BallFoundFallback");
+    BT::FallbackNode* ball_close_fallback = new BT::FallbackNode("BallCloseFallback");
     BT::SequenceNodeWithMemory* kick_sequence = new BT::SequenceNodeWithMemory("KickSequence");
+    BT::SequenceNodeWithMemory* lower_head_sequence = new BT::SequenceNodeWithMemory("LowerHeadSequence");
+    BT::RepeatNode* repeat_node = new BT::RepeatNode("RepeatNode_"); // ?
 
     // Secuencia de inicio
     init_sequence->AddChild(is_manager_running);
     init_sequence->AddChild(is_manager_done);
     init_sequence->AddChild(stand_up);
+    init_sequence->AddChild(lower_head);
     init_sequence->AddChild(is_start_button);
 
+    //lower_head_sequence->AddChild(lower_head);
+
     // Search ballS
-    ball_found_sequence->AddChild(ball_detected_condition);
+    //main_sequence->AddChild(ball_detected_condition);
+    //ball_found_fallback->AddChild(ball_detected_condition);
     // does ball have to be centered? 
 
 
     // is distance from ball (ball area) big enough
-    ball_close_sequence->AddChild(ball_close_condition);
+    main_sequence->AddChild(ball_close_condition);
+    //ball_close_fallback->AddChild(ball_close_condition);
     
 
     //if true then perform kick
-    kick_sequence->AddChild(penalty_kick); // or left_long_kick_action? 
+    main_sequence->AddChild(penalty_kick); // or left_long_kick_action? 
 
     //is that it? 
+
+    repeat_node->AddChild(main_sequence);
 
 
     // Construcción final
     root->AddChild(init_sequence);
-    root->AddChild(ball_found_sequence);
-    root->AddChild(ball_close_sequence);
-    root->AddChild(kick_sequence);
+    //root->AddChild(lower_head_sequence);
+    root->AddChild(repeat_node);
 
     return root;
 }

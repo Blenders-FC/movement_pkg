@@ -14,7 +14,7 @@ public:
 
     // External functions
     geometry_msgs::Point getBallPosition();
-    double getBallArea();
+    geometry_msgs::Point getBallArea();
     double getRobotPitch();
     double getHeadPan();
     double getHeadTilt();
