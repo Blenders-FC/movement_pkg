@@ -17,12 +17,14 @@ struct TargetInfo {
     double tilt = 0.0;      // Tilt angle
     double pan_angle = 0.0;       // Pan angle
     int turncnt =0;
+    int refereeStatus=0; //still as default value
 
     void reset() {
         distance = 0.0;
         tilt = 0.0;
         pan_angle = 0.0;
         turncnt =0;
+        refereeStatus =0;
     }
 };
 
@@ -47,6 +49,7 @@ private:
     TargetInfo left_goalpost;
     TargetInfo right_goalpost;
     TargetInfo m_turncnt;
+    TargetInfo m_refereeStatus;
 };
 
 #endif // BLACKBOARD_H
