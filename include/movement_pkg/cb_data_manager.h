@@ -4,7 +4,7 @@
 #include <eigen3/Eigen/Eigen>
 
 #include "movement_pkg/utils.h"
-// #include "soccer_pkg/referee.h"
+#include "vision_pkg/referee.h"
 #include "robotis_math/robotis_linear_algebra.h"
 
 
@@ -37,7 +37,7 @@ private:
     void ballCenterCallback(const geometry_msgs::Point& msg);
     void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
     void jointStatesCallback(const sensor_msgs::JointState& msg);
-    // void refereeCallback(const soccer_pkg::referee& msg);
+    void refereeCallback(const vision_pkg::referee& msg);
     void buttonHandlerCallback(const std_msgs::String::ConstPtr& msg);
     void statusCallback(const robotis_controller_msgs::StatusMsg::ConstPtr& msg);
 
@@ -45,7 +45,7 @@ private:
     ros::Subscriber ball_sub_;
     ros::Subscriber imu_sub_;
     ros::Subscriber read_joint_sub_;
-    // ros::Subscriber ref_sub_;
+    ros::Subscriber ref_sub_;
     ros::Subscriber button_sub_;
     ros::Subscriber robot_status_sub_;
     

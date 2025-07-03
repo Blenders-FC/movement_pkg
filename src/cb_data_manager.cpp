@@ -16,10 +16,6 @@ CBDataManager::CBDataManager() : utils(), imu_orientation_(1, 0, 0, 0)  // Defau
     ref_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id+1) + "/referee_data", 10, &CBDataManager::refereeCallback, this);
     button_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/button", 10, &CBDataManager::buttonHandlerCallback, this);
     robot_status_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/status", 10, &CBDataManager::statusCallback, this);
-
-
-    ///Set referee blackboard
-    //    blackboard->set("key", value);
 }
 
 // [============================== CALLBACKS ==============================]
@@ -68,7 +64,7 @@ void CBDataManager::jointStatesCallback(const sensor_msgs::JointState& msg)
 }
 
 // Updating referee state
-void CBDataManager::refereeCallback(const soccer_pkg::referee& msg)
+void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
 {
     /*
     0 = "quieto"
@@ -78,7 +74,7 @@ void CBDataManager::refereeCallback(const soccer_pkg::referee& msg)
     4 = "alejate"
     */
 //check if previous state was the same
-    if(blackboard.getTarget("m_refereeStatus").refereeStatus == msg.robotPlayStateInt){
+    if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
         m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
         blackboard.setTarget("m_refereeStatus",m_refereeInfo);
         ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
