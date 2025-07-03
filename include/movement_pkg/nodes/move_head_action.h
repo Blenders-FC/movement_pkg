@@ -1,11 +1,10 @@
 /*
     Authors:
-        Pedro Deniz
-        Marlene Cobian
+         Vicman Gil
 */
 
-#ifndef LOWER_HEAD_ACTION_H
-#define LOWER_HEAD_ACTION_H
+#ifndef MOVE_HEAD_ACTION_H
+#define MOVE_HEAD_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
 #include <action_node.h>
@@ -13,12 +12,12 @@
 
 namespace BT
 {
-class LowerHead : public ActionNode, public CBDataManager
+class MoveHead : public ActionNode, public CBDataManager
 {
     public:
         // Constructor
-        explicit LowerHead(std::string name);
-        ~LowerHead();
+        explicit MoveHead(std::string name, double angle, bool is_pan);
+        ~MoveHead();
 
         // The method that is going to be executed by the thread
         void WaitForTick();
@@ -26,15 +25,14 @@ class LowerHead : public ActionNode, public CBDataManager
         // The method used to interrupt the execution of the node
         void Halt();
 
-    private:
-        //  Auxiliar methods
-        void writeHeadJoint(double ang_value, bool is_pan);
+    private:       
 
         // ROS variable
         ros::Publisher write_joint_pub_;
 
         // Variables
-        bool head_direction_ = true;
+        bool is_pan;
+        double angle;
         double angle_mov_x_ = 0;
         double angle_mov_y_;
         double head_pan_angle_;
@@ -48,4 +46,4 @@ class LowerHead : public ActionNode, public CBDataManager
 };
 }  // namespace BT
 
-#endif  // LOWER_HEAD_ACTION_H
+#endif  // MOVE_HEAD_ACTION_H

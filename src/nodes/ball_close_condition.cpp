@@ -19,7 +19,7 @@ BT::ReturnStatus BT::BallCloseCondition::Tick()
         ball = getBallArea();
         ROS_COLORED_LOG("Ball y: %f",YELLOW, false,  ball.y);
         ROS_COLORED_LOG("Ball area: %f",YELLOW, false,  ball.z);
-        while (ball.y > 998.0 || ball.z < 22000)
+        while (ball.y > 998.0 || ball.z < 2500)
         {
 
             ROS_COLORED_LOG("Ball NOT CLOSE enough!", YELLOW, false);

@@ -15,8 +15,11 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* stand_up = new BT::StandUp("StandUp");
     //auto* search_ball = new BT::SearchBall("SearchBall");
     auto* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
-	auto* penalty_kick = new BT::PenaltyKick("PenaltyKick");
-    auto* lower_head = new BT::LowerHead("LowerHead");
+	//auto* penalty_kick = new BT::PenaltyKick("PenaltyKick");
+    auto* right_kick = new BT::PenaltyKick("RightKick");
+    auto* left_kick = new BT::PenaltyKick("LeftKick");
+    auto* lower_head = new BT::MoveHead("MoveHead", -20, false);
+    auto* yaw_head = new BT::MoveHead("YawHead", -60, true);
 
     // Control nodes
     BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
@@ -27,7 +30,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     BT::FallbackNode* ball_found_fallback = new BT::FallbackNode("BallFoundFallback");
     BT::FallbackNode* ball_close_fallback = new BT::FallbackNode("BallCloseFallback");
     BT::SequenceNodeWithMemory* kick_sequence = new BT::SequenceNodeWithMemory("KickSequence");
-    BT::SequenceNodeWithMemory* lower_head_sequence = new BT::SequenceNodeWithMemory("LowerHeadSequence");
+    BT::SequenceNodeWithMemory* lower_head_sequence = new BT::SequenceNodeWithMemory("MoveHeadSequence");
     BT::RepeatNode* repeat_node = new BT::RepeatNode("RepeatNode_"); // ?
 
     // Secuencia de inicio
@@ -35,6 +38,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_manager_done);
     init_sequence->AddChild(stand_up);
     init_sequence->AddChild(lower_head);
+    init_sequence->AddChild(yaw_head);
     init_sequence->AddChild(is_start_button);
 
     //lower_head_sequence->AddChild(lower_head);
@@ -51,7 +55,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     
 
     //if true then perform kick
-    main_sequence->AddChild(penalty_kick); // or left_long_kick_action? 
+    //main_sequence->AddChild(penalty_kick); // or left_long_kick_action? 
+    main_sequence->AddChild(left_kick);
 
     //is that it? 
 
