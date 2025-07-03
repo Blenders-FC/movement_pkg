@@ -77,7 +77,7 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
         m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
         blackboard.setTarget("m_refereeStatus",m_refereeInfo);
-        ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
+        //ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
 
         return; //if so return, there is nothing to change, only update blackboard
     }
