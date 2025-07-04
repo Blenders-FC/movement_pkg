@@ -43,7 +43,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* right_kick_seq = new BT::SequenceNodeWithMemory("RightKickSeq");
     auto* turning_head_home_seq = new BT::SequenceNodeWithMemory("TurningAndHeadToHome");
     auto* walk_head_home_seq = new BT::SequenceNodeWithMemory("WalkAndHeadToHome");
-    auto* playing_seq = new BT::SequenceNodeWithMemory("PlayingSeq");
+    auto* playing_seq = new BT::ParallelNode("PlayingSeq", 2);
     auto* fallback_search_ball = new BT::FallbackNode("FallbackSearchBall");
     auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
     auto* referee_fallback_selector = new BT::FallbackNode("RefereeFallbackSelector");
