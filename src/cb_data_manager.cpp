@@ -13,7 +13,7 @@ CBDataManager::CBDataManager() : utils(), imu_orientation_(1, 0, 0, 0)  // Defau
     ball_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/ball_center", 10, &CBDataManager::ballCenterCallback, this);
     imu_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/imu", 10, &CBDataManager::imuCallback, this);
     read_joint_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/present_joint_states", 10, &CBDataManager::jointStatesCallback, this);
-    ref_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id+1) + "/referee_data", 10, &CBDataManager::refereeCallback, this);
+    ref_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/referee_data", 10, &CBDataManager::refereeCallback, this);
     button_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/button", 10, &CBDataManager::buttonHandlerCallback, this);
     robot_status_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/status", 10, &CBDataManager::statusCallback, this);
 }
@@ -77,7 +77,7 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
         m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
         blackboard.setTarget("m_refereeStatus",m_refereeInfo);
-        //ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
+        // ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
 
         return; //if so return, there is nothing to change, only update blackboard
     }
