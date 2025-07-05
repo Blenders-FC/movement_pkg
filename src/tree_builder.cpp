@@ -16,8 +16,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     //auto* search_ball = new BT::SearchBall("SearchBall");
     auto* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
 	//auto* penalty_kick = new BT::PenaltyKick("PenaltyKick");
-    auto* right_kick = new BT::PenaltyKick("RightKick");
-    auto* left_kick = new BT::PenaltyKick("LeftKick");
+    auto* right_kick = new BT::RightKick("RightKick");
+    auto* left_kick = new BT::LeftKick("LeftKick");
     auto* lower_head = new BT::MoveHead("MoveHead", -20, false);
     auto* yaw_head = new BT::MoveHead("YawHead", -60, true);
 

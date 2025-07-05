@@ -92,6 +92,7 @@ void BT::PenaltyKick::kick()
     write_joint_pub_.publish(write_msg_);
     
     //Patada
+    ROS_TAGGED_ONCE_LOG("Now kicking!", "TEAL", false, "penalty_kick");
     ros::Duration(0.1).sleep();
     write_msg_.name.push_back("r_ank_pitch");
     write_msg_.position.push_back(-0.0046);
