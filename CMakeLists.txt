@@ -45,6 +45,7 @@ set(SOURCE_FILES
   src/nodes/get_up_backwards_action.cpp
   src/nodes/get_up_combined_action.cpp
   src/nodes/get_up_forward_action.cpp
+  src/nodes/kick_side_decider_condition.cpp
   src/nodes/left_kick_action.cpp
   src/nodes/left_long_kick_action.cpp
   src/nodes/right_long_kick_action.cpp
@@ -64,6 +65,9 @@ set(SOURCE_FILES
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
+  src/nodes/ball_in_center_condition.cpp
+  src/nodes/ball_close_condition.cpp
+  src/nodes/move_head_action.cpp
   src/repeat_node.cpp
 )
 

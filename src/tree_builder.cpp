@@ -1,83 +1,72 @@
-/*
-    Authors:
-        Pedro Deniz
-        Marlene Cobian
-*/
-
 #include "movement_pkg/tree_builder.h"
+#include <string>
 
 BT::ControlNode* BT::TreeBuilder::BuildTree()
 {
-    // Create leaves
+    // Conditions
     auto* is_manager_running = new BT::ManagerRunningCondition("IsManagerRunning");
     auto* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
     auto* is_start_button = new BT::StartButtonCondition("IsStartButton");
-    auto* stand_up = new BT::StandUp("StandUp");
-    auto* ball_detected = new BT::BallDetectedCondition("BallDetected");
-    auto* search_ball = new BT::SearchBall("SearchBall");
-    auto* center_ball = new BT::CenterBallViolaJones("CenterBallViolaJones");
-    auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
-    auto* turn_right = new BT::TurnRight("TurnRight", 6);   // turning 90° (6 cycles of 15° each)
-    auto* turn_left = new BT::TurnLeft("TurnLeft", 6);      // turning 90° (6 cycles of 15° each)
-    auto* kick_selector = new BT::ChooseKickFootCondition("ChooseKickFootCondition");
-    auto* left_kick = new BT::LeftKick("LeftKick");
-    auto* right_kick = new BT::RightKick("RightKick");
-    auto* head_to_home = new BT::HeadToHome("HeadToHome");
-    // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
+    auto* ball_detected_condition = new BT::BallDetectedCondition("BallDetectedCondition");
+    auto* ball_close_condition = new BT::BallCloseCondition("IsBallClose");
     
-    // Create Control Nodes
-    auto* root_node = new BT::SequenceNodeWithMemory("RootNode");
-    auto* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
-    auto* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
-    auto* right_kick_seq = new BT::SequenceNodeWithMemory("RightKickSeq");
-    auto* turning_head_home_seq = new BT::SequenceNodeWithMemory("TurningAndHeadToHome");
-    auto* fallback_search_ball = new BT::FallbackNode("FallbackSearchBall");
-    auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
-    auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");
-    auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
-    auto* main_fallback = new BT::FallbackNode("MainFallback");
-    auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
+    // Actions
+    auto* stand_up = new BT::StandUp("StandUp");
+    //auto* search_ball = new BT::SearchBall("SearchBall");
+    auto* left_long_kick_action = new  BT::LeftLongKick("LeftLongKick");
+	//auto* penalty_kick = new BT::PenaltyKick("PenaltyKick");
+    auto* right_kick = new BT::PenaltyKick("RightKick");
+    auto* left_kick = new BT::PenaltyKick("LeftKick");
+    auto* lower_head = new BT::MoveHead("MoveHead", -20, false);
+    auto* yaw_head = new BT::MoveHead("YawHead", -60, true);
 
+    // Control nodes
+    BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
+    BT::SequenceNodeWithMemory* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
+    BT::SequenceNodeWithMemory* ball_found_sequence = new BT::SequenceNodeWithMemory("BallFoundSequence");
+    BT::SequenceNodeWithMemory* ball_close_sequence = new BT::SequenceNodeWithMemory("BallCloseSequence");
+    BT::SequenceNodeWithMemory* main_sequence = new BT::SequenceNodeWithMemory("MainSequence");
+    BT::FallbackNode* ball_found_fallback = new BT::FallbackNode("BallFoundFallback");
+    BT::FallbackNode* ball_close_fallback = new BT::FallbackNode("BallCloseFallback");
+    BT::SequenceNodeWithMemory* kick_sequence = new BT::SequenceNodeWithMemory("KickSequence");
+    BT::SequenceNodeWithMemory* lower_head_sequence = new BT::SequenceNodeWithMemory("MoveHeadSequence");
+    BT::RepeatNode* repeat_node = new BT::RepeatNode("RepeatNode_"); // ?
 
-    // Build the Behavior Tree
+    // Secuencia de inicio
     init_sequence->AddChild(is_manager_running);
     init_sequence->AddChild(is_manager_done);
-    init_sequence->AddChild(is_start_button);
     init_sequence->AddChild(stand_up);
+    init_sequence->AddChild(lower_head);
+    init_sequence->AddChild(yaw_head);
+    init_sequence->AddChild(is_start_button);
 
-    // Right Kick Sequence
-    right_kick_seq->AddChild(kick_selector);
-    right_kick_seq->AddChild(right_kick);
+    //lower_head_sequence->AddChild(lower_head);
 
-    // Kick fallback
-    fallback_kick_selector->AddChild(right_kick_seq);
-    fallback_kick_selector->AddChild(left_kick);
+    // Search ballS
+    //main_sequence->AddChild(ball_detected_condition);
+    //ball_found_fallback->AddChild(ball_detected_condition);
+    // does ball have to be centered? 
 
-    // Walk to ball sequence
-    ball_found_sequence->AddChild(ball_detected);
-    ball_found_sequence->AddChild(center_ball);
-    ball_found_sequence->AddChild(walk_to_target);
-    ball_found_sequence->AddChild(fallback_kick_selector);
 
-    // Turning and Head to Home sequence
-    turning_head_home_seq->AddChild(turn_right);
-    turning_head_home_seq->AddChild(head_to_home);
+    // is distance from ball (ball area) big enough
+    main_sequence->AddChild(ball_close_condition);
+    //ball_close_fallback->AddChild(ball_close_condition);
+    
 
-    // Search ball fallback
-    fallback_search_ball->AddChild(search_ball);
-    fallback_search_ball->AddChild(turning_head_home_seq);
+    //if true then perform kick
+    //main_sequence->AddChild(penalty_kick); // or left_long_kick_action? 
+    main_sequence->AddChild(left_kick);
 
-    // Add sequences to fallback
-    main_fallback->AddChild(ball_found_sequence);
-    main_fallback->AddChild(fallback_search_ball);
+    //is that it? 
 
-    // Repeat main sequence
-    repeat_main_loop->AddChild(main_fallback);
+    repeat_node->AddChild(main_sequence);
 
-    // Root node sequence
-    root_node->AddChild(init_sequence);
-    root_node->AddChild(repeat_main_loop);
 
-    return root_node;
+    // Construcción final
+    root->AddChild(init_sequence);
+    //root->AddChild(lower_head_sequence);
+    root->AddChild(repeat_node);
+
+    return root;
 }
