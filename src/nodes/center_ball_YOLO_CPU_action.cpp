@@ -45,11 +45,11 @@ void BT::CenterBallYOLOCPU::WaitForTick()
         
                 if (xerror_ < 0)
                 {
-                  angle_mov_x_ -= 1;
+                  angle_mov_x_ -= 5;
                 }
                 else
                 {
-                  angle_mov_x_ += 1;
+                  angle_mov_x_ += 5;
                 }
                 writeHeadJoint(angle_mov_x_, true);
                 //walkTowardsBall(current_ball_pan, head_tilt);
@@ -60,11 +60,11 @@ void BT::CenterBallYOLOCPU::WaitForTick()
         
                 if (yerror_ < 0)
                 {
-                  angle_mov_y_ -= 1;
+                  angle_mov_y_ -= 5;
                 }
                 else
                 {
-                  angle_mov_y_ += 1;
+                  angle_mov_y_ += 5;
                 }
                 writeHeadJoint(angle_mov_y_, false);
                 ROS_COLORED_LOG("New tilt angle position from CPU: %f", TEAL, false, angle_mov_y_);
