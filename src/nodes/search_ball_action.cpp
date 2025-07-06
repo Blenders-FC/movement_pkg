@@ -57,18 +57,18 @@ void BT::SearchBall::WaitForTick()
             }
             if (head_direction_ && angle_mov_x_ <= 70)
             {
-                angle_mov_x_ += 10;
+                angle_mov_x_ += 5;
                 ROS_COLORED_LOG("New pan angle position: %f", CYAN, false, angle_mov_x_);
                 writeHeadJoint(angle_mov_x_, true);
-                ros::Duration(1.0).sleep();
+                ros::Duration(0.1).sleep();
                 if (angle_mov_x_ >= 70) head_direction_ = false;
             }
             else if (!head_direction_ && angle_mov_x_ >= -70)
             {
-                angle_mov_x_ -= 10;
+                angle_mov_x_ -= 5;
                 ROS_COLORED_LOG("New pan angle position: %f", CYAN, false, angle_mov_x_);
                 writeHeadJoint(angle_mov_x_, true);
-                ros::Duration(1.0).sleep();
+                ros::Duration(0.1).sleep();
                 if (angle_mov_x_ <= -70)
                 {
                     head_direction_ = true;

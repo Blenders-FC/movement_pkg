@@ -45,11 +45,11 @@ void BT::CenterBallYOLOCPU::WaitForTick()
         
                 if (xerror_ < 0)
                 {
-                  angle_mov_x_ -= 2;
+                  angle_mov_x_ -= 3;
                 }
                 else
                 {
-                  angle_mov_x_ += 2;
+                  angle_mov_x_ += 3;
                 }
                 writeHeadJoint(angle_mov_x_, true);
                 //walkTowardsBall(current_ball_pan, head_tilt);
