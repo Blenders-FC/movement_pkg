@@ -1,7 +1,6 @@
 /*
     Authors:
         Pedro Deniz
-        Marlene Cobian
 */
 
 #ifndef WALKING_TO_BALL_POSITION_ACTION_H
@@ -28,11 +27,11 @@ class WalkToBallPosition : public ActionNode, public WalkingController
 
     private:
 
-        bool publishLegPlan(const std::vector<humanoid_nav_msgs::StepTarget>& walking_plan, 
-                            ros::Publisher& pub)
+        bool publishLegPlan(const std::vector<humanoid_nav_msgs::StepTarget>& walking_plan);
 
         // Variables
         ros::Publisher leg_plan_pub_;
+        bool walkingSucced = false;
         
         // meters and radians
         double start_x = 0;

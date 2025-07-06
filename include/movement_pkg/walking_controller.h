@@ -27,15 +27,20 @@ public:
 
     // External methods
     void goWalk(std::string& command, bool default_walk = true);
+    void goWalkSteps();
     void startWalking(bool default_walk = true);
     void stopWalking();
     void calcFootstep(double target_distance, double target_angle, double delta_time, double& fb_move, double& rl_angle);
     void setWalkingParam(double x_move, double y_move, double rotation_angle, bool balance);
     bool walkToPose(double x_goal, double y_goal, double theta_goal);
     bool walkToGoalPose(double x_goal, double y_goal, double theta_goal);
+    std::vector<humanoid_nav_msgs::StepTarget> callSoccerLocalizationService(
+                                            double start_x, double start_y, double start_theta,
+                                            double goal_x, double goal_y, double goal_theta);
 
     // Public publisher
     ros::Publisher walk_command_pub;
+    ros::Publisher footstep_walk_command_pub;
 
 private:
 

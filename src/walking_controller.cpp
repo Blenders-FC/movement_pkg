@@ -11,13 +11,14 @@ WalkingController::WalkingController() : utils()
 {
     // Publishers
     walk_command_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/walking/command", 10);
+    footstep_walk_command_pub = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/footstep_walking/command", 10);
     set_walking_param_pub_ = nh.advertise<op3_walking_module_msgs::WalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/set_params",0);
     balance_enable_pub_ = nh.advertise<std_msgs::String>("/robotis_" + std::to_string(robot_id) + "/online_walking/wholebody_balance_msg", 1);
     online_step_pub_ = nh.advertise<op3_online_walking_module_msgs::Step2DArray>("/robotis_" + std::to_string(robot_id) + "/online_walking/footsteps_2d", 1);
     
     // Services
     get_param_client_ = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/get_params");
-    footstep_planner_client_ = nh.serviceClient<humanoid_nav_msgs::PlanFootsteps>("/robotis_" + std::to_string(robot_id) + "/soccer_localization_node/plan_footsteps");
+    footstep_planner_client_ = nh.serviceClient<localization_pkg::GetRelativeFootsteps>("/robotis_" + std::to_string(robot_id) + "/soccer_localization_node/call_footstep_planner");
 }
 
 WalkingController::~WalkingController() {}
@@ -37,6 +38,18 @@ void WalkingController::goWalk(std::string& command, bool default_walk)
     std_msgs::String command_msg;
     command_msg.data = command;
     walk_command_pub.publish(command_msg);
+}
+
+void WalkingController::goWalkSteps()
+{
+    if (this->getModule("r_knee") != "footstep_walking_module")
+    {
+        this->setModule("footstep_walking_module");
+    }
+
+    std_msgs::String command_msg;
+    command_msg.data = start_walking_command_;
+    footstep_walk_command_pub.publish(command_msg);
 }
 
 void WalkingController::calcFootstep(double target_distance, double target_angle, double delta_time, double& fb_move, double& rl_angle)
@@ -268,7 +281,7 @@ bool WalkingController::walkToGoalPose(double x_goal, double y_goal, double thet
 }
 
 
-std::vector<humanoid_nav_msgs::StepTarget> BT::WalkToBallPosition::callSoccerLocalizationService(
+std::vector<humanoid_nav_msgs::StepTarget> WalkingController::callSoccerLocalizationService(
     double start_x, double start_y, double start_theta,
     double goal_x, double goal_y, double goal_theta)
 {
@@ -284,11 +297,11 @@ std::vector<humanoid_nav_msgs::StepTarget> BT::WalkToBallPosition::callSoccerLoc
 
     std::vector<humanoid_nav_msgs::StepTarget> relative_plan;
 
-    if (client.call(srv))
+    if (footstep_planner_client_.call(srv))
     {
         if (srv.response.success)
         {
-            ROS_INFO("Service call succeeded: %s", srv.response.message.c_str());
+            ROS_INFO("Service call succeeded");
             ROS_INFO("Relative plan has %zu steps", srv.response.relative_plan.size());
 
             relative_plan = srv.response.relative_plan;
@@ -305,7 +318,7 @@ std::vector<humanoid_nav_msgs::StepTarget> BT::WalkToBallPosition::callSoccerLoc
         }
         else
         {
-        ROS_WARN("Service returned failure: %s", srv.response.message.c_str());
+        ROS_WARN("Service returned failure");
         }
     }
     else

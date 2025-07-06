@@ -15,7 +15,7 @@ BT::WalkToBallPosition::WalkToBallPosition(std::string name)
     ros::ServiceClient client = nh.serviceClient<localization_pkg::GetRelativeFootsteps>(
         "/robotis_" + std::to_string(robot_id) + "/soccer_localization_node/call_footstep_planner");
     
-    leg_plan_pub_ = nh.advertise<footstep_walking_module::FootstepLegPlan>("/robotis_" + std::to_string(robot_id) + "/leg_step_plan", 1);
+    leg_plan_pub_ = nh.advertise<footstep_walking_module_msgs::FootstepLegPlan>("/robotis_" + std::to_string(robot_id) + "/leg_step_plan", 1);
 }
 
 BT::WalkToBallPosition::~WalkToBallPosition() {}
@@ -46,12 +46,14 @@ void BT::WalkToBallPosition::WaitForTick()
             // }
 
             this->setModule("footstep_walking_module");
-            ROS_COLORED_LOG("Walking towards ball in coordinates: X=%.4f Y=%.4f theta=%.4f", CYAN, true, distance_to_ball, pan_angle_to_ball, pan_angle_to_ball);
+            ROS_COLORED_LOG("Walking towards ball in coordinates: X=%.4f Y=%.4f theta=%.4f", CYAN, true, goal_x, goal_y, goal_theta);
             
             
             
             auto walking_plan = callSoccerLocalizationService(start_x, start_y, start_theta, goal_x, goal_y, goal_theta);
             walkingSucced = publishLegPlan(walking_plan);
+
+            goWalkSteps();
 
             if (walkingSucced)
             {
@@ -68,9 +70,9 @@ void BT::WalkToBallPosition::WaitForTick()
     set_status(BT::FAILURE);
 }
 
-bool BT::WalkToBallPosition::publishLegPlan(const std::vector<humanoid_nav_msgs::StepTarget>& walking_plan, ros::Publisher& pub)
+bool BT::WalkToBallPosition::publishLegPlan(const std::vector<humanoid_nav_msgs::StepTarget>& walking_plan)
 {
-    footstep_walking_module::FootstepLegPlan plan_msg;
+    footstep_walking_module_msgs::FootstepLegPlan plan_msg;
 
     if (walking_plan.empty())
     {
@@ -80,16 +82,16 @@ bool BT::WalkToBallPosition::publishLegPlan(const std::vector<humanoid_nav_msgs:
 
     for (const auto& step : walking_plan)
     {
-        footstep_walking_module::FootstepLegStep step_msg;
+        footstep_walking_module_msgs::FootstepLegStep step_msg;
         step_msg.x_move_amplitude = step.pose.x;
         step_msg.y_move_amplitude = step.pose.y;
         step_msg.angle_move_amplitude = step.pose.theta;
         plan_msg.steps.push_back(step_msg);
     }
 
-    pub.publish(plan_msg);
-    ROS_INFO("Published leg plan with %zu steps for leg: %s",
-            plan_msg.steps.size(), plan_msg.leg.c_str());
+    leg_plan_pub_.publish(plan_msg);
+    ROS_INFO("Published leg plan with %zu steps",
+            plan_msg.steps.size());
     
     return true;
 }
