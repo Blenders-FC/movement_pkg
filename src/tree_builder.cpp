@@ -15,7 +15,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* stand_up = new BT::StandUp("StandUp");
     auto* ball_detected = new BT::BallDetectedCondition("BallDetected");
     auto* search_ball = new BT::SearchBall("SearchBall");
-    auto* center_ball = new BT::CenterBallViolaJones("CenterBallViolaJones");
+    //auto* center_ball = new BT::CenterBallViolaJones("CenterBallViolaJones");
+    auto* center_ball = new BT::CenterBallYOLOJetson("CenterBallYOLOJetson");
     auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
     auto* turn_right = new BT::TurnRight("TurnRight", 6);   // turning 90° (6 cycles of 15° each)
     auto* turn_left = new BT::TurnLeft("TurnLeft", 6);      // turning 90° (6 cycles of 15° each)
