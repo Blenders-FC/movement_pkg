@@ -22,6 +22,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* yaw_head = new BT::MoveHead("YawHead");
     auto* lower_head_2 = new BT::MoveHead("MoveHead2");
     auto* yaw_head_2 = new BT::MoveHead("YawHead2");
+    auto* long_left_kick = new BT::LeftLongKick("LeftLongKick");
 
     // Control nodes
     BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
@@ -58,8 +59,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     //if true then perform kick
     //main_sequence->AddChild(penalty_kick); // or left_long_kick_action? 
-    main_sequence->AddChild(right_kick);
-
+   // main_sequence->AddChild(left_kick);
+   main_sequence->AddChild(left_kick);
     main_sequence->AddChild(lower_head_2);
     //main_sequence->AddChild(yaw_head_2);
 

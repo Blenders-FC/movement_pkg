@@ -35,7 +35,7 @@ void BT::MoveHead::WaitForTick()
                 ros::Duration(1).sleep();
                 ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
             }
-            writeHeadJoint(-60, true);
+            writeHeadJoint(60, true);
             writeHeadJoint(-20, false);
             
             
