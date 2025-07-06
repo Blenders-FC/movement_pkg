@@ -17,7 +17,7 @@ WalkingController::WalkingController() : utils()
     
     // Services
     get_param_client_ = nh.serviceClient<op3_walking_module_msgs::GetWalkingParam>("/robotis_" + std::to_string(robot_id) + "/walking/get_params");
-    footstep_planner_client_ = nh.serviceClient<humanoid_nav_msgs::PlanFootsteps>("/plan_footsteps");
+    footstep_planner_client_ = nh.serviceClient<humanoid_nav_msgs::PlanFootsteps>("/robotis_" + std::to_string(robot_id) + "/soccer_localization_node/plan_footsteps");
 }
 
 WalkingController::~WalkingController() {}
@@ -267,4 +267,51 @@ bool WalkingController::walkToGoalPose(double x_goal, double y_goal, double thet
     return walkFootstepPlan(srv.response.footsteps);
 }
 
+
+std::vector<humanoid_nav_msgs::StepTarget> BT::WalkToBallPosition::callSoccerLocalizationService(
+    double start_x, double start_y, double start_theta,
+    double goal_x, double goal_y, double goal_theta)
+{
+    localization_pkg::GetRelativeFootsteps srv;
+
+    // Fill request
+    srv.request.start_x = start_x;
+    srv.request.start_y = start_y;
+    srv.request.start_theta = start_theta;
+    srv.request.goal_x = goal_x;
+    srv.request.goal_y = goal_y;
+    srv.request.goal_theta = goal_theta;
+
+    std::vector<humanoid_nav_msgs::StepTarget> relative_plan;
+
+    if (client.call(srv))
+    {
+        if (srv.response.success)
+        {
+            ROS_INFO("Service call succeeded: %s", srv.response.message.c_str());
+            ROS_INFO("Relative plan has %zu steps", srv.response.relative_plan.size());
+
+            relative_plan = srv.response.relative_plan;
+
+            for (size_t i = 0; i < relative_plan.size(); ++i)
+            {
+            const auto& step = relative_plan[i];
+            ROS_INFO("Relative Step %zu: x=%.3f y=%.3f theta=%.3f leg=%d",
+                        i,
+                        step.pose.x,
+                        step.pose.y,
+                        step.pose.theta);
+            }
+        }
+        else
+        {
+        ROS_WARN("Service returned failure: %s", srv.response.message.c_str());
+        }
+    }
+    else
+    {
+        ROS_ERROR("Failed to call service /call_footstep_planner");
+    }
+    return relative_plan;
+}
 

@@ -41,6 +41,7 @@
 #include "nodes/timer_condition.h"
 #include "nodes/turn_left_action.h"
 #include "nodes/turn_right_action.h"
+#include "nodes/walk_to_ball_position_action.h"
 #include "nodes/walk_to_point_action.h"
 #include "nodes/walk_to_target_action.h"
 

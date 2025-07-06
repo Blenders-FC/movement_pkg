@@ -23,6 +23,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* left_kick = new BT::LeftKick("LeftKick");
     auto* right_kick = new BT::RightKick("RightKick");
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
+    auto* walk_to_ball = new BT::WalkToBallPosition("WalkToBallPosition");
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     
@@ -77,7 +78,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // Root node sequence
     root_node->AddChild(init_sequence);
-    root_node->AddChild(repeat_main_loop);
+    root_node->AddChild(walk_to_ball);
 
     return root_node;
 }
