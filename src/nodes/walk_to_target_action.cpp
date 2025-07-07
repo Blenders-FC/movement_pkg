@@ -139,7 +139,6 @@ void BT::WalkToTarget::writeHeadJoint(double ang_value)
         ros::Duration(1).sleep();
         ROS_COLORED_LOG("Set Module to none", YELLOW, false);
     }
-    write_msg_;
     write_msg_.header.stamp = ros::Time::now();
         
     // ang_value *= 0.0174533;  // DegToRad -> pi/180
