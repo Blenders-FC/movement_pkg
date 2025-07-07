@@ -30,7 +30,9 @@ class WalkToTarget : public ActionNode, public WalkingController, public CBDataM
     private:
         //  Auxiliar methods
         void walkTowardsTarget(double head_pan_angle, double head_tilt_angle);
+        void writeHeadJoint(double ang_value);
         double calculateDistance(double head_tilt);
+        double calculateTilt(double remaining_distance);
 
         // Variables
         double walked_distance = 0.0;
