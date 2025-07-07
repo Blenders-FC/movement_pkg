@@ -30,7 +30,15 @@ class WalkToTarget : public ActionNode, public WalkingController, public CBDataM
     private:
         //  Auxiliar methods
         void walkTowardsTarget(double head_pan_angle, double head_tilt_angle);
+        void writeHeadJoint(double ang_value);
         double calculateDistance(double head_tilt);
+        double calculateTilt(double remaining_distance);
+
+        // ROS variable
+        ros::Publisher write_joint_pub_;
+        ros::Time prev_time_walk_ = ros::Time::now();
+        sensor_msgs::JointState write_msg_;
+
 
         // Variables
         double walked_distance = 0.0;
@@ -46,9 +54,9 @@ class WalkToTarget : public ActionNode, public WalkingController, public CBDataM
         const double hip_pitch_offset_ = 0.12217305; //7°
         bool walkingSucced = false;
         bool walkLimitReach = false;
-        const double walk_thresh  = 0.38;
+        const double walk_thresh  = 0.80;
         std_msgs::String walk_command;
-        ros::Time prev_time_walk_ = ros::Time::now();
+        //ros::Time prev_time_walk_ = ros::Time::now();
 };
 }  // namespace BT
 
