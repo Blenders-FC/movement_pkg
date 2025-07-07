@@ -29,7 +29,7 @@ void BT::CenterBallViolaJones::WaitForTick()
         
         while (get_status() == BT::IDLE)
         {
-            // set_status(BT::RUNNING);
+            set_status(BT::RUNNING);
 
             ball_center_position_ = getBallPosition();
             head_pan_angle_ = getHeadPan();
