@@ -4,7 +4,7 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/center_ball_YOLOPID_action.h"
+#include "movement_pkg/nodes/center_ball_YOLOPID.h"
 
 
 BT::CenterBallYOLOPID::CenterBallYOLOPID(std::string name) 
@@ -18,7 +18,8 @@ BT::CenterBallYOLOPID::CenterBallYOLOPID(std::string name)
 BT::CenterBallYOLOPID::~CenterBallYOLOPID() {}
 void BT::CenterBallYOLOPID::WaitForTick()
 {
-    double Kp = 2.0, Ki = 0.0, Kd = 0.1; // Tune these
+    // double Kp = 2.0, Ki = 0.0, Kd = 0.1; // Tune these
+    double Kp = 1.0, Ki = 0.0, Kd = 0.3; // Tune these
     double integral_pan = 0, integral_tilt = 0;
     double prev_error_pan = 0, prev_error_tilt = 0;
     ros::Rate rate(30); // 30 Hz
