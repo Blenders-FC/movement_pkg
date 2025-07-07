@@ -43,7 +43,7 @@ void BT::SearchBallSinusoidal::WaitForTick()
             x_target_ = 60*sin(t_);
             y_target_ = 15*cos(t_) - 30;
 
-            if (x_target_ >= 54 ) {
+            if (abs(x_target_) >= 60 ){
                 turn_cnt_ += 1;
             }
             std::cout << "cont:" << turn_cnt_ << std::endl;
