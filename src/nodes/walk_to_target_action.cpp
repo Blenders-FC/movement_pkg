@@ -93,7 +93,7 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
             writeHeadJoint(new_tilt);
             return;
         }
-        else if (walked_distance >= distance_to_walk)
+        else if (walked_distance >= walk_thresh)
         {
             stopWalking();
             walkLimitReach = true;
