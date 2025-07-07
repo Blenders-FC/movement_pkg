@@ -14,7 +14,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* is_start_button = new BT::StartButtonCondition("IsStartButton");
     auto* stand_up = new BT::StandUp("StandUp");
     auto* ball_detected = new BT::BallDetectedCondition("BallDetected");
-    auto* search_ball = new BT::SearchBall("SearchBall");
+    auto* search_ball = new BT::SearchBallSinusoidal("SearchBallSinusoidal");
     auto* center_ball = new BT::CenterBallYOLOPID("CenterBallYOLOPID");
     auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
     auto* turn_right = new BT::TurnRight("TurnRight", 6);   // turning 90° (6 cycles of 15° each)
@@ -55,8 +55,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     // fallback_kick_selector->AddChild(left_kick);
 
     // Walk to ball sequence
-    ball_found_sequence->AddChild(ball_detected);
-    ball_found_sequence->AddChild(center_ball);
+    // ball_found_sequence->AddChild(ball_detected);
+    // ball_found_sequence->AddChild(center_ball);
     // ball_found_sequence->AddChild(walk_to_target);
     // ball_found_sequence->AddChild(fallback_kick_selector);
 
@@ -65,15 +65,15 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     turning_head_home_seq->AddChild(head_to_home);
 
     // Search ball fallback
-    fallback_search_ball->AddChild(search_ball);
+    // fallback_search_ball->AddChild(search_ball);
     //fallback_search_ball->AddChild(turning_head_home_seq);
 
     // Add sequences to fallback
-    main_fallback->AddChild(ball_found_sequence);
-    main_fallback->AddChild(fallback_search_ball);
+    // main_fallback->AddChild(ball_found_sequence);
+    // main_fallback->AddChild(search_ball);
 
     // Repeat main sequence
-    repeat_main_loop->AddChild(main_fallback);
+    repeat_main_loop->AddChild(search_ball);
 
     // Root node sequence
     root_node->AddChild(init_sequence);
