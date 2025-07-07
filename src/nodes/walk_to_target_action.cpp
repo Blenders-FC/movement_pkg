@@ -12,6 +12,9 @@ BT::WalkToTarget::WalkToTarget(std::string name)
 {
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&WalkToTarget::WaitForTick, this);
+
+    // Publisher
+    write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
 }
 
 BT::WalkToTarget::~WalkToTarget() {}
