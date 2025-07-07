@@ -27,7 +27,7 @@ void BT::SearchBallSinusoidal::WaitForTick()
         
         while (get_status() == BT::IDLE)
         {
-            turn_cnt_ = 0;
+            //turn_cnt_ = 0;
 
             // set_status(BT::RUNNING);
             if (getModule("r_knee") != "direct_control_module")
@@ -38,22 +38,40 @@ void BT::SearchBallSinusoidal::WaitForTick()
             }
 
             // Flow for searching ball - with sinusoidal function
-            t_ += 1;
+            t_ += 0.1;
 
+            
             x_target_ = 60*sin(t_);
-            y_target_ = 15*cos(t_) - 30;
+            y_target_ = 15*cos(t_*5) - 30;
 
-            if (abs(x_target_) >= 60 ){
-                turn_cnt_ += 1;
+            rightLeft = turn_cnt_%2;
+
+            ROS_COLORED_LOG("x target: %f", YELLOW, true, x_target_);
+            ROS_COLORED_LOG("y target: %f", YELLOW, true, y_target_);
+
+            dx = x_target_ - x_target_past_;
+            x_target_past_= x_target_;
+            // if ((turn_cnt_ == 0) && (dx <= 0)){
+            //     turn_cnt_ += 1;
+            // }
+
+            //
+            if (((!rightLeft) && (dx <= 0)) || ((rightLeft) && (dx >= 0))){
+                turn_cnt_++;
             }
             std::cout << "cont:" << turn_cnt_ << std::endl;
-            if (turn_cnt_ >= 2) {
-                y_target_ -= 20;
-                //angle_mov_x_ 2;
-                ROS_COLORED_LOG("New tilt angle position: %f", CYAN, false, y_target_);
+            // if ((turn_cnt_ >= 2 )&& (!headDown)) {
+            //     headDown = 1;
+            //     y_target_ = -40;
+            //     writeHeadJoint(y_target_, false);
+
+            //     //angle_mov_x_ 2;
+            //     ROS_COLORED_LOG("New tilt angle position: %f", CYAN, false, y_target_);
                 
-                ros::Duration(1.0).sleep();
-            } if (turn_cnt_ > 3) {
+            //     ros::Duration(1.0).sleep();
+
+            // } 
+            if (turn_cnt_ >= 2) {
                 turn_cnt_ = 0;
                 ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);
                 set_status(BT::FAILURE);
@@ -61,35 +79,33 @@ void BT::SearchBallSinusoidal::WaitForTick()
                 break;
             }
 
-            writeHeadJoint(x_target_, true);
-            writeHeadJoint(y_target_, true);
+            writeHeadJoint(x_target_, y_target_);
+            ros::Duration(0.5).sleep();
             
-            ROS_SUCCESS_LOG("Searching Ball!");
+           // ROS_SUCCESS_LOG("Searching Ball!");
             set_status(BT::SUCCESS);
         }
     }
 }
 
-void BT::SearchBallSinusoidal::writeHeadJoint(double ang_value, bool is_pan)
+void BT::SearchBallSinusoidal::writeHeadJoint(double ang_valueX, double ang_valueY)
 {
-    write_msg_x_.header.stamp = ros::Time::now();
-    write_msg_y_.header.stamp = ros::Time::now();
-        
-    ang_value *= 0.0174533;  // DegToRad -> pi/180
+    write_msg.header.stamp = ros::Time::now();        
+    ang_valueX *= 0.0174533;  // DegToRad -> pi/180
+    ang_valueY *= 0.0174533;  // DegToRad -> pi/180
   
-    if (is_pan){
-      if (ang_value >= 1.22173) ang_value = 1.22173;            //70 deg
-      else if (ang_value <= -1.22173) ang_value = -1.22173;     //-70 deg
-      write_msg_x_.name.push_back("head_pan");
-      write_msg_x_.position.push_back(ang_value);
-      write_joint_pub_.publish(write_msg_x_);
-    }else{
-      if (ang_value >= 0.34906) ang_value = 0.34906;        //20 deg
-      else if (ang_value <= -1.22173) ang_value = -1.22173;   //-70 deg
-      write_msg_y_.name.push_back("head_tilt");
-      write_msg_y_.position.push_back(ang_value);
-      write_joint_pub_.publish(write_msg_y_);
-    }
+    
+      if (ang_valueX >= 1.22173) ang_valueX = 1.22173;            //70 deg
+      else if (ang_valueX <= -1.22173) ang_valueX = -1.22173;     //-70 deg
+      write_msg.name.push_back("head_pan");
+      write_msg.position.push_back(ang_valueX);    
+
+      if (ang_valueY >= 0.34906) ang_valueY= 0.34906;        //20 deg
+      else if (ang_valueY <= -1.22173) ang_valueY = -1.22173;   //-70 deg
+      write_msg.name.push_back("head_tilt");
+      write_msg.position.push_back(ang_valueY);
+      write_joint_pub_.publish(write_msg);
+    
 }
 
 void BT::SearchBallSinusoidal::Halt()

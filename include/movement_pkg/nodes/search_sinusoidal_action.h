@@ -30,7 +30,7 @@ class SearchBallSinusoidal : public ActionNode, public CBDataManager
 
     private:
         // Helper to send joint commands
-        void writeHeadJoint(double ang_value, bool is_pan);
+        void writeHeadJoint(double ang_valueX, double ang_valueY);
 
         // ROS publisher
         ros::Publisher write_joint_pub_;
@@ -46,7 +46,11 @@ class SearchBallSinusoidal : public ActionNode, public CBDataManager
         // Sinusoidal search variables
         double t_ = 0.0;           // time or step counter
         double x_target_ = 0.0;    // target pan angle (deg)
+        double x_target_past_ = 0.0;    // target pan angle (deg)
+        double dx = 0.0;
         double y_target_ = 0.0;    // target tilt angle (deg)
+        bool rightLeft=0;
+        bool headDown=0;
 
         // Constants for OP3 head limits (rad)
         static constexpr double PAN_MAX_RAD = 1.22173;   // 70 deg
@@ -55,8 +59,7 @@ class SearchBallSinusoidal : public ActionNode, public CBDataManager
         static constexpr double TILT_MIN_RAD = -1.22173; // -70 deg
 
         // JointState messages for publishing (use local msg in function instead)
-        sensor_msgs::JointState write_msg_x_;
-        sensor_msgs::JointState write_msg_y_;
+        sensor_msgs::JointState write_msg;
 };
 }  // namespace BT
 
