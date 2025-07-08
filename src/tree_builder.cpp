@@ -73,7 +73,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     turning_head_home_seq->AddChild(simple_walk);
     // Add sequences to fallback
     main_fallback->AddChild(turning_head_home_seq);
-    main_fallback->AddChild(simple_walk);
+    main_fallback->AddChild(right_kick);
 
     // Repeat main sequence
     repeat_main_loop->AddChild(main_fallback);
