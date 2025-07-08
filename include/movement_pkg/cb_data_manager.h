@@ -14,8 +14,8 @@ public:
 
     // External functions
     geometry_msgs::Point getBallPosition();
-    Blenders_msgs::PointArray getGoalsPositions();
-    Blenders_msgs::RobotPose getInitRobotPose();
+    blenders_msgs::PointArray getGoalsPositions();
+    blenders_msgs::RobotPose getInitRobotPose();
     double getRobotPitch();
     double getHeadPan();
     double getHeadTilt();
@@ -26,28 +26,29 @@ public:
 private:
 
     // Callbacks
-    void ballCenterCallback(const geometry_msgs::Point& msg);
-    void goalCenterCallback(const geometry_msgs::Point& msg);
+    void ballCenterCallback(const geometry_msgs::Point::ConstPtr& msg);
+    void goalCenterCallback(const blenders_msgs::PointArray::ConstPtr& msg);
     void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
     void jointStatesCallback(const sensor_msgs::JointState& msg);
     // void refereeCallback(const soccer_pkg::referee& msg);
     void buttonHandlerCallback(const std_msgs::String::ConstPtr& msg);
     void statusCallback(const robotis_controller_msgs::StatusMsg::ConstPtr& msg);
-    void initPoseCallback(const Blenders_msgs::RobotPose::ConstPtr& msg);
+    void initPoseCallback(const blenders_msgs::RobotPose::ConstPtr& msg);
 
     // Subscribers
     ros::Subscriber ball_sub_;
-    ros::Subscriber goal_sub_;
+    ros::Subscriber goals_sub_;
     ros::Subscriber imu_sub_;
     ros::Subscriber read_joint_sub_;
     // ros::Subscriber ref_sub_;
     ros::Subscriber button_sub_;
     ros::Subscriber robot_status_sub_;
+    ros::Subscriber robot_init_pose_sub_;
     
     // Variables
     geometry_msgs::Point ball_position_;
-    Blenders_msgs::PointArray goals_positions_;
-    Blenders_msgs::RobotPose init_robot_pose_;
+    blenders_msgs::PointArray goals_positions_;
+    blenders_msgs::RobotPose init_robot_pose_;
     geometry_msgs::Point goal_position_;
     Eigen::Quaterniond imu_orientation_;
     Eigen::MatrixXd rpy_orientation_;

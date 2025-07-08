@@ -30,10 +30,10 @@ void CBDataManager::ballCenterCallback(const geometry_msgs::Point::ConstPtr& msg
 }
 
 // Updating latest goal position
-void CBDataManager::goalCenterCallback(const Blenders_msgs::PointArray::ConstPtr& msg)
+void CBDataManager::goalCenterCallback(const blenders_msgs::PointArray::ConstPtr& msg)
 {
     ROS_INFO("Received %lu points", msg->points.size());
-    goals_positions_ = msg;
+    goals_positions_ = *msg;
 }
 
 // Updating IMU state
@@ -104,10 +104,10 @@ void CBDataManager::statusCallback(const robotis_controller_msgs::StatusMsg::Con
 }
 
 // Updating init robot pose
-void CBDataManager::initPoseCallback(const Blenders_msgs::RobotPose::ConstPtr& msg)
+void CBDataManager::initPoseCallback(const blenders_msgs::RobotPose::ConstPtr& msg)
 {
     // Save data into global variable
-    init_robot_pose_ = msg;
+    init_robot_pose_ = *msg;
 }
 
 
@@ -118,7 +118,7 @@ geometry_msgs::Point CBDataManager::getBallPosition()
     return ball_position_;
 }
 
-Blenders_msgs::PointArray CBDataManager::getGoalsPositions()
+blenders_msgs::PointArray CBDataManager::getGoalsPositions()
 {
     return goals_positions_;
 }
@@ -156,7 +156,7 @@ std::pair<std::string, std::string> CBDataManager::getRobotStatus()
     return std::make_pair(module_name_, status_msg_);
 }
 
-Blenders_msgs::RobotPose CBDataManager::getInitRobotPose()
+blenders_msgs::RobotPose CBDataManager::getInitRobotPose()
 {
     return init_robot_pose_;
 }

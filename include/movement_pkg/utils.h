@@ -29,8 +29,8 @@
 #include "localization_pkg/GetRelativeFootsteps.h"
 #include "footstep_walking_module_msgs/FootstepLegPlan.h"
 #include "footstep_walking_module_msgs/FootstepLegStep.h"
-#include "Blenders_msgs/PointArray.h"
-#include "Blenders_msgs/RobotPose.h"
+#include "blenders_msgs/PointArray.h"
+#include "blenders_msgs/RobotPose.h"
 #include "movement_pkg/blackboard.h"
 
 // ===== ANSI COLOR CODES =====
