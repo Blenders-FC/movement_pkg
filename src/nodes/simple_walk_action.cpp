@@ -40,8 +40,10 @@ void BT::SimpleWalk::WaitForTick()
                 walking_command_ = "start";
                 goWalk(walking_command_); 
 
+                set_status(BT::RUNNING); 
+
                 ROS_SUCCESS_LOG("Simple walk has been commanded to start.");
-                set_status(BT::SUCCESS);
+                // set_status(BT::SUCCESS);
 
             }
             else 
