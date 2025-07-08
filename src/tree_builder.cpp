@@ -67,7 +67,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     ball_found_sequence->AddChild(ball_detected);
     ball_found_sequence->AddChild(center_ball);
     ball_found_sequence->AddChild(walk_to_target);
-    ball_found_sequence->AddChild(right_kick);
+    ball_found_sequence->AddChild(fallback_kick_selector);
 
     //Turn 5 times sequence
     //repeat_turn_right->AddChild(turn_right);
@@ -90,7 +90,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     fallback_search_ball->AddChild(search_ball);
     fallback_search_ball->AddChild(fallback_turns);
-    fallback_search_ball->AddChild(turning_head_home_seq);
+    //fallback_search_ball->AddChild(turning_head_home_seq);
 
     //add sequence to fallback turns
     fallback_turns->AddChild(turning_head_home_seq);
