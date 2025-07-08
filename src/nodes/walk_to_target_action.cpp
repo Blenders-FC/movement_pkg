@@ -13,7 +13,7 @@ BT::WalkToTarget::WalkToTarget(std::string name)
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&WalkToTarget::WaitForTick, this);
     // Inicializar el suscriptor de estado
-    robot_state_sub_ = nh_.subscribe("/via_libre_state", 1, &WalkToTarget::robotStateCallback, this);
+    robot_state_sub_ = nh_.subscribe("/robotis_" + std::to_string(robot_id) + "/via_libre_state", 1, &WalkToTarget::robotStateCallback, this);
     ROS_INFO("WalkToTarget node initialized and subscribed to /via_libre_state (simplified for lateral movement).");
 }
 
