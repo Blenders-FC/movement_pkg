@@ -27,10 +27,8 @@ void BT::SimpleWalk::WaitForTick()
         tick_engine.Wait(); // Espera a que el BT le dé un tick
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_simple_walk");
 
-        
-        while (get_status() == BT::IDLE)
-        {
-          
+        set_status(BT::RUNNING);
+
             if (current_robot_state_ >= 1 && current_robot_state_ <= 3) // Si el estado es 1, 2 o 3
             {
                 ROS_INFO("Robot state is %d: Initiating simple walk (forward)", current_robot_state_);
@@ -43,7 +41,7 @@ void BT::SimpleWalk::WaitForTick()
                 //set_status(BT::RUNNING); 
 
                 ROS_SUCCESS_LOG("Simple walk has been commanded to start.");
-                // set_status(BT::SUCCESS);
+                set_status(BT::SUCCESS);
 
             }
             else 
@@ -51,10 +49,8 @@ void BT::SimpleWalk::WaitForTick()
                 //ROS_WARN_LOG("SimpleWalk received a tick but current_robot_state_ is %d. Not initiating walk.", false, current_robot_state_);
                 ROS_COLORED_LOG("SimpleWalk received a tick but current_robot_state_ is %d. Not initiating walk.", YELLOW, false, current_robot_state_);
 
-                set_status(BT::IDLE);
-                break; 
+                set_status(BT::FAILURE);
             }
-        }
         
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
