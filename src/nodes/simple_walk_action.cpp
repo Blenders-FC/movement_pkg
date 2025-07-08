@@ -27,7 +27,7 @@ void BT::SimpleWalk::WaitForTick()
         tick_engine.Wait(); // Espera a que el BT le dé un tick
         ROS_TAGGED_ONCE_LOG("TICK RECEIVED", "DEFAULT", false, "Received_simple_walk");
 
-     
+        set_status(BT::IDLE);
         while (get_status() == BT::IDLE)
         {
           
@@ -40,7 +40,7 @@ void BT::SimpleWalk::WaitForTick()
                 walking_command_ = "start";
                 goWalk(walking_command_); 
 
-                set_status(BT::RUNNING); 
+                //set_status(BT::RUNNING); 
 
                 ROS_SUCCESS_LOG("Simple walk has been commanded to start.");
                 // set_status(BT::SUCCESS);
