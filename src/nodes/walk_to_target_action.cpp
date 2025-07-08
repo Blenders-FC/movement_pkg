@@ -49,7 +49,7 @@ void BT::WalkToTarget::WaitForTick()
             {
                 if (current_robot_state_ != -1) { 
                     ROS_INFO("Robot state is %d (not 0): Stopping lateral movement.", current_robot_state_);
-                    set_status(BT::SUCCESS);
+                    set_status(BT::FAILURE);
                 } else {
                     
                     ROS_WARN_THROTTLE(2.0, "WalkToTarget: Waiting for valid robot state. Current: %d. Stopping movement.", current_robot_state_);
