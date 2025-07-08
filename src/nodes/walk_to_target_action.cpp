@@ -32,7 +32,7 @@ void BT::WalkToTarget::WaitForTick()
         
         while (ros::ok() && get_status() == BT::RUNNING)
         {
-            if (current_robot_state_ == 0)
+            if (current_robot_state_ == 3)
             {
                 ROS_INFO_THROTTLE(1.0, "Robot state is 0: Moving 0.2 to the right (Y-axis) continuously.");
                
