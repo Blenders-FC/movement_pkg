@@ -88,9 +88,12 @@ void CBDataManager::jointStatesCallback(const sensor_msgs::JointState& msg)
 // Updating start button state
 void CBDataManager::buttonHandlerCallback(const std_msgs::String::ConstPtr& msg)
 {
-    if (msg->data == "mode") {
+    if (msg->data == "mode") 
+    {
       start_button_flag_ = true;
-    } else if (msg->data == "start"){
+    } 
+    else if (msg->data == "start")
+    {
       start_button_flag_ = false;
     }
 }
@@ -107,7 +110,8 @@ void CBDataManager::statusCallback(const robotis_controller_msgs::StatusMsg::Con
 void CBDataManager::initPoseCallback(const blenders_msgs::RobotPose::ConstPtr& msg)
 {
     // Save data into global variable
-    init_robot_pose_ = *msg;
+    init_robot_pose_ = msg->pose;
+    valid_init_robot_pose_ = msg->valid;
 }
 
 
@@ -156,7 +160,12 @@ std::pair<std::string, std::string> CBDataManager::getRobotStatus()
     return std::make_pair(module_name_, status_msg_);
 }
 
-blenders_msgs::RobotPose CBDataManager::getInitRobotPose()
+geometry_msgs::Pose CBDataManager::getInitRobotPose()
 {
     return init_robot_pose_;
+}
+
+bool CBDataManager::isInitPoseValid()
+{
+    return valid_init_robot_pose_;
 }

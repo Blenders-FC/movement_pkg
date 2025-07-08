@@ -20,6 +20,7 @@
 #include <std_msgs/Int32.h>
 #include <std_msgs/Bool.h>
 #include <geometry_msgs/Point.h>
+#include <geometry_msgs/Pose.h>
 #include <sensor_msgs/JointState.h>
 #include <sensor_msgs/Imu.h>
 

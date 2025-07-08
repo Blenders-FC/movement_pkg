@@ -47,6 +47,7 @@ set(SOURCE_FILES
   src/nodes/get_up_backwards_action.cpp
   src/nodes/get_up_combined_action.cpp
   src/nodes/get_up_forward_action.cpp
+  src/nodes/init_pose_condition.cpp
   src/nodes/left_kick_action.cpp
   src/nodes/left_long_kick_action.cpp
   src/nodes/right_long_kick_action.cpp

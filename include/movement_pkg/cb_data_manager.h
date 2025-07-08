@@ -15,7 +15,8 @@ public:
     // External functions
     geometry_msgs::Point getBallPosition();
     blenders_msgs::PointArray getGoalsPositions();
-    blenders_msgs::RobotPose getInitRobotPose();
+    geometry_msgs::Pose getInitRobotPose();
+    bool isInitPoseValid();
     double getRobotPitch();
     double getHeadPan();
     double getHeadTilt();
@@ -48,8 +49,8 @@ private:
     // Variables
     geometry_msgs::Point ball_position_;
     blenders_msgs::PointArray goals_positions_;
-    blenders_msgs::RobotPose init_robot_pose_;
-    geometry_msgs::Point goal_position_;
+    geometry_msgs::Pose init_robot_pose_;
+    bool valid_init_robot_pose_;
     Eigen::Quaterniond imu_orientation_;
     Eigen::MatrixXd rpy_orientation_;
     double head_pan_;
