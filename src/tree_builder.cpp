@@ -23,6 +23,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* lower_head_2 = new BT::MoveHead("MoveHead2");
     auto* yaw_head_2 = new BT::MoveHead("YawHead2");
     auto* long_left_kick = new BT::LeftLongKick("LeftLongKick");
+    auto* kick_selector = new BT::ChooseKickFootCondition("ChooseKickFootCondition");
 
     // Control nodes
     BT::SequenceNodeWithMemory* root = new BT::SequenceNodeWithMemory("Root");
@@ -34,6 +35,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     BT::FallbackNode* ball_close_fallback = new BT::FallbackNode("BallCloseFallback");
     BT::SequenceNodeWithMemory* kick_sequence = new BT::SequenceNodeWithMemory("KickSequence");
     BT::SequenceNodeWithMemory* lower_head_sequence = new BT::SequenceNodeWithMemory("MoveHeadSequence");
+    auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
     BT::RepeatNode* repeat_node = new BT::RepeatNode("RepeatNode_"); // ?
 
     // Secuencia de inicio
@@ -44,6 +46,10 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     //init_sequence->AddChild(yaw_head);
     init_sequence->AddChild(is_start_button);
 
+    // Right Kick Sequence
+    right_kick_seq->AddChild(kick_selector);
+    right_kick_seq->AddChild(right_kick);
+
     //lower_head_sequence->AddChild(lower_head);
 
     // Search ballS
@@ -52,9 +58,10 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     // does ball have to be centered? 
 
 
-    // is distance from ball (ball area) big enough
-    main_sequence->AddChild(ball_close_condition);
-    //ball_close_fallback->AddChild(ball_close_condition);
+        // Kick fallback
+    fallback_kick_selector->AddChild(right_kick_seq);
+    fallback_kick_selector->AddChild(left_kick);
+    ball_close_fallback->AddChild(ball_close_condition);
     
 
     //if true then perform kick

@@ -22,6 +22,7 @@
 #include "nodes/right_kick_action.h"
 #include "nodes/right_long_kick_action.h"
 #include "nodes/left_long_kick_action.h"
+#include "nodes/choose_kick_foot_action.h"
 #include "repeat_node.h"
 
 
