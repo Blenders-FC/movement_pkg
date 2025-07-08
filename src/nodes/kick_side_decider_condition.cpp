@@ -6,7 +6,6 @@
 
 #include "movement_pkg/nodes/kick_side_decider_condition.h"
 
-
 BT::KickSideDeciderCondition::KickSideDeciderCondition(const std::string &name) 
 : BT::ConditionNode(name), utils(), gen(rd()), dis(0, 1) {}
 

@@ -42,6 +42,11 @@ void BT::WalkToTarget::WaitForTick()
                 ROS_SUCCESS_LOG("Walk to target SUCCESS");
                 set_status(BT::SUCCESS);
             }
+            else if (walkingLimit_reach)
+            {
+                ROS_SUCCESS_LOG("Walk to limit REACHED");
+                set_status(BT::FAILURE);
+            }
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
@@ -79,6 +84,14 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
         {
             stopWalking();
             walkingSucced = true;
+            return;
+        }
+        if (walked_distance >= walk_thresh)
+        {
+            stopWalking();
+            walkingSucced = false;
+            walkingLimit_reach = true;
+            ROS_COLORED_LOG("walked dist: %f   reached limit: %f", ORANGE, false, walked_distance, walk_thresh);
             return;
         }
 

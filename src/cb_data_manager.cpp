@@ -11,6 +11,7 @@ CBDataManager::CBDataManager() : utils(), imu_orientation_(1, 0, 0, 0)  // Defau
 {
     // Subscribers
     ball_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/ball_center", 10, &CBDataManager::ballCenterCallback, this);
+    ball_a_sub = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/ball_center", 10, &CBDataManager::ballAreaCallback, this);
     imu_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/imu", 10, &CBDataManager::imuCallback, this);
     read_joint_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/present_joint_states", 10, &CBDataManager::jointStatesCallback, this);
     // ref_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/r_data", 10, &CBDataManager::refereeCallback, this);
@@ -27,6 +28,11 @@ void CBDataManager::ballCenterCallback(const geometry_msgs::Point& msg)
     ball_position_.y = msg.y; // 240) - 1;
 }
 
+void CBDataManager::ballAreaCallback(const geometry_msgs::Point& msg)
+{   
+    ball_position_.y = msg.y; // 240) - 1;
+    ball_position_.z = msg.z; // Ball area
+}
 // Updating IMU state
 void CBDataManager::imuCallback(const sensor_msgs::Imu::ConstPtr& msg)
 {
@@ -100,6 +106,13 @@ void CBDataManager::statusCallback(const robotis_controller_msgs::StatusMsg::Con
 geometry_msgs::Point CBDataManager::getBallPosition()
 {
     return ball_position_;
+}
+
+geometry_msgs::Point CBDataManager::getBallArea()
+{
+    
+    return ball_position_;  // Area of the ball
+
 }
 
 double CBDataManager::getRobotPitch()
