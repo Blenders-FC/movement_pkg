@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef CENTER_BALL_YOLOPID_ACTION_H
-#define CENTER_BALL_YOLOPID_ACTION_H
+#ifndef CENTER_BALL_YOLO_PID_ACTION_H
+#define CENTER_BALL_YOLO_PID_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
 #include <action_node.h>
@@ -43,9 +43,9 @@ class CenterBallYOLOPID : public ActionNode, public CBDataManager
 
     private:
         // Auxiliar methods
-        void writeHeadJoint(double ang_value, bool is_pan);
-        double clamp(double value, double min_value, double max_value);
-        void resetPID();
+        void writeHeadJoint(double ang_valueX, double ang_valueY, bool ang_in_rad);
+        // double clamp(double value, double min_value, double max_value);
+        // void resetPID();
 
         // ROS
         ros::Publisher write_joint_pub_;
@@ -55,8 +55,8 @@ class CenterBallYOLOPID : public ActionNode, public CBDataManager
         PIDController pid_tilt_{2.0, 0.0, 0.1};
 
         // Constants for pixel-to-deg conversion
-        static constexpr double X_PIXEL_TO_DEG = 0.21875;
-        static constexpr double Y_PIXEL_TO_DEG = 0.29166;
+        static constexpr double X_PIXEL_TO_DEG = 0.21875;   // 70/320
+        static constexpr double Y_PIXEL_TO_DEG = 0.29166;   // 70/240
 
         // Head joint angle limits (rad)
         static constexpr double PAN_MAX_RAD = 1.2217;   // ~70 deg
@@ -66,7 +66,7 @@ class CenterBallYOLOPID : public ActionNode, public CBDataManager
 
         // Variables
         geometry_msgs::Point ball_center_position_;
-        double dt = 1.0 / 30.0; // 30 Hz
+        double dt = 0.03333;  //1.0 / 30.0; // 30 Hz
 
         double head_pan_angle_;
         double head_tilt_angle_;
@@ -74,9 +74,11 @@ class CenterBallYOLOPID : public ActionNode, public CBDataManager
         double angle_mov_y_;
         double xerror_;
         double yerror_;
+        double deg_to_rad = 0.0174533;      // M_PI / 180;
+        double error_limit_ = 0.0523599;    // 3°
 
         sensor_msgs::JointState write_msg_;
 };
 }  // namespace BT
 
-#endif  // CENTER_BALL_YOLOPID_ACTION_H
+#endif  // CENTER_BALL_YOLO_PID_ACTION_H
