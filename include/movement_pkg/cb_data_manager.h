@@ -14,6 +14,8 @@ public:
 
     // External functions
     geometry_msgs::Point getBallPosition();
+    Blenders_msgs::PointArray getGoalsPositions();
+    Blenders_msgs::RobotPose getInitRobotPose();
     double getRobotPitch();
     double getHeadPan();
     double getHeadTilt();
@@ -25,14 +27,17 @@ private:
 
     // Callbacks
     void ballCenterCallback(const geometry_msgs::Point& msg);
+    void goalCenterCallback(const geometry_msgs::Point& msg);
     void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
     void jointStatesCallback(const sensor_msgs::JointState& msg);
     // void refereeCallback(const soccer_pkg::referee& msg);
     void buttonHandlerCallback(const std_msgs::String::ConstPtr& msg);
     void statusCallback(const robotis_controller_msgs::StatusMsg::ConstPtr& msg);
+    void initPoseCallback(const Blenders_msgs::RobotPose::ConstPtr& msg);
 
     // Subscribers
     ros::Subscriber ball_sub_;
+    ros::Subscriber goal_sub_;
     ros::Subscriber imu_sub_;
     ros::Subscriber read_joint_sub_;
     // ros::Subscriber ref_sub_;
@@ -41,6 +46,9 @@ private:
     
     // Variables
     geometry_msgs::Point ball_position_;
+    Blenders_msgs::PointArray goals_positions_;
+    Blenders_msgs::RobotPose init_robot_pose_;
+    geometry_msgs::Point goal_position_;
     Eigen::Quaterniond imu_orientation_;
     Eigen::MatrixXd rpy_orientation_;
     double head_pan_;

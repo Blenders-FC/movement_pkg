@@ -11,20 +11,29 @@ CBDataManager::CBDataManager() : utils(), imu_orientation_(1, 0, 0, 0)  // Defau
 {
     // Subscribers
     ball_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/ball_center", 10, &CBDataManager::ballCenterCallback, this);
+    goals_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/goals_centers", 10, &CBDataManager::goalCenterCallback, this);
     imu_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/imu", 10, &CBDataManager::imuCallback, this);
     read_joint_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/present_joint_states", 10, &CBDataManager::jointStatesCallback, this);
     // ref_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/r_data", 10, &CBDataManager::refereeCallback, this);
     button_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/open_cr/button", 10, &CBDataManager::buttonHandlerCallback, this);
     robot_status_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/status", 10, &CBDataManager::statusCallback, this);
+    robot_init_pose_sub_ = nh.subscribe("/robotis_" + std::to_string(robot_id) + "/robot_pose/init_pose", 10, &CBDataManager::initPoseCallback, this);
 }
 
 // [============================== CALLBACKS ==============================]
 
 // Updating latest ball position
-void CBDataManager::ballCenterCallback(const geometry_msgs::Point& msg)
+void CBDataManager::ballCenterCallback(const geometry_msgs::Point::ConstPtr& msg)
 {
-    ball_position_.x = msg.x; // 320) - 1;
-    ball_position_.y = msg.y; // 240) - 1;
+    ball_position_.x = msg->x; // 320) - 1;
+    ball_position_.y = msg->y; // 240) - 1;
+}
+
+// Updating latest goal position
+void CBDataManager::goalCenterCallback(const Blenders_msgs::PointArray::ConstPtr& msg)
+{
+    ROS_INFO("Received %lu points", msg->points.size());
+    goals_positions_ = msg;
 }
 
 // Updating IMU state
@@ -94,12 +103,24 @@ void CBDataManager::statusCallback(const robotis_controller_msgs::StatusMsg::Con
     status_msg_ = msg->status_msg;
 }
 
+// Updating init robot pose
+void CBDataManager::initPoseCallback(const Blenders_msgs::RobotPose::ConstPtr& msg)
+{
+    // Save data into global variable
+    init_robot_pose_ = msg;
+}
+
 
 // [========================= EXTERNAL FUNCTIONS ==========================]
 
 geometry_msgs::Point CBDataManager::getBallPosition()
 {
     return ball_position_;
+}
+
+Blenders_msgs::PointArray CBDataManager::getGoalsPositions()
+{
+    return goals_positions_;
 }
 
 double CBDataManager::getRobotPitch()
@@ -133,4 +154,9 @@ bool CBDataManager::getStartButtonState()
 std::pair<std::string, std::string> CBDataManager::getRobotStatus()
 {
     return std::make_pair(module_name_, status_msg_);
+}
+
+Blenders_msgs::RobotPose CBDataManager::getInitRobotPose()
+{
+    return init_robot_pose_;
 }
