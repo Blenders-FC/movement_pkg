@@ -47,8 +47,9 @@ void BT::SimpleWalk::WaitForTick()
             }
             else 
             {
-                ROS_WARN_LOG("SimpleWalk received a tick but current_robot_state_ is %d. Not initiating walk.", false, current_robot_state_);
-             
+                //ROS_WARN_LOG("SimpleWalk received a tick but current_robot_state_ is %d. Not initiating walk.", false, current_robot_state_);
+                ROS_COLORED_LOG("SimpleWalk received a tick but current_robot_state_ is %d. Not initiating walk.", YELLOW, false, current_robot_state_);
+
                 set_status(BT::IDLE);
                 break; 
             }
