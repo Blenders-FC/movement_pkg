@@ -26,7 +26,7 @@
 #include "nodes/get_up_forward_action.h"
 #include "nodes/kick_side_decider_condition.h"
 #include "nodes/left_kick_action.h"
-#include "nodes/long_kick_action.h"
+#include "nodes/left_long_kick_action.h"
 #include "nodes/manager_done_condition.h"
 #include "nodes/manager_running_condition.h"
 #include "nodes/online_walk_to_target_action.h"
