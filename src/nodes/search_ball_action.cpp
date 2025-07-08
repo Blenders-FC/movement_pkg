@@ -27,7 +27,7 @@ void BT::SearchBall::WaitForTick()
         
         while (get_status() == BT::IDLE)
         {
-            turn_cnt_ = 0;
+            // turn_cnt_ = 0;
     
             // set_status(BT::RUNNING);
             if (getModule("r_knee") != "direct_control_module")
@@ -44,9 +44,10 @@ void BT::SearchBall::WaitForTick()
             angle_mov_y_ = head_tilt_angle_ * 57.2958;  // RadToDeg -> 180/pi
             limit_x_error_ = abs(70 - angle_mov_x_);
             limit_y_error_ = abs(-50 - angle_mov_y_);
+            ROS_COLORED_LOG("limit_x_error_: %f  limit_y_error_: %f", ORANGE, false, limit_x_error_, limit_y_error_);
 
             ROS_COLORED_LOG("X: %f  Y: %f", TEAL, false, head_pan_angle_, angle_mov_y_);
-            if (limit_x_error_ <= 5 && limit_y_error_ <= 5){
+            if (limit_x_error_ <= 5 && limit_y_error_ <= 8){
                 turn_cnt_ = 0;
                 // turn2search(9);
                 ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);
@@ -59,7 +60,7 @@ void BT::SearchBall::WaitForTick()
                 angle_mov_x_ += 5;
                 ROS_COLORED_LOG("New pan angle position: %f", CYAN, false, angle_mov_x_);
                 writeHeadJoint(angle_mov_x_, true);
-                ros::Duration(1.0).sleep();
+                ros::Duration(0.1).sleep();
                 if (angle_mov_x_ >= 70) head_direction_ = false;
             }
             else if (!head_direction_ && angle_mov_x_ >= -70)
@@ -67,7 +68,7 @@ void BT::SearchBall::WaitForTick()
                 angle_mov_x_ -= 5;
                 ROS_COLORED_LOG("New pan angle position: %f", CYAN, false, angle_mov_x_);
                 writeHeadJoint(angle_mov_x_, true);
-                ros::Duration(1.0).sleep();
+                ros::Duration(0.1).sleep();
                 if (angle_mov_x_ <= -70)
                 {
                     head_direction_ = true;
@@ -75,7 +76,7 @@ void BT::SearchBall::WaitForTick()
                     if (turn_cnt_ == 1)
                     {
                         angle_mov_y_ = -50;
-                        ROS_COLORED_LOG("New tilt angle position: %f", TEAL, false, angle_mov_y_);
+                        ROS_COLORED_LOG("New tilt angle position from search_ball: %f", TEAL, false, angle_mov_y_);
                         writeHeadJoint(angle_mov_y_, false);
                     }
                 }

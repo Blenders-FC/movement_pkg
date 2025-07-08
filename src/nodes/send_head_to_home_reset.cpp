@@ -4,20 +4,20 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/send_head_to_home_action.h"
+#include "movement_pkg/nodes/send_head_to_home_reset.h"
 
 
-BT::HeadToHome::HeadToHome(std::string name) 
+BT::HeadToHomeReset::HeadToHomeReset(std::string name) 
 : ActionNode::ActionNode(name)
 {
     type_ = BT::ACTION_NODE;
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
-    thread_ = std::thread(&HeadToHome::WaitForTick, this);
+    thread_ = std::thread(&HeadToHomeReset::WaitForTick, this);
 }
 
-BT::HeadToHome::~HeadToHome() {}
+BT::HeadToHomeReset::~HeadToHomeReset() {}
 
-void BT::HeadToHome::WaitForTick()
+void BT::HeadToHomeReset::WaitForTick()
 {
     while (ros::ok())
     {
@@ -37,13 +37,15 @@ void BT::HeadToHome::WaitForTick()
             ROS_COLORED_LOG("New tilt angle position from head2home: %f", TEAL, false, -10);
             ros::Duration(2).sleep();
 
-            ROS_SUCCESS_LOG("Head in home position!");
+            ROS_SUCCESS_LOG("Head in home position! Resetting Counter");
+            m_turncnt.turncnt = 0;
+            blackboard.setTarget("m_turncnt", m_turncnt);
             set_status(BT::SUCCESS);
         }
     }
 }
 
-void BT::HeadToHome::writeHeadJoint(double ang_value, bool is_pan)
+void BT::HeadToHomeReset::writeHeadJoint(double ang_value, bool is_pan)
 {
     write_msg_.header.stamp = ros::Time::now();
         
@@ -63,7 +65,7 @@ void BT::HeadToHome::writeHeadJoint(double ang_value, bool is_pan)
     write_joint_pub_.publish(write_msg_);
 }
 
-void BT::HeadToHome::Halt()
+void BT::HeadToHomeReset::Halt()
 {
     set_status(BT::HALTED);
     ROS_TAGGED_ONCE_LOG("HeadToHome HALTED: Stopped search ball", "ORANGE", false, "Halted_HeadToHome");
