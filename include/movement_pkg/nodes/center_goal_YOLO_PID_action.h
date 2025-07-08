@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef CENTER_BALL_YOLO_PID_ACTION_H
-#define CENTER_BALL_YOLO_PID_ACTION_H
+#ifndef CENTER_GOAL_YOLO_PID_ACTION_H
+#define CENTER_GOAL_YOLO_PID_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
 #include <action_node.h>
@@ -28,12 +28,12 @@ struct PIDController
 
 namespace BT
 {
-class CenterBallYOLOPID : public ActionNode, public CBDataManager
+class CenterGoalYOLOPID : public ActionNode, public CBDataManager
 {
     public:
         // Constructor
-        explicit CenterBallYOLOPID(std::string name);
-        ~CenterBallYOLOPID();
+        explicit CenterGoalYOLOPID(std::string name);
+        ~CenterGoalYOLOPID();
 
         // The method executed by the thread
         void WaitForTick();
@@ -81,4 +81,4 @@ class CenterBallYOLOPID : public ActionNode, public CBDataManager
 };
 }  // namespace BT
 
-#endif  // CENTER_BALL_YOLO_PID_ACTION_H
+#endif  // CENTER_GOAL_YOLO_PID_ACTION_H

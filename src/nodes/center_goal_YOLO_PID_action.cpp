@@ -4,19 +4,19 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/center_ball_YOLO_PID_action.h"
+#include "movement_pkg/nodes/center_goal_YOLO_PID_action.h"
 
 
-BT::CenterBallYOLOPID::CenterBallYOLOPID(std::string name) 
+BT::CenterGoalYOLOPID::CenterGoalYOLOPID(std::string name) 
 : ActionNode::ActionNode(name)
 {
     type_ = BT::ACTION_NODE;
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
-    thread_ = std::thread(&CenterBallYOLOPID::WaitForTick, this);
+    thread_ = std::thread(&CenterGoalYOLOPID::WaitForTick, this);
 }
 
-BT::CenterBallYOLOPID::~CenterBallYOLOPID() {}
-void BT::CenterBallYOLOPID::WaitForTick()
+BT::CenterGoalYOLOPID::~CenterGoalYOLOPID() {}
+void BT::CenterGoalYOLOPID::WaitForTick()
 {
     // double Kp = 2.0, Ki = 0.0, Kd = 0.1; // Tune these
     double Kp = 1.0, Ki = 0.0, Kd = 0.3; // Tune these
@@ -90,7 +90,7 @@ void BT::CenterBallYOLOPID::WaitForTick()
     set_status(BT::FAILURE);
 }
 
-void BT::SearchBallSinusoidal::writeHeadJoint(double ang_valueX, double ang_valueY, bool ang_in_rad)
+void BT::CenterGoalYOLOPID::writeHeadJoint(double ang_valueX, double ang_valueY, bool ang_in_rad)
 {
     // if (getModule("head_tilt") != "direct_control_module")
     // {
@@ -98,7 +98,7 @@ void BT::SearchBallSinusoidal::writeHeadJoint(double ang_valueX, double ang_valu
     //     ros::Duration(1).sleep();
     //     ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
     // }
-    write_msg.header.stamp = ros::Time::now();
+    write_msg_.header.stamp = ros::Time::now();
     
     if (!ang_in_rad)
     {
@@ -108,20 +108,20 @@ void BT::SearchBallSinusoidal::writeHeadJoint(double ang_valueX, double ang_valu
     
     if (ang_valueX >= PAN_MAX_RAD) ang_valueX = PAN_MAX_RAD;            //70 deg
     else if (ang_valueX <= PAN_MIN_RAD) ang_valueX = PAN_MIN_RAD;     //-70 deg
-    write_msg.name.push_back("head_pan");
-    write_msg.position.push_back(ang_valueX);    
+    write_msg_.name.push_back("head_pan");
+    write_msg_.position.push_back(ang_valueX);    
 
     if (ang_valueY >= TILT_MAX_RAD) ang_valueY = TILT_MAX_RAD;        //20 deg
     else if (ang_valueY <= TILT_MIN_RAD) ang_valueY = TILT_MIN_RAD;   //-70 deg
-    write_msg.name.push_back("head_tilt");
-    write_msg.position.push_back(ang_valueY);
+    write_msg_.name.push_back("head_tilt");
+    write_msg_.position.push_back(ang_valueY);
 
-    write_joint_pub_.publish(write_msg);
+    write_joint_pub_.publish(write_msg_);
 }
 
-void BT::CenterBallYOLOPID::Halt()
+void BT::CenterGoalYOLOPID::Halt()
 {
     set_status(BT::HALTED);
-    ROS_COLORED_LOG("CenterBallYOLOPID HALTED: Stopped centering ball", ORANGE, false);
+    ROS_COLORED_LOG("CenterGoalYOLOPID HALTED: Stopped centering ball", ORANGE, false);
 }
 
