@@ -23,6 +23,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* left_kick = new BT::LeftKick("LeftKick");
     auto* right_kick = new BT::RightKick("RightKick");
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
+    auto* simple_walk = new BT::SimpleWalk("SimpleWalk");
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     
@@ -46,7 +47,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_start_button);
     init_sequence->AddChild(stand_up);
 
-    // Right Kick Sequence
+/*     // Right Kick Sequence
     right_kick_seq->AddChild(kick_selector);
     right_kick_seq->AddChild(right_kick);
 
@@ -66,11 +67,11 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // Search ball fallback
     fallback_search_ball->AddChild(search_ball);
-    fallback_search_ball->AddChild(turning_head_home_seq);
+    fallback_search_ball->AddChild(turning_head_home_seq); */
 
     // Add sequences to fallback
-    main_fallback->AddChild(ball_found_sequence);
-    main_fallback->AddChild(fallback_search_ball);
+    main_fallback->AddChild(walk_to_target);
+    main_fallback->AddChild(simple_walk);
 
     // Repeat main sequence
     repeat_main_loop->AddChild(main_fallback);
