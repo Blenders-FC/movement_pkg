@@ -38,56 +38,53 @@ void BT::CenterBallYOLOPID::WaitForTick()
 
             ball_center_position_ = getBallPosition();
 
-            if ((ball_center_position_.x == 999 && ball_center_position_.x == 0) || (ball_center_position_.y == 999 && ball_center_position_.y == 0))
+            if ((ball_center_position_.x == 999 || ball_center_position_.x == 0) || (ball_center_position_.y == 999 || ball_center_position_.y == 0))
             {
                 ROS_COLORED_LOG("BALL NOT detected. Not able to center.", RED, false);
                 set_status(BT::FAILURE);
                 break;
             }
-            else
+            head_pan_angle_ = getHeadPan();
+            head_tilt_angle_ = getHeadTilt();
+            angle_mov_x_ = head_pan_angle_;  // rad   //* 57.2958;   // RadToDeg
+            angle_mov_y_ = head_tilt_angle_; // rad   //* 57.2958;   // RadToDeg
+
+            double error_pan = (320 - ball_center_position_.x) * X_PIXEL_TO_DEG * deg_to_rad;   // pixToDeg -> degToRad
+            double error_tilt = (240 - ball_center_position_.y) * Y_PIXEL_TO_DEG * deg_to_rad;  // pixToDeg -> degToRad
+
+            integral_pan += error_pan * dt;
+            integral_tilt += error_tilt * dt;
+
+            // Anti-windup clamp
+            double integral_limit = 0.2;
+            if (integral_pan > integral_limit) integral_pan = integral_limit;
+            if (integral_pan < -integral_limit) integral_pan = -integral_limit;
+            if (integral_tilt > integral_limit) integral_tilt = integral_limit;
+            if (integral_tilt < -integral_limit) integral_tilt = -integral_limit;
+
+            double derivative_pan = (error_pan - prev_error_pan) / dt;
+            double derivative_tilt = (error_tilt - prev_error_tilt) / dt;
+
+            double output_pan = Kp * error_pan + Ki * integral_pan + Kd * derivative_pan;
+            double output_tilt = Kp * error_tilt + Ki * integral_tilt + Kd * derivative_tilt;
+
+            angle_mov_x_ += output_pan;   // rad         // * 57.2958;   // rad to deg
+            angle_mov_y_ += output_tilt;  // rad         // * 57.2958;  // rad to deg
+
+            prev_error_pan = error_pan;
+            prev_error_tilt = error_tilt;
+
+            if (fabs(error_pan) < error_limit_ && fabs(error_tilt) < error_limit_)
             {
-                head_pan_angle_ = getHeadPan();
-                head_tilt_angle_ = getHeadTilt();
-                angle_mov_x_ = head_pan_angle_;  // rad   //* 57.2958;   // RadToDeg
-                angle_mov_y_ = head_tilt_angle_; // rad   //* 57.2958;   // RadToDeg
-
-                double error_pan = (320 - ball_center_position_.x) * X_PIXEL_TO_DEG * deg_to_rad;   // pixToDeg -> degToRad
-                double error_tilt = (240 - ball_center_position_.y) * Y_PIXEL_TO_DEG * deg_to_rad;  // pixToDeg -> degToRad
-
-                integral_pan += error_pan * dt;
-                integral_tilt += error_tilt * dt;
-
-                // Anti-windup clamp
-                double integral_limit = 0.2;
-                if (integral_pan > integral_limit) integral_pan = integral_limit;
-                if (integral_pan < -integral_limit) integral_pan = -integral_limit;
-                if (integral_tilt > integral_limit) integral_tilt = integral_limit;
-                if (integral_tilt < -integral_limit) integral_tilt = -integral_limit;
-
-                double derivative_pan = (error_pan - prev_error_pan) / dt;
-                double derivative_tilt = (error_tilt - prev_error_tilt) / dt;
-
-                double output_pan = Kp * error_pan + Ki * integral_pan + Kd * derivative_pan;
-                double output_tilt = Kp * error_tilt + Ki * integral_tilt + Kd * derivative_tilt;
-
-                angle_mov_x_ += output_pan;   // rad         // * 57.2958;   // rad to deg
-                angle_mov_y_ += output_tilt;  // rad         // * 57.2958;  // rad to deg
-
-                prev_error_pan = error_pan;
-                prev_error_tilt = error_tilt;
-
-                if (fabs(error_pan) < error_limit_ && fabs(error_tilt) < error_limit_)
-                {
-                    ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!");
-                    set_status(BT::SUCCESS);
-                    break;
-                }
-
-                ROS_COLORED_LOG("Centering camera on ball...", ORANGE, false);
-
-                writeHeadJoint(angle_mov_x_, angle_mov_y_, true);
-                rate.sleep();
+                ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!");
+                set_status(BT::SUCCESS);
+                break;
             }
+
+            ROS_COLORED_LOG("Centering camera on ball...", ORANGE, false);
+
+            writeHeadJoint(angle_mov_x_, angle_mov_y_, true);
+            rate.sleep();
         }
     }
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
