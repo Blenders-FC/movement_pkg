@@ -14,9 +14,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* is_start_button = new BT::StartButtonCondition("IsStartButton");
     auto* stand_up = new BT::StandUp("StandUp");
     auto* ball_detected = new BT::BallDetectedCondition("BallDetected");
-    auto* search_ball = new BT::SearchBall("SearchBall");
-    //auto* center_ball = new BT::CenterBallViolaJones("CenterBallViolaJones");
-    auto* center_ball = new BT::CenterBallYOLOJetson("CenterBallYOLOJetson");
+    auto* search_ball = new BT::SearchBallSinusoidal("SearchBallSinusoidal");
+    auto* center_ball = new BT::CenterBallYOLOPID("CenterBallYOLOPID");
     auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
     auto* turn_right = new BT::TurnRight("TurnRight", 6);   // turning 90° (6 cycles of 15° each)
     auto* turn_left = new BT::TurnLeft("TurnLeft", 6);      // turning 90° (6 cycles of 15° each)
@@ -27,7 +26,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* head_to_home_reset = new BT::HeadToHomeReset("HeadToHomeReset");
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
-    //auto* walk_n_times  = new BT::RepeatNTimes("RepeatNTimes");
     auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
     auto* referee_state_condition = new BT::RefereeStateCondition("RefereeStateCondition");
@@ -90,12 +88,11 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     parallel_walk_timer->AddChild(timer_condition);
 
     // Walking and Head to Home sequence
-    // walk_head_home_seq->AddChild(left_kick_m); TESTI
-    //walk_head_home_seq->AddChild(walk_n_times);
     walk_head_home_seq->AddChild(parallel_walk_timer);
     walk_head_home_seq->AddChild(head_to_home_reset);
 
     // Search ball fallback
+
     fallback_search_ball->AddChild(search_ball);
     fallback_search_ball->AddChild(fallback_turns);
     //fallback_search_ball->AddChild(turning_head_home_seq);
@@ -103,7 +100,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     //add sequence to fallback turns
     fallback_turns->AddChild(turning_head_home_seq);
     fallback_turns->AddChild(walk_head_home_seq);
-
 
     // Add sequences to fallback
     main_fallback->AddChild(ball_found_sequence);
