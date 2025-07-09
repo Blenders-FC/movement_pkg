@@ -13,17 +13,24 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* is_manager_done = new BT::ManagerDoneCondition("IsManagerDone");
     auto* is_start_button = new BT::StartButtonCondition("IsStartButton");
     auto* stand_up = new BT::StandUp("StandUp");
-    auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
     auto* simple_walk = new BT::SimpleWalk("SimpleWalk");
-    // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
+    auto* simple_walk_2 = new BT::SimpleWalk("SimpleWalk2");
+    auto* simple_walk_3 = new BT::SimpleWalk("SimpleWalk3");
+    auto* is_movement_able = new BT::CanMoveCondition("CanMoveCondition");
+    auto* is_lateral_movement_able = new BT::LateralMoveCondition("LateralMoveCondition");
+    auto* is_right_movement_able = new BT::RightMoveCondition("RightMoveCondition");
+    auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     
     // Create Control Nodes
     auto* root_node = new BT::SequenceNodeWithMemory("RootNode");
     auto* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
-    auto* walking_seq = new BT::SequenceNodeWithMemory("WalkSequence");
+    auto* first_walking_seq = new BT::SequenceNodeWithMemory("WalkSequence");
+    auto* second_walking_seq = new BT::SequenceNodeWithMemory("WalkSequencePt2");
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
     auto* main_fallback = new BT::FallbackNode("MainFallback");
+    auto* lateral_fallback = new BT::FallbackNode("LateralFallback");
+    auto* right_fallback = new BT::FallbackNode("RightFallback");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
 
 
@@ -33,11 +40,24 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_start_button);
     init_sequence->AddChild(stand_up);
 
+    //Walk forward
+    parallel_recovery ->AddChild(simple_walk);//simple walk ir derecho
+    parallel_recovery ->AddChild(timer_condition);
     //Walking throught
-    walking_seq ->AddChild(simple_walk);
-    walking_seq ->AddChild(walk_to_target);
-    // Add sequences to fallback
-    main_fallback->AddChild(walking_seq);
+    main_fallback ->AddChild(moving_seq);
+    moving_seq ->AddChild(is_movement_able);
+    moving_seq ->AddChild(lateral_fallback);
+    moving_seq ->AddChild(parallel_recovery);
+
+    lateral_fallback ->AddChild(first_walking_seq);
+    first_walking_seq ->AddChild(is_lateral_movement_able);
+    first_walking_seq ->AddChild(right_fallback);
+    first_walking_seq ->AddChild(simple_walk3);//simple walk ir la izquierda
+
+    right_fallback ->AddChild(second_walking_seq);
+    second_walking_seq ->AddChild(is_right_movement_able);
+    second_walking_seq ->AddChild(simple_walk_2);//simple walk ir a la derecha
+    
     // Repeat main sequence
     repeat_main_loop->AddChild(main_fallback);
 
