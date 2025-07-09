@@ -29,7 +29,7 @@ void BT::CenterBallViolaJones::WaitForTick()
         
         while (get_status() == BT::IDLE)
         {
-            // set_status(BT::RUNNING);
+            set_status(BT::RUNNING);
 
             ball_center_position_ = getBallPosition();
             head_pan_angle_ = getHeadPan();
@@ -67,6 +67,7 @@ void BT::CenterBallViolaJones::WaitForTick()
                   angle_mov_y_ += 1;
                 }
                 writeHeadJoint(angle_mov_y_, false);
+                ROS_COLORED_LOG("New tilt angle position from Jones: %f", TEAL, false, angle_mov_y_);
             }
             else
             {

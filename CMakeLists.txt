@@ -40,6 +40,7 @@ set(SOURCE_FILES
   src/nodes/center_ball_Viola_Jones_action.cpp
   src/nodes/center_ball_YOLO_CPU_action.cpp
   src/nodes/center_ball_YOLO_Jetson_action.cpp
+  src/nodes/center_ball_YOLO_PID_action.cpp
   src/nodes/choose_kick_foot_condition.cpp
   src/nodes/fov_walking_action.cpp
   src/nodes/get_up_backwards_action.cpp
@@ -55,6 +56,7 @@ set(SOURCE_FILES
   src/nodes/right_kick_action.cpp
   src/nodes/robot_fallen_condition.cpp
   src/nodes/search_ball_action.cpp
+  src/nodes/search_sinusoidal_action.cpp
   src/nodes/send_head_to_home_action.cpp
   src/nodes/simple_walk_action.cpp
   src/nodes/stand_up_action.cpp
@@ -65,6 +67,9 @@ set(SOURCE_FILES
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
   src/repeat_node.cpp
+  src/nodes/repeat_n_times.cpp
+  src/nodes/send_head_to_home_reset.cpp
+  src/nodes/referee_state_condition.cpp
 )
 
 set(SHARED_LIBRARIES
