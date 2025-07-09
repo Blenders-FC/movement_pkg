@@ -28,6 +28,9 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
     auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
+    auto* referee_state_condition = new BT::RefereeStateCondition("RefereeStateCondition");
+    auto* stand_up_still = new BT::StandUp("StandUp");
+
 
     //walking node TESTI
     auto* simple_walk_action = new BT::SimpleWalk("SimpleWalk");
@@ -39,8 +42,10 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* right_kick_seq = new BT::SequenceNodeWithMemory("RightKickSeq");
     auto* turning_head_home_seq = new BT::SequenceNodeWithMemory("TurningAndHeadToHome");
     auto* walk_head_home_seq = new BT::SequenceNodeWithMemory("WalkAndHeadToHome");
+    auto* playing_seq = new BT::ParallelNode("PlayingSeq", 2);
     auto* fallback_search_ball = new BT::FallbackNode("FallbackSearchBall");
     auto* fallback_kick_selector = new BT::FallbackNode("FallbackKickSelector");
+    auto* referee_fallback_selector = new BT::FallbackNode("RefereeFallbackSelector");
     auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
     auto* parallel_walk_timer = new BT::ParallelNode("ParallelWalkTimer", 2); // success_threshold=1, failure_threshold=1
@@ -100,8 +105,17 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     main_fallback->AddChild(ball_found_sequence);
     main_fallback->AddChild(fallback_search_ball);
 
+    // add playing sequence
+    playing_seq->AddChild(referee_state_condition);
+    playing_seq->AddChild(main_fallback);
+
+    //Add refereeStatet sequences
+    referee_fallback_selector->AddChild(playing_seq);
+    referee_fallback_selector->AddChild(stand_up_still);
+
     // Repeat main sequence
-    repeat_main_loop->AddChild(main_fallback);
+    repeat_main_loop->AddChild(referee_fallback_selector);
+
 
     // Root node sequence
     root_node->AddChild(init_sequence);

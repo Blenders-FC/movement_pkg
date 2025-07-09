@@ -100,6 +100,14 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
             writeHeadJoint(new_tilt);
             return;
         }
+        
+        else if (walked_distance >= walk_thresh)
+        {
+            ROS_COLORED_LOG("walked dist: %f, reached threshold: %f", ORANGE, false, walked_distance, walk_thresh);
+            stopWalking();
+            walkLimitReach = true;
+            return;
+        }
 
         double delta_angle = head_pan_angle - accum_rotation;
 

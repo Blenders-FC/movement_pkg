@@ -101,8 +101,10 @@ void BT::SearchBall::writeHeadJoint(double ang_value, bool is_pan)
       write_msg_x_.position.push_back(ang_value);
       write_joint_pub_.publish(write_msg_x_);
     }else{
+      ROS_COLORED_LOG("New tilt angle GENERAL: %f", ORANGE, true, ang_value);
       if (ang_value >= 0.34906) ang_value = 0.34906;        //20 deg
       else if (ang_value <= -1.22173) ang_value = -1.22173;   //-70 deg
+      ROS_COLORED_LOG("New tilt angle POST SATURATION: %f", ORANGE, true, ang_value);
       write_msg_y_.name.push_back("head_tilt");
       write_msg_y_.position.push_back(ang_value);
       write_joint_pub_.publish(write_msg_y_);

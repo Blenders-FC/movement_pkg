@@ -69,6 +69,7 @@ set(SOURCE_FILES
   src/repeat_node.cpp
   src/nodes/repeat_n_times.cpp
   src/nodes/send_head_to_home_reset.cpp
+  src/nodes/referee_state_condition.cpp
 )
 
 set(SHARED_LIBRARIES

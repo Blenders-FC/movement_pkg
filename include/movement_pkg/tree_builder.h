@@ -47,6 +47,9 @@
 #include "nodes/walk_to_target_action.h"
 #include "nodes/repeat_n_times.h"
 #include "nodes/send_head_to_home_reset.h"
+#include "nodes/stand_up_action.h"
+#include "nodes/referee_state_condition.h"
+
 
 
 namespace BT
