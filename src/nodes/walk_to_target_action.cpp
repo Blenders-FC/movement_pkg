@@ -37,11 +37,11 @@ void BT::WalkToTarget::WaitForTick()
                 ROS_INFO_THROTTLE(1.0, "Robot state is 0: Moving 0.2 to the right (Y-axis) continuously.");
                
                 setWalkingParam(0.0, -0.2, 0.0, true); // x_move=0, y_move=-0.2 (derecha), rot_angle=0, enable=true
-                walking_command_ = "start";
-                goWalk(walking_command_); 
+                
                 std_msgs::String command_msg;
                 command_msg.data = "start";
                 walk_command_pub.publish(command_msg);
+                goWalk(command_msg.data); 
                 
                 ros::spinOnce(); 
                 ros::Rate(10).sleep(); 
