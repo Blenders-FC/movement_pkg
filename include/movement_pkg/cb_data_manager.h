@@ -14,7 +14,7 @@ public:
 
     // External functions
     geometry_msgs::Point getBallPosition();
-    blenders_msgs::PointArray getGoalsPositions();
+    std::vector<geometry_msgs::Point> getGoalsPositions();
     geometry_msgs::Pose getInitRobotPose();
     bool isInitPoseValid();
     double getRobotPitch();
@@ -48,7 +48,7 @@ private:
     
     // Variables
     geometry_msgs::Point ball_position_;
-    blenders_msgs::PointArray goals_positions_;
+    std::vector<geometry_msgs::Point> goals_positions_;
     geometry_msgs::Pose init_robot_pose_;
     bool valid_init_robot_pose_;
     Eigen::Quaterniond imu_orientation_;

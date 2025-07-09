@@ -15,7 +15,6 @@ BT::ReturnStatus BT::InitPoseCondition::Tick()
     // Condition checking and state update
     while (ros::ok())
     {
-
         is_valid_pose_ = isInitPoseValid();
         
         if (is_valid_pose_)
@@ -26,7 +25,7 @@ BT::ReturnStatus BT::InitPoseCondition::Tick()
         }
         else
         {   
-            ROS_COLORED_LOG("BALL NOT detected", RED, false);
+            ROS_COLORED_LOG("Not a valid init pose. Searching goals...", RED, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }
