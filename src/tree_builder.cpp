@@ -68,9 +68,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     // Search ball fallback
     fallback_search_ball->AddChild(search_ball);
     fallback_search_ball->AddChild(turning_head_home_seq); */
-
-    //turning_head_home_seq->AddChild(walk_to_target);
     turning_head_home_seq->AddChild(simple_walk);
+    turning_head_home_seq->AddChild(walk_to_target);
     // Add sequences to fallback
     main_fallback->AddChild(turning_head_home_seq);
     main_fallback->AddChild(right_kick);
