@@ -37,7 +37,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     walking_seq ->AddChild(simple_walk);
     walking_seq ->AddChild(walk_to_target);
     // Add sequences to fallback
-    main_fallback->AddChild(turning_head_home_seq);
+    main_fallback->AddChild(walking_seq);
     // Repeat main sequence
     repeat_main_loop->AddChild(main_fallback);
 
