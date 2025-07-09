@@ -9,7 +9,7 @@
 
 BT::CanMoveCondition::CanMoveCondition(const std::string &name) 
 : BT::ConditionNode(name) {
-   robot_state_sub_ = nh_.subscribe("/robotis_" + std::to_string(robot_id) + "/via_libre_state", 1, &WalkToTarget::robotStateCallback, this);
+   robot_state_sub_ = nh_.subscribe("/robotis_" + std::to_string(robot_id) + "/via_libre_state", 1, &CanMoveCondition::robotStateCallback, this);
 }
 
 BT::ReturnStatus BT::CanMoveCondition::Tick()
@@ -18,7 +18,7 @@ BT::ReturnStatus BT::CanMoveCondition::Tick()
     while(ros::ok())
     {        
 
-        if (robot_state_sub_ != -1)
+        if (current_robot_state_ != -1)
         {
             ROS_SUCCESS_LOG("Robot get valid data to move");
             set_status(BT::SUCCESS);
