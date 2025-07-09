@@ -25,6 +25,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     // Create Control Nodes
     auto* root_node = new BT::SequenceNodeWithMemory("RootNode");
     auto* init_sequence = new BT::SequenceNodeWithMemory("InitSequence");
+    auto* moving_seq = new BT::SequenceNodeWithMemory("MovSequence");
     auto* first_walking_seq = new BT::SequenceNodeWithMemory("WalkSequence");
     auto* second_walking_seq = new BT::SequenceNodeWithMemory("WalkSequencePt2");
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
