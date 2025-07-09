@@ -27,7 +27,7 @@ BT::ReturnStatus BT::LateralMoveCondition::Tick()
         }
         else
         {
-            ROS_COLORED_LOG("Not receiving valid data", CYAN, false);
+            ROS_COLORED_LOG("Moving straight", CYAN, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
             
@@ -38,7 +38,7 @@ BT::ReturnStatus BT::LateralMoveCondition::Tick()
 }
 
 // Callback para recibir el estado del robot desde el tópico /via_libre_state
-void BT::vMoveCondition::robotStateCallback(const std_msgs::Int32::ConstPtr& msg)
+void BT::LateralMoveCondition::robotStateCallback(const std_msgs::Int32::ConstPtr& msg)
 {
     current_robot_state_ = msg->data;
     ROS_INFO("WalkToTarget: Received robot state: %d", current_robot_state_);
