@@ -36,3 +36,10 @@ BT::ReturnStatus BT::CanMoveCondition::Tick()
     ROS_ERROR_LOG("ROS stopped unexpectedly", false);
     return BT::FAILURE;
 }
+
+// Callback para recibir el estado del robot desde el tópico /via_libre_state
+void BT::CanMoveCondition::robotStateCallback(const std_msgs::Int32::ConstPtr& msg)
+{
+    current_robot_state_ = msg->data;
+    ROS_INFO("WalkToTarget: Received robot state: %d", current_robot_state_);
+}
