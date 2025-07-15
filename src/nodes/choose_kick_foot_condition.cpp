@@ -17,7 +17,7 @@ BT::ReturnStatus BT::ChooseKickFootCondition::Tick()
     {
         head_pan_ = getHeadPan();
         
-        if (head_pan_ > 0)
+        if (head_pan_ < 0)
         {
             ROS_COLORED_LOG("RIGHT KICK CHOSEN", CYAN, false); 
             set_status(BT::SUCCESS);

@@ -12,6 +12,9 @@ BT::WalkToTarget::WalkToTarget(std::string name)
 {
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&WalkToTarget::WaitForTick, this);
+
+    // Publisher
+    write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 0);
 }
 
 BT::WalkToTarget::~WalkToTarget() {}
@@ -41,6 +44,11 @@ void BT::WalkToTarget::WaitForTick()
             {
                 ROS_SUCCESS_LOG("Walk to target SUCCESS");
                 set_status(BT::SUCCESS);
+            }
+            else if (walkLimitReach)
+            {
+                ROS_SUCCESS_LOG("Walk to target HIT THRESHOLD");
+                set_status(BT::FAILURE);
             }
         }
     }
@@ -74,11 +82,30 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
         double distance_to_walk = distance_to_ball - distance_to_kick_;
         double delta_distance = distance_to_walk - walked_distance;
         ROS_COLORED_LOG("walked dist: %f", ORANGE, false, walked_distance);
+
+        double remaining_distance = distance_to_ball - walked_distance;
+        double new_tilt = calculateTilt(remaining_distance);  // rad
     
         if (walked_distance >= distance_to_walk)
         {
             stopWalking();
             walkingSucced = true;
+            writeHeadJoint(new_tilt);
+            return;
+        }
+        else if (walked_distance >= walk_thresh)
+        {
+            stopWalking();
+            walkLimitReach = true;
+            writeHeadJoint(new_tilt);
+            return;
+        }
+        
+        else if (walked_distance >= walk_thresh)
+        {
+            ROS_COLORED_LOG("walked dist: %f, reached threshold: %f", ORANGE, false, walked_distance, walk_thresh);
+            stopWalking();
+            walkLimitReach = true;
             return;
         }
 
@@ -119,6 +146,32 @@ double BT::WalkToTarget::calculateDistance(double head_tilt)
 {
     double distance = CAMERA_HEIGHT_ * tan(M_PI * 0.5 + head_tilt - hip_pitch_offset_);
     return distance;
+}
+
+double BT::WalkToTarget::calculateTilt(double remaining_distance)
+{
+    double tilt = atan2(remaining_distance, CAMERA_HEIGHT_) - M_PI * 0.5 + hip_pitch_offset_;
+    return tilt;
+}
+
+void BT::WalkToTarget::writeHeadJoint(double ang_value)
+{
+    if (getModule("r_knee") != "none")
+    {
+        setModule("none");
+        ros::Duration(1).sleep();
+        ROS_COLORED_LOG("Set Module to none", YELLOW, false);
+    }
+    write_msg_.header.stamp = ros::Time::now();
+        
+    // ang_value *= 0.0174533;  // DegToRad -> pi/180
+  
+    if (ang_value >= 0.34906) ang_value = 0.34906;        //20 deg
+    else if (ang_value <= -1.2217) ang_value = -1.2217;   //-70 deg
+    write_msg_.name.push_back("head_tilt");
+    write_msg_.position.push_back(ang_value);
+
+    write_joint_pub_.publish(write_msg_);
 }
 
 void BT::WalkToTarget::Halt()
