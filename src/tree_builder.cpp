@@ -28,7 +28,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
     //auto* walk_n_times  = new BT::RepeatNTimes("RepeatNTimes");
     auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
-    // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
+    // // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     //walking node TESTI
     auto* simple_walk_action = new BT::SimpleWalk("SimpleWalk");
@@ -57,27 +57,27 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(stand_up);
 
     // Right Kick Sequence
-    right_kick_seq->AddChild(kick_selector);
-    right_kick_seq->AddChild(right_kick);
+    // right_kick_seq->AddChild(kick_selector);
+    // right_kick_seq->AddChild(right_kick);
 
-    // Kick fallback
-    fallback_kick_selector->AddChild(right_kick_seq);
-    fallback_kick_selector->AddChild(left_kick);
+    // // Kick fallback
+    // fallback_kick_selector->AddChild(right_kick_seq);
+    // fallback_kick_selector->AddChild(left_kick);
 
-    // Walk to ball sequence
-    ball_found_sequence->AddChild(ball_detected);
-    ball_found_sequence->AddChild(center_ball);
-    ball_found_sequence->AddChild(walk_to_target);
-    ball_found_sequence->AddChild(fallback_kick_selector);
+    // // Walk to ball sequence
+    // ball_found_sequence->AddChild(ball_detected);
+    // ball_found_sequence->AddChild(center_ball);
+    // ball_found_sequence->AddChild(walk_to_target);
+    // ball_found_sequence->AddChild(fallback_kick_selector);
 
     //Turn 5 times sequence
     //repeat_turn_right->AddChild(turn_right);
 
     // Turning and Head to Home sequence
-    turning_head_home_seq->AddChild(turn_n_times);
-    turning_head_home_seq->AddChild(turn_right);
-    //turning_head_home_seq->AddChild(repeat_turn_right);
-    turning_head_home_seq->AddChild(head_to_home);
+    // turning_head_home_seq->AddChild(turn_n_times);
+    // turning_head_home_seq->AddChild(turn_right);
+    // //turning_head_home_seq->AddChild(repeat_turn_right);
+    // turning_head_home_seq->AddChild(head_to_home);
 
     // Parallel node: walk and time concurrently
     parallel_walk_timer->AddChild(simple_walk_action);
@@ -87,21 +87,21 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     // walk_head_home_seq->AddChild(left_kick_m); TESTI
     //walk_head_home_seq->AddChild(walk_n_times);
     walk_head_home_seq->AddChild(parallel_walk_timer);
-    walk_head_home_seq->AddChild(head_to_home_reset);
+    // walk_head_home_seq->AddChild(head_to_home_reset);
 
     // Search ball fallback
-    fallback_search_ball->AddChild(search_ball);
-    fallback_search_ball->AddChild(fallback_turns);
+    // fallback_search_ball->AddChild(search_ball);
+    // fallback_search_ball->AddChild(fallback_turns);
     //fallback_search_ball->AddChild(turning_head_home_seq);
 
-    //add sequence to fallback turns
-    fallback_turns->AddChild(turning_head_home_seq);
-    fallback_turns->AddChild(walk_head_home_seq);
+    // //add sequence to fallback turns
+    // fallback_turns->AddChild(turning_head_home_seq);
+    // fallback_turns->AddChild(walk_head_home_seq);
 
 
-    // Add sequences to fallback
-    main_fallback->AddChild(ball_found_sequence);
-    main_fallback->AddChild(fallback_search_ball);
+    // // Add sequences to fallback
+    // main_fallback->AddChild(ball_found_sequence);
+    main_fallback->AddChild(walk_head_home_seq);
 
     // Repeat main sequence
     repeat_main_loop->AddChild(main_fallback);
