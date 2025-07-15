@@ -114,6 +114,7 @@ class utils
 
         ros::NodeHandle nh;  // Shared NodeHandle
         int robot_id;
+        int quadrant;
         bool DEBUG_PRINT = true;
 
         void setModule(const std::string& module_name);

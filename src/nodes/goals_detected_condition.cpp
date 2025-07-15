@@ -15,7 +15,6 @@ BT::ReturnStatus BT::GoalsDetectedCondition::Tick()
     // Condition checking and state update
     while (ros::ok())
     {
-
         goal_posts_ = getGoalsPositions();
 
         if (goal_posts_.empty())

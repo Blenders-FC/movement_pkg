@@ -51,12 +51,15 @@ set(SOURCE_FILES
   src/nodes/init_pose_condition.cpp
   src/nodes/left_kick_action.cpp
   src/nodes/left_long_kick_action.cpp
-  src/nodes/right_long_kick_action.cpp
+  src/nodes/left_search_goal_action.cpp
   src/nodes/manager_done_condition.cpp
   src/nodes/manager_running_condition.cpp
   src/nodes/online_walk_to_target_action.cpp
   src/nodes/penalty_kick_action.cpp
+  src/nodes/quadrant_condition.cpp
   src/nodes/right_kick_action.cpp
+  src/nodes/right_long_kick_action.cpp
+  src/nodes/right_search_goal_action.cpp
   src/nodes/robot_fallen_condition.cpp
   src/nodes/search_ball_action.cpp
   src/nodes/send_head_to_home_action.cpp

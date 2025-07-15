@@ -4,28 +4,26 @@
         Marlene Cobian
 */
 
-#include "movement_pkg/nodes/init_pose_condition.h"
+#include "movement_pkg/nodes/quadrant_condition.h"
 
 
-BT::InitPoseCondition::InitPoseCondition(const std::string &name) 
+BT::QuadrantCondition::QuadrantCondition(const std::string &name) 
 : BT::ConditionNode(name) {}
 
-BT::ReturnStatus BT::InitPoseCondition::Tick()
+BT::ReturnStatus BT::QuadrantCondition::Tick()
 {
     // Condition checking and state update
     while (ros::ok())
     {
-        is_valid_pose_ = isInitPoseValid();
-        
-        if (is_valid_pose_)
+        if (quadrant % 2 == 1)  // odd quadrants (1,3)
         {   
-            ROS_SUCCESS_LOG("Valid init pose!");
+            ROS_COLORED_LOG("Odd quadrant, looking left!", VIOLET_BG, false);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {   
-            ROS_ERROR_LOG("Not a valid init pose. Searching goals...");
+            ROS_COLORED_LOG("Even quadrant, looking right!", VIOLET_BG, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }

@@ -124,4 +124,3 @@ void BT::CenterGoalYOLOPID::Halt()
     set_status(BT::HALTED);
     ROS_COLORED_LOG("CenterGoalYOLOPID HALTED: Stopped centering ball", ORANGE, false);
 }
-

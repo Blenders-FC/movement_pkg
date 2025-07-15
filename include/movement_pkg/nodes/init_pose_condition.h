@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef BALL_DETECTED_CONDITION_H
-#define BALL_DETECTED_CONDITION_H
+#ifndef INIT_POSE_CONDITION_H
+#define INIT_POSE_CONDITION_H
 
 #include "movement_pkg/cb_data_manager.h"
 #include "condition_node.h"
@@ -26,4 +26,4 @@ class InitPoseCondition : public ConditionNode, public CBDataManager
 };
 }  // namesapce BT
 
-#endif // BALL_DETECTED_CONDITION_H
+#endif // INIT_POSE_CONDITION_H

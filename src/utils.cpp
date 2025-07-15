@@ -12,6 +12,8 @@ utils::utils() : nh(ros::this_node::getName()), blackboard()
 {
     nh.param<int>("robot_id", robot_id, 0);
     ROS_INFO("Loaded utils: robot_id=%d", robot_id);
+    nh.param<int>("quadrant", quadrant, 1);
+    ROS_INFO("Loaded utils: quadrant=%d", quadrant);
     
     set_joint_module_client = nh.serviceClient<robotis_controller_msgs::SetModule>("/robotis_" + std::to_string(robot_id) + "/set_present_ctrl_modules");
     get_joint_module_client = nh.serviceClient<robotis_controller_msgs::GetJointModule>("/robotis_" + std::to_string(robot_id) + "/get_present_joint_ctrl_modules");
