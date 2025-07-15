@@ -25,7 +25,7 @@ BT::ReturnStatus BT::InitPoseCondition::Tick()
         }
         else
         {   
-            ROS_ERROR_LOG("Not a valid init pose. Searching goals...");
+            ROS_ERROR_LOG("Not a valid init pose. Searching goals...", false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }

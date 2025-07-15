@@ -13,7 +13,7 @@
 
 namespace BT
 {
-class QuadrantCondition : public ConditionNode, public CBDataManager
+class QuadrantCondition : public ConditionNode, public virtual utils
 {
     public:
         explicit QuadrantCondition(const std::string &name);  // Constructor
