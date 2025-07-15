@@ -5,6 +5,9 @@
   <arg name="robot_id"              default="1"/>
   <param name="robot_id"            value="$(arg robot_id)"/>
 
+  <arg name="quadrant"              default="1"/>
+  <param name="quadrant"            value="$(arg quadrant)"/>
+
   <arg name="gazebo"                default="false"/>
   <param name="gazebo"              value="$(arg gazebo)"          type="bool"/>
 
