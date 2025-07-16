@@ -57,8 +57,8 @@ void BT::CenterGoalYOLOPID::WaitForTick()
             if (fabs(error_pan) < error_limit_ && fabs(error_tilt) < error_limit_)
             {
                 ROS_SUCCESS_LOG("Goal IN CENTER! Calculating init pose");
-                goal_msg_.distance = calculateDistance(head_tilt_angle_);
-                goal_msg_.angle = head_pan_angle_;
+                goal_msg_.distance.data = calculateDistance(head_tilt_angle_);
+                goal_msg_.angle.data = head_pan_angle_;
                 goal_fts_pub_.publish(goal_msg_)
                 set_status(BT::SUCCESS);
                 break;
