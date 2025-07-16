@@ -24,6 +24,13 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* right_kick = new BT::RightKick("RightKick");
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* walk_to_ball = new BT::WalkToBallPosition("WalkToBallPosition");
+    auto* init_position = new BT::InitPoseCondition("InitPoseCondition");
+    auto* center_goal = new BT::CenterGoalYOLOPID("CenterGoalYOLOPID");
+    auto* quadrant_condition = new BT::QuadrantCondition("QuadrantCondition");
+    auto* right_search = new BT::RightSearchGoal("RightSearchGoal");
+    auto* left_search = new BT::LeftSearchGoal("LeftSearchGoal");
+    auto* goals_detector_r = new BT::GoalsDetectedCondition("RightGoalsDetectedCondition");
+    auto* goals_detector_l = new BT::GoalsDetectedCondition("LeftGoalsDetectedCondition");
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     
@@ -38,8 +45,32 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* reactive_fallback = new BT::FallbackNode("ReactiveFallback");
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
     auto* main_fallback = new BT::FallbackNode("MainFallback");
+    auto* calc_init_position = new BT::SequenceNodeWithMemory("calcInitPosition");
+    auto* left_search_seq = new BT::SequenceNodeWithMemory("leftSearchSeq");
+    auto* init_position_fb = new BT::FallbackNode("isInitPosition");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
+    auto* search_side_selector = new BT::FallbackNode("SearchSideSelector");
+    auto* prl_left_search = new BT::ParallelNode("ParallelLeftSearch", 2); // success_threshold=2
+    auto* prl_right_search = new BT::ParallelNode("ParallelRightSearch", 2); // success_threshold=2
 
+    
+    // calc init position
+    prl_right_search->AddChild(right_search);
+    prl_right_search->AddChild(goals_detector_r);
+    prl_left_search->AddChild(left_search);
+    prl_left_search->AddChild(goals_detector_l);
+
+    left_search_seq->AddChild(quadrant_condition);
+    left_search_seq->AddChild(prl_left_search);
+
+    search_side_selector->AddChild(left_search_seq);
+    search_side_selector->AddChild(prl_right_search);
+
+    calc_init_position->AddChild(search_side_selector);
+    calc_init_position->AddChild(center_goal);
+    
+    init_position_fb->AddChild(init_position);
+    init_position_fb->AddChild(calc_init_position);
 
     // Build the Behavior Tree
     init_sequence->AddChild(is_manager_running);
