@@ -48,7 +48,7 @@ class CenterGoalYOLOPID : public ActionNode, public CBDataManager
 
         // ROS
         ros::Publisher write_joint_pub_;
-        ros::Publisher dist_to_goal_pub_;
+        ros::Publisher goal_fts_pub_;
 
         // PID controllers for pan and tilt
         PIDController pid_pan_{2.0, 0.0, 0.1};   // Example initial gains
@@ -63,6 +63,8 @@ class CenterGoalYOLOPID : public ActionNode, public CBDataManager
         static constexpr double PAN_MIN_RAD = -1.2217;
         static constexpr double TILT_MAX_RAD = 0.34906; // ~20 deg
         static constexpr double TILT_MIN_RAD = -1.2217;
+        const double CAMERA_HEIGHT_ = 0.46;
+        const double hip_pitch_offset_ = 0.12217305; //7°
 
         // Variables
         geometry_msgs::Point ball_center_position_;
