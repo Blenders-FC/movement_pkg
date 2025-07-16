@@ -2,10 +2,10 @@
 <launch>    
 
   <!-- Defining params with default values (used if not inherited) -->
-  <arg name="robot_id"              default="1"/>
+  <arg name="robot_id"              default="2"/>
   <param name="robot_id"            value="$(arg robot_id)"/>
 
-  <arg name="quadrant"              default="1"/>
+  <arg name="quadrant"              default="3"/>
   <param name="quadrant"            value="$(arg quadrant)"/>
 
   <arg name="gazebo"                default="false"/>
@@ -27,12 +27,13 @@
   <!-- OP3 Manager -->
   <node pkg="op3_manager" type="op3_manager" name="op3_manager" output="screen">
     <param name="angle_unit"             value="30" />
-    <param name="robot_id"               value="1"/>
+    <param name="robot_id"               value="$(arg robot_id)"/>
   </node>
 
   <!-- Movement node -->
   <node pkg="movement_pkg" type="motion_controller_node" name="op3_motion_controller" output="screen">
-    <param name="robot_id"               value="1"/>
+    <param name="robot_id"               value="$(arg robot_id)"/>
+    <param name="quadrant"               value="$(arg quadrant)"/>
   </node>
 
 </launch>

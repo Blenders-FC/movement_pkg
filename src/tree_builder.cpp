@@ -109,7 +109,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // Root node sequence
     root_node->AddChild(init_sequence);
-    root_node->AddChild(walk_to_ball);
+    root_node->AddChild(repeat_main_loop);
 
     return root_node;
 }
