@@ -8,7 +8,7 @@
 
 
 BT::QuadrantCondition::QuadrantCondition(const std::string &name) 
-: BT::ConditionNode(name) {}
+: BT::ConditionNode(name), utils() {}
 
 BT::ReturnStatus BT::QuadrantCondition::Tick()
 {
@@ -17,13 +17,13 @@ BT::ReturnStatus BT::QuadrantCondition::Tick()
     {
         if (quadrant % 2 == 1)  // odd quadrants (1,3)
         {   
-            ROS_COLORED_LOG("Odd quadrant, looking left!", VIOLET_BG, false);
+            ROS_COLORED_LOG("Odd quadrant, looking left!", VIOLET, false);
             set_status(BT::SUCCESS);
             return BT::SUCCESS;
         }
         else
         {   
-            ROS_COLORED_LOG("Even quadrant, looking right!", VIOLET_BG, false);
+            ROS_COLORED_LOG("Even quadrant, looking right!", VIOLET, false);
             set_status(BT::FAILURE);
             return BT::FAILURE;
         }

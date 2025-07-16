@@ -23,7 +23,7 @@ void BT::CenterBallYOLOPID::WaitForTick()
     double integral_pan = 0, integral_tilt = 0;
     double prev_error_pan = 0, prev_error_tilt = 0;
     ros::Rate rate(30); // 30 Hz
-    double dt = 0.033333
+    double dt = 0.033333;
 
     while (ros::ok())
     {
@@ -58,9 +58,10 @@ void BT::CenterBallYOLOPID::WaitForTick()
 
             // Clamp integrals to prevent windup
             double integral_limit = 0.2;
-            integral_pan = std::clamp(integral_pan, -integral_limit, integral_limit);
-            integral_tilt = std::clamp(integral_tilt, -integral_limit, integral_limit);
-
+            if (integral_pan > integral_limit) integral_pan = integral_limit;
+            if (integral_pan < -integral_limit) integral_pan = -integral_limit;
+            if (integral_tilt > integral_limit) integral_tilt = integral_limit;
+            if (integral_tilt < -integral_limit) integral_tilt = -integral_limit;
 
             double derivative_pan = (error_pan - prev_error_pan) / dt;
             double derivative_tilt = (error_tilt - prev_error_tilt) / dt;
