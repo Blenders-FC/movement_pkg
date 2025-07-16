@@ -43,9 +43,9 @@
 #include "nodes/turn_right_action.h"
 #include "nodes/walk_to_point_action.h"
 #include "nodes/walk_to_target_action.h"
-#include "can_move_condition.h"
-#include "lateral_move_condition.h"
-#include "right_move_condition.h"
+#include "nodes/can_move_condition.h"
+#include "nodes/lateral_move_condition.h"
+#include "nodes/right_move_condition.h"
 
 
 namespace BT
