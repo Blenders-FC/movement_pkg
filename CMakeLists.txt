@@ -64,6 +64,9 @@ set(SOURCE_FILES
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
+  src/nodes/can_move_condition.cpp
+  src/nodes/lateral_move_condtion.cpp
+  src/nodes/right_move_condition.cpp
   src/repeat_node.cpp
 )
 
