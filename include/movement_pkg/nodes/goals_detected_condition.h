@@ -22,7 +22,7 @@ class GoalsDetectedCondition : public ConditionNode, public CBDataManager
         BT::ReturnStatus Tick() override;
 
     private:
-        std::vector<geometry_msgs::Point> goal_posts_;
+        blenders_msgs::PointArray goal_posts_;
 };
 }  // namesapce BT
 
