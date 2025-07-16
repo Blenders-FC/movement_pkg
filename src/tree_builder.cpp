@@ -68,7 +68,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     calc_init_position->AddChild(search_side_selector);
     calc_init_position->AddChild(center_goal);
-    
+
     init_position_fb->AddChild(init_position);
     init_position_fb->AddChild(calc_init_position);
 
@@ -105,7 +105,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     main_fallback->AddChild(fallback_search_ball);
 
     // Repeat main sequence
-    repeat_main_loop->AddChild(main_fallback);
+    repeat_main_loop->AddChild(init_position_fb);
 
     // Root node sequence
     root_node->AddChild(init_sequence);
