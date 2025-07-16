@@ -9,8 +9,6 @@
 
 #include "movement_pkg/cb_data_manager.h"
 #include <action_node.h>
-#include <sensor_msgs/JointState.h>
-#include <geometry_msgs/Point.h>
 
 struct PIDController
 {
@@ -44,11 +42,13 @@ class CenterGoalYOLOPID : public ActionNode, public CBDataManager
     private:
         // Auxiliar methods
         void writeHeadJoint(double ang_valueX, double ang_valueY, bool ang_in_rad);
+        double calculateDistance(double head_tilt);
         // double clamp(double value, double min_value, double max_value);
         // void resetPID();
 
         // ROS
         ros::Publisher write_joint_pub_;
+        ros::Publisher dist_to_goal_pub_;
 
         // PID controllers for pan and tilt
         PIDController pid_pan_{2.0, 0.0, 0.1};   // Example initial gains
@@ -78,6 +78,7 @@ class CenterGoalYOLOPID : public ActionNode, public CBDataManager
         double error_limit_ = 0.0523599;    // 3°
 
         sensor_msgs::JointState write_msg_;
+        blenders_msgs::GoalParams goal_msg_;
 };
 }  // namespace BT
 

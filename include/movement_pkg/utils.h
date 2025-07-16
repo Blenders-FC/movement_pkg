@@ -32,6 +32,7 @@
 #include "footstep_walking_module_msgs/FootstepLegStep.h"
 #include "blenders_msgs/PointArray.h"
 #include "blenders_msgs/RobotPose.h"
+#include "blenders_msgs/GoalParams.h"
 #include "movement_pkg/blackboard.h"
 
 // ===== ANSI COLOR CODES =====

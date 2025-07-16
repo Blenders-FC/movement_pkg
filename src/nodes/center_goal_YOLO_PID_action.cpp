@@ -12,6 +12,7 @@ BT::CenterGoalYOLOPID::CenterGoalYOLOPID(std::string name)
 {
     type_ = BT::ACTION_NODE;
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
+    goal_fts_pub_ = nh.advertise<blenders_msgs::GoalParams>("/robotis_" + std::to_string(robot_id) + "/robot_pose/goal_params", 0);
     thread_ = std::thread(&CenterGoalYOLOPID::WaitForTick, this);
 }
 
@@ -53,6 +54,16 @@ void BT::CenterGoalYOLOPID::WaitForTick()
             double error_pan = (320 - ball_center_position_.x) * X_PIXEL_TO_DEG * deg_to_rad;   // pixToDeg -> degToRad
             double error_tilt = (240 - ball_center_position_.y) * Y_PIXEL_TO_DEG * deg_to_rad;  // pixToDeg -> degToRad
 
+            if (fabs(error_pan) < error_limit_ && fabs(error_tilt) < error_limit_)
+            {
+                ROS_SUCCESS_LOG("Goal IN CENTER! Calculating init pose");
+                goal_msg_.distance = calculateDistance();
+                goal_msg_.angle = head_pan_angle_;
+                goal_fts_pub_.publish(goal_msg_)
+                set_status(BT::SUCCESS);
+                break;
+            }
+
             integral_pan += error_pan * dt;
             integral_tilt += error_tilt * dt;
 
@@ -74,13 +85,6 @@ void BT::CenterGoalYOLOPID::WaitForTick()
 
             prev_error_pan = error_pan;
             prev_error_tilt = error_tilt;
-
-            if (fabs(error_pan) < error_limit_ && fabs(error_tilt) < error_limit_)
-            {
-                ROS_SUCCESS_LOG("Ball IN CENTER! Starting walking process!");
-                set_status(BT::SUCCESS);
-                break;
-            }
 
             writeHeadJoint(angle_mov_x_, angle_mov_y_, true);
             rate.sleep();
@@ -117,6 +121,12 @@ void BT::CenterGoalYOLOPID::writeHeadJoint(double ang_valueX, double ang_valueY,
     write_msg_.position.push_back(ang_valueY);
 
     write_joint_pub_.publish(write_msg_);
+}
+
+double BT::CenterGoalYOLOPID::calculateDistance(double head_tilt)
+{
+    double distance = CAMERA_HEIGHT_ * tan(M_PI * 0.5 + head_tilt - hip_pitch_offset_);
+    return distance;
 }
 
 void BT::CenterGoalYOLOPID::Halt()
