@@ -4,8 +4,8 @@
         Marlene Cobian
 */
 
-#ifndef BALL_DIRECTION_CONDITION_H
-#define BALL_DIRECTION_CONDITION_H
+#ifndef TURN_SELECTOR_CONDITION_H
+#define TURN_SELECTOR_CONDITION_H
 
 #include "movement_pkg/cb_data_manager.h"
 #include "condition_node.h"
@@ -13,10 +13,10 @@
 
 namespace BT
 {
-class BallDirectionCondition : public ConditionNode, public CBDataManager
+class TurnSelectorCondition : public ConditionNode, public CBDataManager
 {
     public:
-        explicit BallDirectionCondition(const std::string &name);  // Constructor
+        explicit TurnSelectorCondition(const std::string &name);  // Constructor
 
         // Behavior Tree Tick function
         BT::ReturnStatus Tick() override;
@@ -26,4 +26,4 @@ class BallDirectionCondition : public ConditionNode, public CBDataManager
 };
 }  // namesapce BT
 
-#endif // BALL_DIRECTION_CONDITION_H
+#endif // TURN_SELECTOR_CONDITION_H

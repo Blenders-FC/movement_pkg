@@ -64,6 +64,7 @@ set(SOURCE_FILES
   src/nodes/timer_condition.cpp
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
+  src/nodes/turn_selector_condition.cpp
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
   src/repeat_node.cpp
@@ -71,7 +72,6 @@ set(SOURCE_FILES
   src/nodes/send_head_to_home_reset.cpp
   src/nodes/referee_state_condition.cpp
   src/nodes/ref_entry_condition.cpp
-  
 )
 
 set(SHARED_LIBRARIES
