@@ -32,6 +32,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* goals_detector_r = new BT::GoalsDetectedCondition("RightGoalsDetectedCondition");
     auto* goals_detector_l = new BT::GoalsDetectedCondition("LeftGoalsDetectedCondition");
     auto* center_goal_slow = new BT::CenterGoalSlow("CenterGoalSlow");
+    auto* walk_to_dist = new BT::WalkToDistance("WalkToDistance", 5);    // walking dist (m)
+    auto* turn_right_entry = new BT::TurnRight("TurnRightEntry", 6);   // turning 90° (6 cycles of 15° each)
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     
@@ -53,8 +55,12 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* search_side_selector = new BT::FallbackNode("SearchSideSelector");
     auto* prl_left_search = new BT::ParallelNode("ParallelLeftSearch", 2); // success_threshold=2
     auto* prl_right_search = new BT::ParallelNode("ParallelRightSearch", 2); // success_threshold=2
+    auto* entry_rutine = new BT::SequenceNodeWithMemory("entryRutine");
 
-    
+    // Entry rutine
+    entry_rutine->AddChild(walk_to_dist);
+    entry_rutine->AddChild(turn_right_entry);
+
     // calc init position
     prl_right_search->AddChild(right_search);
     prl_right_search->AddChild(goals_detector_r);
@@ -110,7 +116,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // Root node sequence
     root_node->AddChild(init_sequence);
-    root_node->AddChild(walk_to_ball);
+    root_node->AddChild(entry_rutine);
 
     return root_node;
 }
