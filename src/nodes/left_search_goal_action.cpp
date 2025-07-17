@@ -12,6 +12,7 @@ BT::LeftSearchGoal::LeftSearchGoal(std::string name)
 {
     type_ = BT::ACTION_NODE;
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
+    centering_goal_pub_ = nh.advertise<std_msgs::Bool>("/robotis_" + std::to_string(robot_id) + "/robot_pose/centering_goal", 0);
     thread_ = std::thread(&LeftSearchGoal::WaitForTick, this);
 }
 
@@ -30,6 +31,9 @@ void BT::LeftSearchGoal::WaitForTick()
             //turn_cnt_ = 0;
 
             // set_status(BT::RUNNING);
+            centering_goal_msg_.data = false;
+            centering_goal_pub_.publish(centering_goal_msg_);
+
             if (getModule("r_knee") != "direct_control_module")
             {
                 setModule("direct_control_module");

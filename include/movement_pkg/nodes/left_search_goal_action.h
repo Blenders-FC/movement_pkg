@@ -34,6 +34,7 @@ class LeftSearchGoal : public ActionNode, public CBDataManager
 
         // ROS publisher
         ros::Publisher write_joint_pub_;
+        ros::Publisher centering_goal_pub_;
 
         // State variables
         bool head_direction_ = true;
@@ -58,6 +59,7 @@ class LeftSearchGoal : public ActionNode, public CBDataManager
 
         // JointState messages for publishing (use local msg in function instead)
         sensor_msgs::JointState write_msg;
+        std_msgs::Bool centering_goal_msg_;
 };
 }  // namespace BT
 

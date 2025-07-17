@@ -34,11 +34,11 @@ class WalkToBallPosition : public ActionNode, public WalkingController
         bool walkingSucced = false;
         
         // meters and radians
-        double start_x = 0;
-        double start_y = 0;
+        double start_x = 6.0;
+        double start_y = 2.0;
         double start_theta = 0;
-        double goal_x = 1.0;
-        double goal_y = 0;
+        double goal_x = 3.0;
+        double goal_y = 2.0;
         double goal_theta = 0;
 };
 }  // namespace BT

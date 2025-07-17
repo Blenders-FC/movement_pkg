@@ -68,7 +68,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     search_side_selector->AddChild(prl_right_search);
 
     calc_init_position->AddChild(search_side_selector);
-    calc_init_position->AddChild(center_goal_slow);
+    //calc_init_position->AddChild(center_goal);
 
     init_position_fb->AddChild(init_position);
     init_position_fb->AddChild(calc_init_position);
@@ -110,7 +110,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // Root node sequence
     root_node->AddChild(init_sequence);
-    root_node->AddChild(repeat_main_loop);
+    root_node->AddChild(walk_to_ball);
 
     return root_node;
 }
