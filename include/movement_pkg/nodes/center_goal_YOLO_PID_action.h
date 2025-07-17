@@ -49,6 +49,7 @@ class CenterGoalYOLOPID : public ActionNode, public CBDataManager
         // ROS
         ros::Publisher write_joint_pub_;
         ros::Publisher goal_fts_pub_;
+        ros::Publisher centering_goal_pub_;
 
         // PID controllers for pan and tilt
         PIDController pid_pan_{2.0, 0.0, 0.1};   // Example initial gains
@@ -77,10 +78,12 @@ class CenterGoalYOLOPID : public ActionNode, public CBDataManager
         double xerror_;
         double yerror_;
         double deg_to_rad = 0.0174533;      // M_PI / 180;
-        double error_limit_ = 0.0523599;    // 3°
+        double error_limit_x_ = 0;    // 3°
+        double error_limit_y_ = 0.0523599;    // 3°
 
         sensor_msgs::JointState write_msg_;
         blenders_msgs::GoalParams goal_msg_;
+        std_msgs::Bool centering_goal_msg_;
 };
 }  // namespace BT
 

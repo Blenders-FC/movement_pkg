@@ -13,6 +13,7 @@ BT::CenterGoalYOLOPID::CenterGoalYOLOPID(std::string name)
     type_ = BT::ACTION_NODE;
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
     goal_fts_pub_ = nh.advertise<blenders_msgs::GoalParams>("/robotis_" + std::to_string(robot_id) + "/robot_pose/goal_params", 0);
+    centering_goal_pub_ = nh.advertise<std_msgs::Bool>("/robotis_" + std::to_string(robot_id) + "/robot_pose/centering_goal", 0);
     thread_ = std::thread(&CenterGoalYOLOPID::WaitForTick, this);
 }
 
@@ -20,7 +21,8 @@ BT::CenterGoalYOLOPID::~CenterGoalYOLOPID() {}
 void BT::CenterGoalYOLOPID::WaitForTick()
 {
     // double Kp = 2.0, Ki = 0.0, Kd = 0.1; // Tune these
-    double Kp = 1.0, Ki = 0.0, Kd = 0.3; // Tune these
+    double Kp_pan = 0.4, Ki_pan = 0.005, Kd_pan = 0.3;
+    double Kp_tilt = 0.4, Ki_tilt = 0.005, Kd_tilt = 0.2;
     double integral_pan = 0, integral_tilt = 0;
     double prev_error_pan = 0, prev_error_tilt = 0;
     ros::Rate rate(30); // 30 Hz
@@ -36,6 +38,8 @@ void BT::CenterGoalYOLOPID::WaitForTick()
         while (get_status() == BT::IDLE)
         {
             // set_status(BT::RUNNING);
+            centering_goal_msg_.data = true;
+            centering_goal_pub_.publish(centering_goal_msg_);
 
             ball_center_position_ = getBallPosition();
 
@@ -54,12 +58,14 @@ void BT::CenterGoalYOLOPID::WaitForTick()
             double error_pan = (320 - ball_center_position_.x) * X_PIXEL_TO_DEG * deg_to_rad;   // pixToDeg -> degToRad
             double error_tilt = (240 - ball_center_position_.y) * Y_PIXEL_TO_DEG * deg_to_rad;  // pixToDeg -> degToRad
 
-            if (fabs(error_pan) < error_limit_ && fabs(error_tilt) < error_limit_)
+            if (fabs(error_pan) < error_limit_x_ && fabs(error_tilt) < error_limit_y_)
             {
                 ROS_SUCCESS_LOG("Goal IN CENTER! Calculating init pose");
                 goal_msg_.distance.data = calculateDistance(head_tilt_angle_);
                 goal_msg_.angle.data = head_pan_angle_;
                 goal_fts_pub_.publish(goal_msg_);
+                centering_goal_msg_.data = false;
+                centering_goal_pub_.publish(centering_goal_msg_);
                 set_status(BT::SUCCESS);
                 break;
             }
@@ -77,8 +83,8 @@ void BT::CenterGoalYOLOPID::WaitForTick()
             double derivative_pan = (error_pan - prev_error_pan) / dt;
             double derivative_tilt = (error_tilt - prev_error_tilt) / dt;
 
-            double output_pan = Kp * error_pan + Ki * integral_pan + Kd * derivative_pan;
-            double output_tilt = Kp * error_tilt + Ki * integral_tilt + Kd * derivative_tilt;
+            double output_pan = Kp_pan * error_pan + Ki_pan * integral_pan + Kd_pan * derivative_pan;
+            double output_tilt = Kp_tilt * error_tilt + Ki_tilt * integral_tilt + Kd_tilt * derivative_tilt;
 
             angle_mov_x_ += output_pan;   // rad         // * 57.2958;   // rad to deg
             angle_mov_y_ += output_tilt;  // rad         // * 57.2958;  // rad to deg

@@ -18,8 +18,8 @@ BT::CenterBallYOLOPID::CenterBallYOLOPID(std::string name)
 BT::CenterBallYOLOPID::~CenterBallYOLOPID() {}
 void BT::CenterBallYOLOPID::WaitForTick()
 {
-    double Kp_pan = 1.0, Ki_pan = 0.0, Kd_pan = 0.3;
-    double Kp_tilt = 1.2, Ki_tilt = 0.0, Kd_tilt = 0.2;
+    double Kp_pan = 0.4, Ki_pan = 0.005, Kd_pan = 0.3;
+    double Kp_tilt = 0.4, Ki_tilt = 0.005, Kd_tilt = 0.2;
     double integral_pan = 0, integral_tilt = 0;
     double prev_error_pan = 0, prev_error_tilt = 0;
     ros::Rate rate(30); // 30 Hz
