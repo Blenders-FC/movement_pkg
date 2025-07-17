@@ -34,6 +34,7 @@ class CenterGoalSlow : public ActionNode, public CBDataManager
         // ROS variable
         ros::Publisher write_joint_pub_;
         ros::Publisher goal_fts_pub_;
+        ros::Publisher centering_goal_pub_;
 
         // Variables
         geometry_msgs::Point ball_center_position_;
@@ -46,8 +47,10 @@ class CenterGoalSlow : public ActionNode, public CBDataManager
         double yerror_;
         const double CAMERA_HEIGHT_ = 0.46;
         const double hip_pitch_offset_ = 0.12217305; //7°
+
         sensor_msgs::JointState write_msg_;
         blenders_msgs::GoalParams goal_msg_;
+        std_msgs::Bool centering_goal_msg_;
 };
 }  // namespace BT
 

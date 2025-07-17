@@ -13,6 +13,7 @@ BT::CenterGoalSlow::CenterGoalSlow(std::string name)
     type_ = BT::ACTION_NODE;
     write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
     goal_fts_pub_ = nh.advertise<blenders_msgs::GoalParams>("/robotis_" + std::to_string(robot_id) + "/robot_pose/goal_params", 0);
+    centering_goal_pub_ = nh.advertise<std_msgs::Bool>("/robotis_" + std::to_string(robot_id) + "/robot_pose/centering_goal", 0);
     thread_ = std::thread(&CenterGoalSlow::WaitForTick, this);
 }
 
@@ -31,6 +32,8 @@ void BT::CenterGoalSlow::WaitForTick()
         while (get_status() == BT::IDLE)
         {
             // set_status(BT::RUNNING);
+            centering_goal_msg_.data = true;
+            centering_goal_pub_.publish(centering_goal_msg_);
 
             ball_center_position_ = getBallPosition();
             head_pan_angle_ = getHeadPan();
@@ -46,6 +49,8 @@ void BT::CenterGoalSlow::WaitForTick()
                 goal_msg_.distance.data = calculateDistance(head_tilt_angle_);
                 goal_msg_.angle.data = head_pan_angle_;
                 goal_fts_pub_.publish(goal_msg_);
+                centering_goal_msg_.data = false;
+                centering_goal_pub_.publish(centering_goal_msg_);
                 set_status(BT::SUCCESS);
                 break;
             }
