@@ -71,6 +71,7 @@ set(SOURCE_FILES
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
   src/nodes/walk_to_ball_position_action.cpp
+  src/nodes/walk_to_distance_action.cpp
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
   src/repeat_node.cpp
