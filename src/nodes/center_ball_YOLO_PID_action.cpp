@@ -19,8 +19,8 @@ BT::CenterBallYOLOPID::~CenterBallYOLOPID() {}
 void BT::CenterBallYOLOPID::WaitForTick()
 {
     // double Kp = 2.0, Ki = 0.0, Kd = 0.1; // Tune these
-    double Kp_x = 0.5, Ki_x = 0.0, Kd_x = 0.0; // Tune these
-    double Kp_y = 0.5, Ki_y = 0.0, Kd_y = 0.0;
+    double Kp_x = 0.4, Ki_x = 0.005, Kd_x = 0.3; // Tune these
+    double Kp_y = 0.4, Ki_y = 0.005, Kd_y = 0.2;
     double integral_pan = 0, integral_tilt = 0;
     double prev_error_pan = 0, prev_error_tilt = 0;
     ros::Rate rate(30); // 30 Hz
