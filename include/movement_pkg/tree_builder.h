@@ -49,6 +49,7 @@
 #include "nodes/send_head_to_home_reset.h"
 #include "nodes/stand_up_action.h"
 #include "nodes/referee_state_condition.h"
+#include "nodes/ref_entry_condition.h"
 
 
 
