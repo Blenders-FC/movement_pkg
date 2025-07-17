@@ -55,6 +55,7 @@ set(SOURCE_FILES
   src/nodes/penalty_kick_action.cpp
   src/nodes/right_kick_action.cpp
   src/nodes/robot_fallen_condition.cpp
+  src/nodes/quadrant_condition.cpp
   src/nodes/search_ball_action.cpp
   src/nodes/search_sinusoidal_action.cpp
   src/nodes/send_head_to_home_action.cpp
@@ -65,6 +66,7 @@ set(SOURCE_FILES
   src/nodes/turn_left_action.cpp
   src/nodes/turn_right_action.cpp
   src/nodes/turn_selector_condition.cpp
+  src/nodes/walk_to_distance_action.cpp
   src/nodes/walk_to_point_action.cpp
   src/nodes/walk_to_target_action.cpp
   src/repeat_node.cpp

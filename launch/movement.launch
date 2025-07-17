@@ -5,6 +5,9 @@
   <arg name="robot_id"              default="$(env ROBOT_ID)"/>
   <param name="robot_id"            value="$(arg robot_id)"/>
 
+    <arg name="quadrant"              default="$(env QUADRANT)"/>
+  <param name="quadrant"            value="$(arg quadrant)"/>
+
   <arg name="gazebo"                default="false"/>
   <param name="gazebo"              value="$(arg gazebo)"          type="bool"/>
 
@@ -24,12 +27,13 @@
   <!-- OP3 Manager -->
   <node pkg="op3_manager" type="op3_manager" name="op3_manager" output="screen">
     <param name="angle_unit"             value="30" />
-    <param name="robot_id"               value="1"/>
+    <param name="robot_id"               value="$(arg robot_id)"/>
   </node>
 
   <!-- Movement node -->
   <node pkg="movement_pkg" type="motion_controller_node" name="op3_motion_controller" output="screen">
-    <param name="robot_id"               value="1"/>
+    <param name="robot_id"               value="$(arg robot_id)"/>
+    <param name="quadrant"               value="$(arg quadrant)"/>
   </node>
 
 </launch>
