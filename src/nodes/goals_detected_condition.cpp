@@ -16,18 +16,21 @@ BT::ReturnStatus BT::GoalsDetectedCondition::Tick()
     while (ros::ok())
     {
         goal_posts_.points = getGoalsPositions();
+        ROS_COLORED_LOG("goal_posts_.points: %f", RED, false, goal_posts_.points[0].x);
+
+        ROS_COLORED_LOG("goal_posts_.points: %f", RED, false, goal_posts_.points[1].x);
    
         if (goal_posts_.points[0].x  == 999)
         {
             ROS_COLORED_LOG("Received PointArray with no goal posts", RED, false);
-            set_status(BT::FAILURE);
-            return BT::FAILURE;
+            set_status(BT::RUNNING);
+            return BT::RUNNING;
         }
         else if (goal_posts_.points[0].x != 999 && goal_posts_.points[1].x == 999)
         {
             ROS_COLORED_LOG("Received 1 valid goalpost", RED, false);
-            set_status(BT::FAILURE);
-            return BT::FAILURE;
+            set_status(BT::RUNNING);
+            return BT::RUNNING;
         }
         else 
         {

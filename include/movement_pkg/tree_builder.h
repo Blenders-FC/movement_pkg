@@ -20,6 +20,7 @@
 #include "nodes/center_ball_YOLO_CPU_action.h"
 #include "nodes/center_ball_YOLO_Jetson_action.h"
 #include "nodes/center_goal_YOLO_PID_action.h"
+#include "nodes/center_goal_slow_action.h"
 #include "nodes/choose_kick_foot_condition.h"
 #include "nodes/fov_walking_action.h"
 #include "nodes/get_up_backwards_action.h"

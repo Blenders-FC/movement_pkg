@@ -40,7 +40,7 @@ void BT::RightSearchGoal::WaitForTick()
             // Flow for searching goal - with sinusoidal function
             t_ += 0.1;
 
-            x_target_ = 60*sin(t_) - 30;  // 60*sin(t_);
+            x_target_ = 30*sin(t_) - 30;  // 60*sin(t_);
             // rightLeft = turn_cnt_%2;
 
             ROS_COLORED_LOG("x target: %f", YELLOW, true, x_target_);

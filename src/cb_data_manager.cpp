@@ -32,7 +32,6 @@ void CBDataManager::ballCenterCallback(const geometry_msgs::Point::ConstPtr& msg
 // Updating latest goal position
 void CBDataManager::goalCenterCallback(const blenders_msgs::PointArray::ConstPtr& msg)
 {
-    ROS_INFO("Received %lu goal posts", msg->points.size());
     goals_positions_ = msg->points;
 }
 

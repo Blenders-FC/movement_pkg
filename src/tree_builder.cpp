@@ -31,6 +31,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* left_search = new BT::LeftSearchGoal("LeftSearchGoal");
     auto* goals_detector_r = new BT::GoalsDetectedCondition("RightGoalsDetectedCondition");
     auto* goals_detector_l = new BT::GoalsDetectedCondition("LeftGoalsDetectedCondition");
+    auto* center_goal_slow = new BT::CenterGoalSlow("CenterGoalSlow");
     // auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs
 
     
@@ -46,7 +47,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* parallel_recovery = new BT::ParallelNode("ParallelRecovery", 2); // success_threshold=2
     auto* main_fallback = new BT::FallbackNode("MainFallback");
     auto* calc_init_position = new BT::SequenceNodeWithMemory("calcInitPosition");
-    auto* left_search_seq = new BT::SequenceNodeWithMemory("leftSearchSeq");
+    auto* left_search_seq = new BT::SequenceNode("leftSearchSeq");
     auto* init_position_fb = new BT::FallbackNode("isInitPosition");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
     auto* search_side_selector = new BT::FallbackNode("SearchSideSelector");
@@ -67,7 +68,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     search_side_selector->AddChild(prl_right_search);
 
     calc_init_position->AddChild(search_side_selector);
-    calc_init_position->AddChild(center_goal);
+    calc_init_position->AddChild(center_goal_slow);
 
     init_position_fb->AddChild(init_position);
     init_position_fb->AddChild(calc_init_position);

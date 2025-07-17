@@ -42,6 +42,7 @@ set(SOURCE_FILES
   src/nodes/center_ball_YOLO_Jetson_action.cpp
   src/nodes/center_ball_YOLO_PID_action.cpp
   src/nodes/center_goal_YOLO_PID_action.cpp
+  src/nodes/center_goal_slow_action.cpp
   src/nodes/choose_kick_foot_condition.cpp
   src/nodes/fov_walking_action.cpp
   src/nodes/get_up_backwards_action.cpp
