@@ -57,7 +57,7 @@ private:
     const double IN_PLACE_FB_STEP_ = -0.003;
     const double UNIT_FB_STEP_ = 0.002;
     const double UNIT_RL_TURN_ = 0.00872665;        //0.5°
-    const double MAX_FB_STEP_ = 0.0175;             //0.04;  //0.007;  //0.015;
+    const double MAX_FB_STEP_ = 0.02;             //0.04;  //0.007;  //0.015; //funct: .0175
     const double MAX_RL_TURN_ =  0.26179939;        //15°
     const double MIN_FB_STEP_ = 0.0125;             //0.024;  //0.003;  //0.01;
     const double MIN_RL_TURN_ = 0.08726646;         //5°
