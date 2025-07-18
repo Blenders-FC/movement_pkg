@@ -30,7 +30,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* head_to_home_reset = new BT::HeadToHomeReset("HeadToHomeReset");
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
-    auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs func20
+    auto* timer_condition = new BT::TimerCondition("TimerCondition", 0.0);  // 5 secs func20
 
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
