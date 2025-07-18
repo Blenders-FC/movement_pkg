@@ -30,6 +30,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
     auto* timer = new BT::TimerCondition("Timer", 30.0);  // 5 secs
+    auto* turn_right_entry = new BT::TurnRight("TurnRightEntry", 6);
     //referee entry conditiomn
     auto* ref_entry_condition = new BT::RefEntryCondition("RefEntryCondition");
     auto* timer_condition2 = new BT::TimerCondition("TimerCondition2", 5.0);  // 5 secs
@@ -86,6 +87,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(stand_up);
     init_sequence->AddChild(referee_state_entry);
     init_sequence->AddChild(parallel_walk_timer_entry);
+    init_sequence->AddChild(turn_right_entry);
 
     // Right Kick Sequence
     right_kick_seq->AddChild(kick_selector);

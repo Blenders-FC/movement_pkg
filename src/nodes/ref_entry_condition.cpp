@@ -32,7 +32,7 @@ BT::ReturnStatus BT::RefEntryCondition::Tick()
         //     set_status(BT::SUCCESS);
         //     return BT::SUCCESS;
         // }
-        if (refereeState == referee::MIDFIELD ) //midfield is ready 
+        if (refereeState == referee::MIDFIELD || refereeState == referee::PLAY ) //midfield is ready 
         {   
             ROS_SUCCESS_LOG("Ready to play");
             ROS_COLORED_LOG("referee state  is %d",CYAN, true, refereeState);
