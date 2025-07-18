@@ -33,10 +33,10 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* head_to_home_reset = new BT::HeadToHomeReset("HeadToHomeReset");
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
-    auto* timer_condition = new BT::TimerCondition("TimerCondition", 150.0);  // 5 secs
+    auto* timer_condition = new BT::TimerCondition("TimerCondition", 20.0);  // 5 secs
     auto* quadrant_condition = new BT::QuadrantCondition("QuadrantCondition");
     auto* quadrant_condition_2 = new BT::QuadrantCondition("QuadrantCondition2");
-    auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs func20
+    //auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs func20
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
     auto* timer = new BT::TimerCondition("Timer", 30.0);  // 5 secs

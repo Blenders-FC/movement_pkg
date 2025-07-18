@@ -41,8 +41,8 @@ void BT::SearchBallSinusoidal::WaitForTick()
             t_ += 0.1;
 
             
-            x_target_ = 60*sin(t_*5);
-            y_target_ = 15*cos(t_*18) - 30;
+            x_target_ = 60*sin(t_*2);  //og 1 y 5
+            y_target_ = 15*cos(t_*8) - 30;
 
             rightLeft = turn_cnt_%2;
 
