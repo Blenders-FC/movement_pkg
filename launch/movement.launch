@@ -24,12 +24,12 @@
   <!-- OP3 Manager -->
   <node pkg="op3_manager" type="op3_manager" name="op3_manager" output="screen">
     <param name="angle_unit"             value="30" />
-    <param name="robot_id"               value="1"/>
+    <param name="robot_id"               value="$(arg robot_id)"/>
   </node>
 
   <!-- Movement node -->
   <node pkg="movement_pkg" type="motion_controller_node" name="op3_motion_controller" output="screen">
-    <param name="robot_id"               value="1"/>
+    <param name="robot_id"               value="$(arg robot_id)"/>
   </node>
 
 </launch>
