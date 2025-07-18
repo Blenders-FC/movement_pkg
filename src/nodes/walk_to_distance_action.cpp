@@ -47,7 +47,7 @@ void BT::WalkToDistance::WaitForTick()
 
 void BT::WalkToDistance::walkTowardsDistance()
 {
-    ROS_COLORED_LOG("dist to walk: %f   ang to ball: %f", YELLOW, true, distance_to_walk);
+    ROS_COLORED_LOG("dist to walk: %f", YELLOW, true, distance_to_walk);
     while (ros::ok())
     {
         ros::Time curr_time_walk = ros::Time::now();
