@@ -11,7 +11,7 @@ BT::SearchBallSinusoidal::SearchBallSinusoidal(std::string name)
 : ActionNode::ActionNode(name)
 {
     type_ = BT::ACTION_NODE;
-    write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
+    write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/head_control/set_joint_states", 0);
     thread_ = std::thread(&SearchBallSinusoidal::WaitForTick, this);
 }
 
@@ -30,11 +30,11 @@ void BT::SearchBallSinusoidal::WaitForTick()
             //turn_cnt_ = 0;
 
             // set_status(BT::RUNNING);
-            if (getModule("r_knee") != "direct_control_module")
+            if (getModule("head_pan") != "head_control_module")
             {
-                setModule("direct_control_module");
+                setModule("head_control_module");
                 ros::Duration(1).sleep();
-                ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
+                ROS_COLORED_LOG("Set Module to head_control_module", YELLOW, false);
             }
 
             // Flow for searching ball - with sinusoidal function
