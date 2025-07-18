@@ -50,6 +50,7 @@
 #include "nodes/stand_up_action.h"
 #include "nodes/referee_state_condition.h"
 #include "nodes/ref_entry_condition.h"
+#include "nodes/turn_selector_condition.h"
 
 
 

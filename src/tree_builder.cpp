@@ -19,14 +19,17 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
     auto* turn_right = new BT::TurnRight("TurnRight", 6);   // turning 90° (6 cycles of 15° each)
     auto* turn_left = new BT::TurnLeft("TurnLeft", 6);      // turning 90° (6 cycles of 15° each)
+    auto* turn_right_ball = new BT::TurnRight("TurnRightBall", 6);   // turning 90° (6 cycles of 15° each)
+    auto* turn_left_ball = new BT::TurnLeft("TurnLeftBall", 6);  
     auto* kick_selector = new BT::ChooseKickFootCondition("ChooseKickFootCondition");
     auto* left_kick = new BT::LeftKick("LeftKick");
-    auto* left_kick_m = new BT::LeftKick("LeftKick");
+    auto* left_kick_m = new BT::LeftKick("LeftKickm");
     auto* right_kick = new BT::RightKick("RightKick");
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* head_to_home_reset = new BT::HeadToHomeReset("HeadToHomeReset");
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
     auto* timer_condition = new BT::TimerCondition("TimerCondition", 150.0);  // 5 secs
+
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
     auto* timer = new BT::TimerCondition("Timer", 30.0);  // 5 secs
@@ -38,6 +41,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* referee_state_entry = new BT::RefEntryCondition("RefEntryCondition");
     auto* stand_up_still = new BT::StandUp("StandUp");
     auto* stand_up_still_entry = new BT::StandUp("StandUpEntry");
+    auto* ball_dir_condition = new BT::BallDirectionCondition("BallAngleCondition");
+    auto* turn_selector_condition = new BT::TurnSelectorCondition("BallturnCondition");
 
 
     //walking node TESTI
@@ -65,6 +70,9 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* fallback_turns = new BT::FallbackNode("Fallback");
     auto* main_fallback = new BT::FallbackNode("MainFallback");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
+    auto* fallback_target = new BT::FallbackNode("Fallback_target");
+    auto* walk_straight_to_ball = new BT::SequenceNodeWithMemory("WalkStraighToBall");
+    auto* walk_right_to_ball = new BT::SequenceNodeWithMemory("WalkRighToBall");
 
 
     // Entry Sequence
@@ -87,7 +95,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_start_button);
     init_sequence->AddChild(stand_up);
     init_sequence->AddChild(referee_state_entry);
-    init_sequence->AddChild(parallel_walk_timer_entry);
+    //init_sequence->AddChild(parallel_walk_timer_entry);
     init_sequence->AddChild(turn_right_entry);
 
     // Right Kick Sequence
@@ -98,12 +106,27 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     fallback_kick_selector->AddChild(right_kick_seq);
     fallback_kick_selector->AddChild(left_kick);
 
+    //Ball direction condition
+    walk_straight_to_ball->AddChild(ball_dir_condition);
+    walk_straight_to_ball->AddChild(walk_to_target);
+
+    //TUrn right to ball
+    walk_right_to_ball->AddChild(turn_selector_condition);
+    walk_right_to_ball->AddChild(turn_right_ball);
+
+
+    //fallback target
+    fallback_target->AddChild(walk_straight_to_ball);
+    fallback_target->AddChild(walk_right_to_ball);
+    fallback_target->AddChild(turn_left_ball);
+
     // Walk to ball sequence
     ball_found_sequence->AddChild(ball_detected);
     ball_found_sequence->AddChild(center_ball);
-    ball_found_sequence->AddChild(walk_to_target);
+    ball_found_sequence->AddChild(fallback_target);
     ball_found_sequence->AddChild(fallback_kick_selector);
 
+    
     //Turn 5 times sequence
     //repeat_turn_right->AddChild(turn_right);
 
@@ -123,7 +146,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // Search ball fallback
 
-    // // // // // fallback_search_ball->AddChild(search_ball);
+    //////fallback_search_ball->AddChild(search_ball);
     fallback_search_ball->AddChild(fallback_turns);
     //fallback_search_ball->AddChild(turning_head_home_seq);
 
@@ -144,7 +167,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     referee_fallback_selector->AddChild(stand_up_still);
 
     // Repeat main sequence
-    repeat_main_loop->AddChild(parallel_walk_timer_entry);
+    repeat_main_loop->AddChild(referee_fallback_selector);
 
     // Root node sequence
     root_node->AddChild(init_sequence);
