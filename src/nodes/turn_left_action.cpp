@@ -33,7 +33,7 @@ void BT::TurnLeft::WaitForTick()
             ROS_TAGGED_ONCE_LOG("Turning left in place!", "CYAN", false, "Turn_l");
 
             // Running state
-            set_status(BT::RUNNING);
+            // set_status(BT::RUNNING);
 
             //node loop
             write_msg_.header.stamp = ros::Time::now();

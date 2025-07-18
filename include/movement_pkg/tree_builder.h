@@ -32,7 +32,9 @@
 #include "nodes/manager_running_condition.h"
 #include "nodes/online_walk_to_target_action.h"
 #include "nodes/penalty_kick_action.h"
+#include "nodes/quadrant_condition.h"
 #include "nodes/right_kick_action.h"
+#include "nodes/right_long_kick_action.h"
 #include "nodes/robot_fallen_condition.h"
 #include "nodes/search_ball_action.h"
 #include "nodes/search_sinusoidal_action.h"
@@ -43,6 +45,7 @@
 #include "nodes/timer_condition.h"
 #include "nodes/turn_left_action.h"
 #include "nodes/turn_right_action.h"
+#include "nodes/walk_to_distance_action.h"
 #include "nodes/walk_to_point_action.h"
 #include "nodes/walk_to_target_action.h"
 #include "nodes/repeat_n_times.h"
@@ -51,8 +54,6 @@
 #include "nodes/referee_state_condition.h"
 #include "nodes/ref_entry_condition.h"
 #include "nodes/turn_selector_condition.h"
-
-
 
 namespace BT
 {
