@@ -36,7 +36,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* timer_condition = new BT::TimerCondition("TimerCondition", 150.0);  // 5 secs
     auto* quadrant_condition = new BT::QuadrantCondition("QuadrantCondition");
     auto* quadrant_condition_2 = new BT::QuadrantCondition("QuadrantCondition2");
-    auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs func20
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
     auto* timer = new BT::TimerCondition("Timer", 30.0);  // 5 secs

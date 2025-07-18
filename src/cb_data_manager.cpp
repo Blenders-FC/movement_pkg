@@ -84,12 +84,19 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
     blackboard.setTarget("m_refereeStatus",m_refereeInfo); //update blacboard
 
+    if (m_refereeInfo.refereeStatus == referee::STILL || m_refereeInfo.refereeStatus == referee::GET_FAR)
+    {   
+        ROS_COLORED_LOG("Not allowed to play by referee",CYAN, true);
+        goAction(1);
+        setModule("none");
+    }
+
 
     //if statements to change behavior if referee changed its state
 
 
-switch (msg.robotPlayStateInt)
-{
+    switch (msg.robotPlayStateInt)
+    {
     case referee::STILL:
         /* code */
         ROS_COLORED_LOG("refereeState changed to STILL: %d", CYAN, true, msg.robotPlayStateInt);
