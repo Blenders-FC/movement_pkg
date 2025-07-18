@@ -20,7 +20,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* turn_right = new BT::TurnRight("TurnRight", 6);   // turning 90° (6 cycles of 15° each)
     auto* turn_left = new BT::TurnLeft("TurnLeft", 6);      // turning 90° (6 cycles of 15° each)
     auto* turn_right_ball = new BT::TurnRight("TurnRightBall", 2);   // turning 90° (6 cycles of 15° each)
-    auto* turn_left_ball = new BT::TurnLeft("TurnLeftBall", 2); 
+    auto* turn_left_ball = new BT::TurnLeft("TurnLeftBall", 1); 
     auto* walk_target_afterTurnR = new BT::WalkToTarget("WalkToTargetR");
     auto* walk_target_afterTurnL = new BT::WalkToTarget("WalkToTargetL"); 
     auto* kick_selector = new BT::ChooseKickFootCondition("ChooseKickFootCondition");
@@ -30,7 +30,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* head_to_home_reset = new BT::HeadToHomeReset("HeadToHomeReset");
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
-    auto* timer_condition = new BT::TimerCondition("TimerCondition", 20.0);  // 5 secs
+    auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs func20
 
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
