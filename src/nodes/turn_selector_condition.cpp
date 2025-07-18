@@ -22,11 +22,13 @@ BT::ReturnStatus BT::TurnSelectorCondition::Tick()
         if(pan_angle_to_ball < 0)  // right side
         {
             set_status(BT::SUCCESS);
+            ROS_SUCCESS_LOG("Ball is on the right!");
             return BT::SUCCESS;
         }
         else   // left side
         {
             set_status(BT::FAILURE);
+            ROS_SUCCESS_LOG("Ball is on the LEFT!");
             return BT::FAILURE;
         }
     }

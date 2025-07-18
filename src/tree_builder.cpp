@@ -19,8 +19,10 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
     auto* turn_right = new BT::TurnRight("TurnRight", 6);   // turning 90° (6 cycles of 15° each)
     auto* turn_left = new BT::TurnLeft("TurnLeft", 6);      // turning 90° (6 cycles of 15° each)
-    auto* turn_right_ball = new BT::TurnRight("TurnRightBall", 6);   // turning 90° (6 cycles of 15° each)
-    auto* turn_left_ball = new BT::TurnLeft("TurnLeftBall", 6);  
+    auto* turn_right_ball = new BT::TurnRight("TurnRightBall", 2);   // turning 90° (6 cycles of 15° each)
+    auto* turn_left_ball = new BT::TurnLeft("TurnLeftBall", 2); 
+    auto* walk_target_afterTurnR = new BT::WalkToTarget("WalkToTargetR");
+    auto* walk_target_afterTurnL = new BT::WalkToTarget("WalkToTargetL"); 
     auto* kick_selector = new BT::ChooseKickFootCondition("ChooseKickFootCondition");
     auto* left_kick = new BT::LeftKick("LeftKick");
     auto* left_kick_m = new BT::LeftKick("LeftKickm");
@@ -28,7 +30,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* head_to_home = new BT::HeadToHome("HeadToHome");
     auto* head_to_home_reset = new BT::HeadToHomeReset("HeadToHomeReset");
     auto* turn_n_times = new BT::RepeatNTimes("RepeatNTimes");
-    auto* timer_condition = new BT::TimerCondition("TimerCondition", 150.0);  // 5 secs
+    auto* timer_condition = new BT::TimerCondition("TimerCondition", 20.0);  // 5 secs
 
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
@@ -42,6 +44,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* stand_up_still = new BT::StandUp("StandUp");
     auto* stand_up_still_entry = new BT::StandUp("StandUpEntry");
     auto* ball_dir_condition = new BT::BallDirectionCondition("BallAngleCondition");
+    auto* ball_dir_condition_r = new BT::BallDirectionCondition("BallAngleConditionRight");
+    auto* ball_dir_condition_l = new BT::BallDirectionCondition("BallAngleConditionLeft");
     auto* turn_selector_condition = new BT::TurnSelectorCondition("BallturnCondition");
 
 
@@ -71,13 +75,14 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* main_fallback = new BT::FallbackNode("MainFallback");
     auto* repeat_main_loop = new BT::RepeatNode("MainLoop");
     auto* fallback_target = new BT::FallbackNode("Fallback_target");
-    auto* walk_straight_to_ball = new BT::SequenceNodeWithMemory("WalkStraighToBall");
+    auto* walk_straight_to_ball = new BT::FallbackNode("WalkStraighToBall");
     auto* walk_right_to_ball = new BT::SequenceNodeWithMemory("WalkRighToBall");
+    auto* walk_left_to_ball = new BT::SequenceNodeWithMemory("WalkLeftToBall");
 
 
     // Entry Sequence
     parallel_walk_timer_entry->AddChild(simple_walk_entry);
-    parallel_walk_timer_entry->AddChild(search_ball);
+    //parallel_walk_timer_entry->AddChild(search_ball);
     //here entry referee ready node
     parallel_walk_timer_entry->AddChild(timer_condition);
 
@@ -95,8 +100,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_start_button);
     init_sequence->AddChild(stand_up);
     init_sequence->AddChild(referee_state_entry);
-    //init_sequence->AddChild(parallel_walk_timer_entry);
-    init_sequence->AddChild(turn_right_entry);
+    init_sequence->AddChild(parallel_walk_timer_entry);
+    //init_sequence->AddChild(turn_right_entry);
 
     // Right Kick Sequence
     right_kick_seq->AddChild(kick_selector);
@@ -106,24 +111,35 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     fallback_kick_selector->AddChild(right_kick_seq);
     fallback_kick_selector->AddChild(left_kick);
 
-    //Ball direction condition
-    walk_straight_to_ball->AddChild(ball_dir_condition);
-    walk_straight_to_ball->AddChild(walk_to_target);
-
     //TUrn right to ball
     walk_right_to_ball->AddChild(turn_selector_condition);
     walk_right_to_ball->AddChild(turn_right_ball);
+    //walk_right_to_ball->AddChild(walk_target_afterTurnR);
 
-
+    // Turn left to ball
+    walk_left_to_ball->AddChild(turn_left_ball);
+    walk_left_to_ball->AddChild(ball_dir_condition_l);
+    //walk_left_to_ball->AddChild(walk_target_afterTurnL);
+    
     //fallback target
-    fallback_target->AddChild(walk_straight_to_ball);
+    //fallback_target->AddChild(walk_straight_to_ball);
     fallback_target->AddChild(walk_right_to_ball);
-    fallback_target->AddChild(turn_left_ball);
+    fallback_target->AddChild(walk_left_to_ball);    
+    //fallback_target->AddChild(walk_target_afterTurnL);
+    
+    //Ball direction condition
+    walk_straight_to_ball->AddChild(ball_dir_condition);
+    walk_straight_to_ball->AddChild(fallback_target);
+    //walk_straight_to_ball->AddChild(walk_to_target);
+
+    
+
 
     // Walk to ball sequence
     ball_found_sequence->AddChild(ball_detected);
     ball_found_sequence->AddChild(center_ball);
-    ball_found_sequence->AddChild(fallback_target);
+    ball_found_sequence->AddChild(walk_straight_to_ball);
+    ball_found_sequence->AddChild(walk_to_target);
     ball_found_sequence->AddChild(fallback_kick_selector);
 
     
@@ -146,7 +162,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // Search ball fallback
 
-    //////fallback_search_ball->AddChild(search_ball);
+    fallback_search_ball->AddChild(search_ball);
     fallback_search_ball->AddChild(fallback_turns);
     //fallback_search_ball->AddChild(turning_head_home_seq);
 
