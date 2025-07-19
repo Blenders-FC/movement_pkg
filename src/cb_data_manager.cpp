@@ -130,6 +130,14 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     default:
         break;
     }
+
+    if (m_refereeInfo.refereeStatus == referee::STILL || m_refereeInfo.refereeStatus == referee::GET_FAR)
+    {   
+        ROS_COLORED_LOG("Not allowed to play by referee INTERRUPT",CYAN, true);
+        goAction(1);
+        setModule("none");
+    }
+    //set blackboard variable
 }
 
 // Updating start button state
