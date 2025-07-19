@@ -48,6 +48,7 @@
 #include "nodes/walk_to_distance_action.h"
 #include "nodes/walk_to_point_action.h"
 #include "nodes/walk_to_target_action.h"
+#include "nodes/walk_middle_field_condition.h"
 #include "nodes/repeat_n_times.h"
 #include "nodes/send_head_to_home_reset.h"
 #include "nodes/stand_up_action.h"

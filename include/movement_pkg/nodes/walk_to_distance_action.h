@@ -18,7 +18,7 @@ class WalkToDistance : public ActionNode, public WalkingController, public CBDat
 {
     public:
         // Constructor
-        explicit WalkToDistance(std::string name, double distance);
+        explicit WalkToDistance(std::string name, double distance, bool reset);
         ~WalkToDistance();
 
         // The method that is going to be executed by the thread
@@ -32,6 +32,8 @@ class WalkToDistance : public ActionNode, public WalkingController, public CBDat
         void walkTowardsDistance();
 
         // Variables
+        bool reset_;
+        int refereeState;
         double walked_distance = 0.0;
         double accum_rotation = 0.0;
         double prev_delta_angle = 0.0;
@@ -46,6 +48,8 @@ class WalkToDistance : public ActionNode, public WalkingController, public CBDat
         bool walkingSucced = false;
         std_msgs::String walk_command;
         ros::Time prev_time_walk_ = ros::Time::now();
+
+        TargetInfo m_refereeInfo;
 };
 }  // namespace BT
 

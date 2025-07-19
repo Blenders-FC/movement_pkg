@@ -73,23 +73,27 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     3 = "acercate"
     4 = "alejate"
     */
-//check if previous state was the same
+    //check if previous state was the same
     if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
         m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
         blackboard.setTarget("m_refereeStatus",m_refereeInfo);
-        // ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
 
         return; //if so return, there is nothing to change, only update blackboard
     }
-    m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
+
     blackboard.setTarget("m_refereeStatus",m_refereeInfo); //update blacboard
 
+    if (m_refereeInfo.refereeStatus == referee::STILL || m_refereeInfo.refereeStatus == referee::GET_FAR)
+    {   
+        ROS_COLORED_LOG("Not allowed to play by referee",CYAN, true);
+    }
+
+    // last state
+    m_refereeInfo.refereeStatus = msg.robotPlayStateInt;
 
     //if statements to change behavior if referee changed its state
-
-
-switch (msg.robotPlayStateInt)
-{
+    switch (msg.robotPlayStateInt)
+    {
     case referee::STILL:
         /* code */
         ROS_COLORED_LOG("refereeState changed to STILL: %d", CYAN, true, msg.robotPlayStateInt);

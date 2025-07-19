@@ -33,7 +33,7 @@ void Blackboard::setTarget(const std::string& name, const TargetInfo& info) {
         m_turncnt = info;
     }else if (name == "m_refereeStatus"){
         m_refereeStatus = info;
-    }   
+    }
 }
 const TargetInfo* Blackboard::getTarget(const std::string& name) const {
     if (name == "ball") {

@@ -7,8 +7,8 @@
 #include "movement_pkg/nodes/walk_to_distance_action.h"
 
 
-BT::WalkToDistance::WalkToDistance(std::string name, double distance) 
-: ActionNode::ActionNode(name), WalkingController(), distance_to_walk(distance)
+BT::WalkToDistance::WalkToDistance(std::string name, double distance, bool reset)
+: ActionNode::ActionNode(name), WalkingController(), distance_to_walk(distance), reset_(reset)
 {
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&WalkToDistance::WaitForTick, this);
@@ -26,6 +26,7 @@ void BT::WalkToDistance::WaitForTick()
 
         // Perform action...
         walked_distance = 0;  // Resets in each cycle
+
         while (get_status() == BT::IDLE)
         {
             set_status(BT::RUNNING);
@@ -47,9 +48,11 @@ void BT::WalkToDistance::WaitForTick()
 
 void BT::WalkToDistance::walkTowardsDistance()
 {
+     
     ROS_COLORED_LOG("dist to walk: %f", YELLOW, true, distance_to_walk);
     while (ros::ok())
     {
+        refereeState= blackboard.getTarget("m_refereeStatus")->refereeStatus;  
         ros::Time curr_time_walk = ros::Time::now();
         ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
         
@@ -62,28 +65,22 @@ void BT::WalkToDistance::walkTowardsDistance()
         double delta_time_walk = dur_walk.toSec();
         prev_time_walk_ = curr_time_walk;
     
-        // if (distance_to_ball < 0)
-        // {
-        //     distance_to_ball *= (-1);
-        // }
-    
-        // double distance_to_walk = distance_to_ball - distance_to_kick_;
         double delta_distance = distance_to_walk - walked_distance;
         ROS_COLORED_LOG("walked dist: %f", ORANGE, false, walked_distance);
     
-        if (walked_distance >= distance_to_walk)
+        if (walked_distance >= distance_to_walk || refereeState == 0)
         {
             stopWalking();
+            if (reset_)
+            {
+                m_refereeInfo.refereeStatus = 0; 
+                blackboard.setTarget("m_refereeStatus",m_refereeInfo);
+            }
             walkingSucced = true;
             return;
         }
     
         double fb_move = 0.0, rl_angle = 0.0;
-    
-        // std::cout << walked_distance << std::endl;
-        // std::cout << distance_to_walk - walked_distance << std::endl;
-        // std::cout << current_x_move_ << std::endl;
-        // std::cout << delta_time_walk << std::endl;
     
         calcFootstep(delta_distance, 0, delta_time_walk, fb_move, rl_angle);  // pan = 0
         ROS_COLORED_LOG("curr dist to ball: %f", CYAN, false, delta_distance);

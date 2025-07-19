@@ -40,9 +40,8 @@ void BT::SearchBallSinusoidal::WaitForTick()
             // Flow for searching ball - with sinusoidal function
             t_ += 0.1;
 
-            
-            x_target_ = 60*sin(t_*2);  //og 1 y 5
-            y_target_ = 15*cos(t_*8) - 30;
+            x_target_ = 60*sin(t_*1);
+            y_target_ = 20*cos(t_*5) - 35;
 
             rightLeft = turn_cnt_%2;
 
@@ -55,7 +54,7 @@ void BT::SearchBallSinusoidal::WaitForTick()
             if (((!rightLeft) && (dx <= 0)) || ((rightLeft) && (dx >= 0))){
                 turn_cnt_++;
             }
-            std::cout << "cont:" << turn_cnt_ << std::endl;
+
             if (turn_cnt_ >= 2) {
                 turn_cnt_ = 0;
                 ROS_COLORED_LOG("Couldn't find ball! Changing the search position...", YELLOW, false);

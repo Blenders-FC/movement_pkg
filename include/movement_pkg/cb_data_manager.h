@@ -55,6 +55,7 @@ private:
     Eigen::MatrixXd rpy_orientation_;
     double head_pan_;
     double head_tilt_;
+    int referee_past_state;
     bool start_button_flag_;
     std::string module_name_;
     std::string status_msg_;

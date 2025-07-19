@@ -36,7 +36,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* timer_condition = new BT::TimerCondition("TimerCondition", 20.0);  // 5 secs
     auto* quadrant_condition = new BT::QuadrantCondition("QuadrantCondition");
     auto* quadrant_condition_2 = new BT::QuadrantCondition("QuadrantCondition2");
-    //auto* timer_condition = new BT::TimerCondition("TimerCondition", 5.0);  // 5 secs func20
 
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
     auto* timer = new BT::TimerCondition("Timer", 30.0);  // 5 secs
@@ -48,16 +47,20 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* referee_state_entry = new BT::RefEntryCondition("RefEntryCondition");
     auto* stand_up_still = new BT::StandUp("StandUp");
     auto* stand_up_still_entry = new BT::StandUp("StandUpEntry");
-    auto* walk_to_distance = new BT::WalkToDistance("WalkToDistance", 4.5);
-    auto* walk_to_distance_2 = new BT::WalkToDistance("WalkToDistance2", 4.5);
+    auto* walk_to_distance = new BT::WalkToDistance("WalkToDistance", 4.5, false);
+    auto* walk_to_distance_2 = new BT::WalkToDistance("WalkToDistance2", 2, false);
     auto* ball_dir_condition = new BT::BallDirectionCondition("BallAngleCondition");
     auto* ball_dir_condition_r = new BT::BallDirectionCondition("BallAngleConditionRight");
     auto* ball_dir_condition_l = new BT::BallDirectionCondition("BallAngleConditionLeft");
     auto* turn_selector_condition = new BT::TurnSelectorCondition("BallturnCondition");
+    auto* walk_to_mid_field = new BT::WalkToDistance("WalkToMidField", 4.5, true);
 
     //walking node TESTI
     auto* simple_walk_action = new BT::SimpleWalk("SimpleWalk");
     auto* simple_walk_entry = new BT::SimpleWalk("SimpleWalkEntry");
+
+    //
+    auto* middle_field_condition = new BT::WalkMiddleFieldCondition("WalkMiddleFieldCondition");
 
     // Create Control Nodes
     auto* root_node = new BT::SequenceNodeWithMemory("RootNode");
@@ -87,6 +90,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* walk_straight_to_ball = new BT::FallbackNode("WalkStraighToBall");
     auto* walk_right_to_ball = new BT::SequenceNodeWithMemory("WalkRighToBall");
     auto* walk_left_to_ball = new BT::SequenceNodeWithMemory("WalkLeftToBall");
+    auto* fallback_middle_field = new BT::FallbackNode("Fallback_middle_field");
+    auto* goto_mid_field_seq = new BT::SequenceNodeWithMemory("go_to_middle_field");
 
 
     // Entry Sequence
@@ -101,7 +106,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     // referee_fallback_selector_entry->AddChild(stand_up_still_entry);
 
     // Sequence to get to the middle field from the side
-    middle_field_sequence->AddChild(walk_to_distance);
+    middle_field_sequence->AddChild(walk_to_mid_field);
     middle_field_sequence->AddChild(quadrant_condition);
     middle_field_sequence->AddChild(turn_right_2);
 
@@ -114,8 +119,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     init_sequence->AddChild(is_manager_done);
     init_sequence->AddChild(is_start_button);
     init_sequence->AddChild(stand_up);
-    init_sequence->AddChild(referee_state_entry);
-    init_sequence->AddChild(quadrant_fallback);
+    // init_sequence->AddChild(referee_state_entry);
+    // init_sequence->AddChild(quadrant_fallback);
 
     //init_sequence->AddChild(turn_right_entry);
 
@@ -159,8 +164,6 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     walk_straight_to_ball->AddChild(fallback_target);
     //walk_straight_to_ball->AddChild(walk_to_target);
 
-    
-
 
     // Walk to ball sequence
     ball_found_sequence->AddChild(ball_detected);
@@ -203,9 +206,16 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     main_fallback->AddChild(ball_found_sequence);
     main_fallback->AddChild(fallback_search_ball);
 
+    // go to middle field seq
+    goto_mid_field_seq->AddChild(middle_field_condition);
+    goto_mid_field_seq->AddChild(quadrant_fallback);
+    
+    fallback_middle_field->AddChild(goto_mid_field_seq);
+    fallback_middle_field->AddChild(main_fallback);
+
     // add playing sequence
     playing_seq->AddChild(referee_state_condition);
-    playing_seq->AddChild(main_fallback);
+    playing_seq->AddChild(fallback_middle_field);
 
     //Add refereeStatet sequences
     referee_fallback_selector->AddChild(playing_seq);

@@ -16,7 +16,7 @@ BT::ReturnStatus BT::RefereeStateCondition::Tick()
     while (ros::ok())
     {
             // Condition checking and state update
-        int refereeState= blackboard.getTarget("m_refereeStatus")->refereeStatus;   
+        int refereeState = blackboard.getTarget("m_refereeStatus")->refereeStatus;   
 
         if (refereeState == referee::STILL || refereeState == referee::GET_FAR)
         {   
