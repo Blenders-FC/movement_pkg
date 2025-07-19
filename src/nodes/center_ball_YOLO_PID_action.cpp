@@ -35,7 +35,7 @@ void BT::CenterBallYOLOPID::WaitForTick()
 
         while (get_status() == BT::IDLE)
         {
-            // set_status(BT::RUNNING);
+            set_status(BT::RUNNING);
 
             ball_center_position_ = getBallPosition();
 
