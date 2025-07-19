@@ -20,7 +20,6 @@ void Blackboard::reset() {
     right_goalpost.reset();
     m_turncnt.reset();
     m_refereeStatus.reset();
-    middle_field_placement.reset();
 }
 
 void Blackboard::setTarget(const std::string& name, const TargetInfo& info) {
@@ -34,9 +33,7 @@ void Blackboard::setTarget(const std::string& name, const TargetInfo& info) {
         m_turncnt = info;
     }else if (name == "m_refereeStatus"){
         m_refereeStatus = info;
-    }else if (name == "middle_field_placement"){
-        middle_field_placement = info;
-    }   
+    }
 }
 const TargetInfo* Blackboard::getTarget(const std::string& name) const {
     if (name == "ball") {
@@ -49,8 +46,6 @@ const TargetInfo* Blackboard::getTarget(const std::string& name) const {
         return &m_turncnt;
     } else if (name == "m_refereeStatus"){
         return &m_refereeStatus;
-    } else if (name == "middle_field_placement"){
-        return &middle_field_placement;
     }
     return nullptr;
 }

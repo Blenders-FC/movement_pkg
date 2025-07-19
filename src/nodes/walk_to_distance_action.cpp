@@ -26,11 +26,6 @@ void BT::WalkToDistance::WaitForTick()
 
         // Perform action...
         walked_distance = 0;  // Resets in each cycle
-        if (reset_)
-        {
-            refereeChangeState.middle_field_placement = false;
-            blackboard.setTarget("middle_field_placement", refereeChangeState);
-        }
 
         while (get_status() == BT::IDLE)
         {
@@ -70,28 +65,22 @@ void BT::WalkToDistance::walkTowardsDistance()
         double delta_time_walk = dur_walk.toSec();
         prev_time_walk_ = curr_time_walk;
     
-        // if (distance_to_ball < 0)
-        // {
-        //     distance_to_ball *= (-1);
-        // }
-    
-        // double distance_to_walk = distance_to_ball - distance_to_kick_;
         double delta_distance = distance_to_walk - walked_distance;
         ROS_COLORED_LOG("walked dist: %f", ORANGE, false, walked_distance);
     
         if (walked_distance >= distance_to_walk || refereeState == 0)
         {
             stopWalking();
+            if (reset_)
+            {
+                m_refereeInfo.refereeStatus = 0; 
+                blackboard.setTarget("m_refereeStatus",m_refereeInfo);
+            }
             walkingSucced = true;
             return;
         }
     
         double fb_move = 0.0, rl_angle = 0.0;
-    
-        // std::cout << walked_distance << std::endl;
-        // std::cout << distance_to_walk - walked_distance << std::endl;
-        // std::cout << current_x_move_ << std::endl;
-        // std::cout << delta_time_walk << std::endl;
     
         calcFootstep(delta_distance, 0, delta_time_walk, fb_move, rl_angle);  // pan = 0
         ROS_COLORED_LOG("curr dist to ball: %f", CYAN, false, delta_distance);

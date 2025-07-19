@@ -61,7 +61,6 @@ private:
     std::string status_msg_;
     //referee blackboard variable
     TargetInfo m_refereeInfo;
-    TargetInfo refereeChangeState;
     //imu
     double alpha = 0.4;
     double pitch;

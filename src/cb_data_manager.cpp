@@ -77,33 +77,16 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
         m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
         blackboard.setTarget("m_refereeStatus",m_refereeInfo);
-        // ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
 
         return; //if so return, there is nothing to change, only update blackboard
     }
-    else{
-        ROS_INFO("refereeState stable: %d", msg.robotPlayStateInt);
-        ROS_INFO("blackboard refereeState stable: %d", blackboard.getTarget("m_refereeStatus")->refereeStatus);
-    }
 
     blackboard.setTarget("m_refereeStatus",m_refereeInfo); //update blacboard
-    bool middle_field_placement_state = blackboard.getTarget("middle_field_placement")->middle_field_placement; 
 
     if (m_refereeInfo.refereeStatus == referee::STILL || m_refereeInfo.refereeStatus == referee::GET_FAR)
     {   
         ROS_COLORED_LOG("Not allowed to play by referee",CYAN, true);
     }
-
-    if (m_refereeInfo.refereeStatus == referee::MIDFIELD)
-    {
-        refereeChangeState.middle_field_placement = true;
-    }
-    else
-    {
-        refereeChangeState.middle_field_placement = false;
-    }
-    blackboard.setTarget("middle_field_placement", refereeChangeState);
-    ROS_INFO("middle_field_placement %d", middle_field_placement_state);
 
     // last state
     m_refereeInfo.refereeStatus = msg.robotPlayStateInt;
@@ -130,14 +113,6 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     default:
         break;
     }
-
-    if (m_refereeInfo.refereeStatus == referee::STILL || m_refereeInfo.refereeStatus == referee::GET_FAR)
-    {   
-        ROS_COLORED_LOG("Not allowed to play by referee INTERRUPT",CYAN, true);
-        goAction(1);
-        setModule("none");
-    }
-    //set blackboard variable
 }
 
 // Updating start button state

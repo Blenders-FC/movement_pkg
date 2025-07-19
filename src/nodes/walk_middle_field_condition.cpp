@@ -16,9 +16,9 @@ BT::ReturnStatus BT::WalkMiddleFieldCondition::Tick()
     while (ros::ok())
     {
             // Condition checking and state update
-        bool midddleFieldState = blackboard.getTarget("middle_field_placement")->middle_field_placement;   
+        int refereeState = blackboard.getTarget("m_refereeStatus")->refereeStatus;   
 
-        if (midddleFieldState == true)
+        if (refereeState == referee::MIDFIELD)
         {   
             ROS_SUCCESS_LOG("Go to middle field");
             set_status(BT::SUCCESS);

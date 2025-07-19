@@ -48,7 +48,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* stand_up_still = new BT::StandUp("StandUp");
     auto* stand_up_still_entry = new BT::StandUp("StandUpEntry");
     auto* walk_to_distance = new BT::WalkToDistance("WalkToDistance", 4.5, false);
-    auto* walk_to_distance_2 = new BT::WalkToDistance("WalkToDistance2", 4.5, false);
+    auto* walk_to_distance_2 = new BT::WalkToDistance("WalkToDistance2", 2, false);
     auto* ball_dir_condition = new BT::BallDirectionCondition("BallAngleCondition");
     auto* ball_dir_condition_r = new BT::BallDirectionCondition("BallAngleConditionRight");
     auto* ball_dir_condition_l = new BT::BallDirectionCondition("BallAngleConditionLeft");
@@ -106,7 +106,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     // referee_fallback_selector_entry->AddChild(stand_up_still_entry);
 
     // Sequence to get to the middle field from the side
-    middle_field_sequence->AddChild(walk_to_distance);
+    middle_field_sequence->AddChild(walk_to_mid_field);
     middle_field_sequence->AddChild(quadrant_condition);
     middle_field_sequence->AddChild(turn_right_2);
 
@@ -208,7 +208,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
 
     // go to middle field seq
     goto_mid_field_seq->AddChild(middle_field_condition);
-    goto_mid_field_seq->AddChild(walk_to_mid_field);
+    goto_mid_field_seq->AddChild(quadrant_fallback);
     
     fallback_middle_field->AddChild(goto_mid_field_seq);
     fallback_middle_field->AddChild(main_fallback);

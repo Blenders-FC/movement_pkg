@@ -49,7 +49,7 @@ class WalkToDistance : public ActionNode, public WalkingController, public CBDat
         std_msgs::String walk_command;
         ros::Time prev_time_walk_ = ros::Time::now();
 
-        TargetInfo refereeChangeState;
+        TargetInfo m_refereeInfo;
 };
 }  // namespace BT
 
