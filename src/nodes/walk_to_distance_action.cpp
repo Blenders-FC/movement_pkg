@@ -7,8 +7,8 @@
 #include "movement_pkg/nodes/walk_to_distance_action.h"
 
 
-BT::WalkToDistance::WalkToDistance(std::string name, double distance) 
-: ActionNode::ActionNode(name), WalkingController(), distance_to_walk(distance)
+BT::WalkToDistance::WalkToDistance(std::string name, double distance, bool reset)
+: ActionNode::ActionNode(name), WalkingController(), distance_to_walk(distance), reset_(reset)
 {
     type_ = BT::ACTION_NODE;
     thread_ = std::thread(&WalkToDistance::WaitForTick, this);
@@ -26,6 +26,12 @@ void BT::WalkToDistance::WaitForTick()
 
         // Perform action...
         walked_distance = 0;  // Resets in each cycle
+        if (reset_)
+        {
+            refereeChangeState.middle_field_placement = false;
+            blackboard.setTarget("middle_field_placement", refereeChangeState);
+        }
+
         while (get_status() == BT::IDLE)
         {
             set_status(BT::RUNNING);

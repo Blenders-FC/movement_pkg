@@ -74,22 +74,36 @@ void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
     4 = "alejate"
     */
 //check if previous state was the same
-    if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
-        m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
-        blackboard.setTarget("m_refereeStatus",m_refereeInfo);
-        // ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
+    // if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
+    //     m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
+    //     blackboard.setTarget("m_refereeStatus",m_refereeInfo);
+    //     // ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
 
-        return; //if so return, there is nothing to change, only update blackboard
-    }
+    //     return; //if so return, there is nothing to change, only update blackboard
+    // }
     m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
     blackboard.setTarget("m_refereeStatus",m_refereeInfo); //update blacboard
+    bool middle_field_placement_state = blackboard.getTarget("middle_field_placement")->middle_field_placement; 
 
     if (m_refereeInfo.refereeStatus == referee::STILL || m_refereeInfo.refereeStatus == referee::GET_FAR)
     {   
         ROS_COLORED_LOG("Not allowed to play by referee",CYAN, true);
-        goAction(1);
-        setModule("none");
+        //goAction(1);
+        //setModule("none");
+
+        refereeChangeState.middle_field_placement = false;
+        blackboard.setTarget("middle_field_placement", refereeChangeState);
     }
+
+    if (middle_field_placement_state != msg.robotPlayStateInt && referee_past_state == referee::STILL)
+    {
+        refereeChangeState.middle_field_placement = true;
+        blackboard.setTarget("middle_field_placement", refereeChangeState);
+    }
+
+    ROS_COLORED_LOG("middle_field_placement %d", ORANGE, true, middle_field_placement_state);
+    ROS_COLORED_LOG("referee_past_state %d", ORANGE, true, referee_past_state);
+    referee_past_state = m_refereeInfo.refereeStatus;
 
 
     //if statements to change behavior if referee changed its state

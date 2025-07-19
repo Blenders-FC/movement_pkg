@@ -18,6 +18,7 @@ struct TargetInfo {
     double pan_angle = 0.0;       // Pan angle
     int turncnt =0;
     int refereeStatus=0; //still as default value
+    bool middle_field_placement=false;
 
     void reset() {
         distance = 0.0;
@@ -25,6 +26,7 @@ struct TargetInfo {
         pan_angle = 0.0;
         turncnt =0;
         refereeStatus =0;
+        middle_field_placement=false;
     }
 };
 
@@ -50,6 +52,7 @@ private:
     TargetInfo right_goalpost;
     TargetInfo m_turncnt;
     TargetInfo m_refereeStatus;
+    TargetInfo middle_field_placement;
 };
 
 #endif // BLACKBOARD_H
