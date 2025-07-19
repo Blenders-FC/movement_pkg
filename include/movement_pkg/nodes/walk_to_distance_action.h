@@ -33,6 +33,7 @@ class WalkToDistance : public ActionNode, public WalkingController, public CBDat
 
         // Variables
         bool reset_;
+        int refereeState;
         double walked_distance = 0.0;
         double accum_rotation = 0.0;
         double prev_delta_angle = 0.0;

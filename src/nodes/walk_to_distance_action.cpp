@@ -53,9 +53,11 @@ void BT::WalkToDistance::WaitForTick()
 
 void BT::WalkToDistance::walkTowardsDistance()
 {
+     
     ROS_COLORED_LOG("dist to walk: %f", YELLOW, true, distance_to_walk);
     while (ros::ok())
     {
+        refereeState= blackboard.getTarget("m_refereeStatus")->refereeStatus;  
         ros::Time curr_time_walk = ros::Time::now();
         ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
         
@@ -77,7 +79,7 @@ void BT::WalkToDistance::walkTowardsDistance()
         double delta_distance = distance_to_walk - walked_distance;
         ROS_COLORED_LOG("walked dist: %f", ORANGE, false, walked_distance);
     
-        if (walked_distance >= distance_to_walk)
+        if (walked_distance >= distance_to_walk || refereeState == 0)
         {
             stopWalking();
             walkingSucced = true;
