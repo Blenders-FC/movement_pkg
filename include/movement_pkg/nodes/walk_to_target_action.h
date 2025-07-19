@@ -54,7 +54,8 @@ class WalkToTarget : public ActionNode, public WalkingController, public CBDataM
         const double hip_pitch_offset_ = 0.12217305; //7°
         bool walkingSucced = false;
         bool walkLimitReach = false;
-        const double walk_thresh  = 1.2;
+        double walk_thresh = 1.2;
+        const double walk_thresh_fix  = 1.2;
         std_msgs::String walk_command;
         //ros::Time prev_time_walk_ = ros::Time::now();
 };

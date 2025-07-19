@@ -83,6 +83,13 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
         double delta_distance = distance_to_walk - walked_distance;
         ROS_COLORED_LOG("walked dist: %f", ORANGE, false, walked_distance);
 
+        if (distance_to_walk > walk_thresh_fix){
+            walk_thresh = distance_to_walk*0.8;
+        }
+        else {
+            walk_thresh = walk_thresh_fix;
+        }
+
         double remaining_distance = distance_to_ball - walked_distance;
         double new_tilt = calculateTilt(remaining_distance);  // rad
     
@@ -101,13 +108,13 @@ void BT::WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt
             return;
         }
         
-        else if (walked_distance >= walk_thresh)
+/*         else if (walked_distance >= walk_thresh)
         {
             ROS_COLORED_LOG("walked dist: %f, reached threshold: %f", ORANGE, false, walked_distance, walk_thresh);
             stopWalking();
             walkLimitReach = true;
             return;
-        }
+        } */
 
         double delta_angle = head_pan_angle - accum_rotation;
 

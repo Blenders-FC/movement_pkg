@@ -40,7 +40,6 @@ void BT::SearchBallSinusoidal::WaitForTick()
             // Flow for searching ball - with sinusoidal function
             t_ += 0.1;
 
-            
             x_target_ = 60*sin(t_*1);
             y_target_ = 20*cos(t_*5) - 35;
 
