@@ -78,6 +78,7 @@ void WalkingController::setWalkingParam(double x_move, double y_move, double rot
     current_walking_param_.balance_enable = balance;
     current_walking_param_.x_move_amplitude = x_move + SPOT_FB_OFFSET_;
     current_walking_param_.y_move_amplitude = y_move + SPOT_RL_OFFSET_;
+    current_walking_param_.z_move_amplitude = Z_MOVE_AMPLITUDE + CLEAT_HEIGHT;
     current_walking_param_.angle_move_amplitude = rotation_angle + SPOT_ANGLE_OFFSET_;
 
     set_walking_param_pub_.publish(current_walking_param_);

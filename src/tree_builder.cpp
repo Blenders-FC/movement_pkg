@@ -47,8 +47,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* referee_state_entry = new BT::RefEntryCondition("RefEntryCondition");
     auto* stand_up_still = new BT::StandUp("StandUp");
     auto* stand_up_still_entry = new BT::StandUp("StandUpEntry");
-    auto* walk_to_distance = new BT::WalkToDistance("WalkToDistance", 4.5, false);
-    auto* walk_to_distance_2 = new BT::WalkToDistance("WalkToDistance2", 2, false);
+    auto* walk_to_distance = new BT::WalkToDistance("WalkToDistance", 1.0, false);
+    auto* walk_to_distance_2 = new BT::WalkToDistance("WalkToDistance2", 1, false);
     auto* ball_dir_condition = new BT::BallDirectionCondition("BallAngleCondition");
     auto* ball_dir_condition_r = new BT::BallDirectionCondition("BallAngleConditionRight");
     auto* ball_dir_condition_l = new BT::BallDirectionCondition("BallAngleConditionLeft");
