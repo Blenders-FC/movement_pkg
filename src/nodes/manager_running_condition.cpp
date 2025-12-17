@@ -73,7 +73,7 @@ bool BT::ManagerRunningCondition::checkManagerRunning(std::string& manager_name)
     return false;
 }
 
-BT_REGISTER_NODES(factory)
+extern "C" void BT_RegisterNodesFromPlugin(BT::BehaviorTreeFactory& factory)
 {
     factory.registerNodeType<BT::ManagerRunningCondition>("ManagerRunning");
 }

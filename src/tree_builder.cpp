@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     // Load BT XML
     // --------------------------------------------------
     const auto tree_xml =
-        pkg_share + "/behavior_trees/manager_check.xml";
+        pkg_share + "/behavior_trees/init_check.xml";
 
     auto tree = factory.createTreeFromFile(tree_xml);
 

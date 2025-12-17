@@ -49,6 +49,10 @@ install(TARGETS bt_executor
   DESTINATION lib/${PROJECT_NAME}
 )
 
+install(DIRECTORY behavior_trees
+  DESTINATION share/${PROJECT_NAME}
+)
+
 ament_export_include_directories(include)
 ament_export_libraries(tree_builder)
 ament_export_dependencies(rclcpp behaviortree_cpp)
