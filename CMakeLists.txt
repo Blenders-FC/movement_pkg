@@ -18,6 +18,8 @@ include_directories(
 # BT plugin
 add_library(manager_bt_plugin SHARED
   src/nodes/manager_running_condition.cpp
+  src/nodes/left_kick_action.cpp
+  src/bt_plugin_register.cpp
 )
 
 ament_target_dependencies(manager_bt_plugin
