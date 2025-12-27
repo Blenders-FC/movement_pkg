@@ -36,7 +36,7 @@ BT::NodeStatus RightKick::onRunning()
     {
         RCLCPP_INFO(node_->get_logger(), "[RightKick] Executing RIGHT KICK...");
         // Your action call here
-        // goAction(84);  
+        // goAction(83);  
         action_sent_ = true;
         
         return BT::NodeStatus::RUNNING;
