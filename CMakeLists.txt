@@ -19,6 +19,7 @@ include_directories(
 add_library(manager_bt_plugin SHARED
   src/nodes/manager_running_condition.cpp
   src/nodes/left_kick_action.cpp
+  src/nodes/right_kick_action.cpp
   src/bt_plugin_register.cpp
 )
 
