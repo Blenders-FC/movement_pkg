@@ -24,10 +24,13 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <sensor_msgs/msg/imu.hpp>
-#include "robotis_controller_msgs/srv/SetModule.h"
-#include "robotis_controller_msgs/srv/GetJointModule.h"
-#include <robotis_controller_msgs/msg/StatusMsg.h>
-//#include "movement_pkg/blackboard.h"
+#include <robotis_controller_msgs/msg/status_msg.hpp>
+
+#include "robotis_controller_msgs/srv/get_joint_module.hpp"
+#include "robotis_controller_msgs/srv/set_joint_module.hpp"
+#include "robotis_controller_msgs/srv/set_module.hpp"
+#include "robotis_controller_msgs/srv/load_offset.hpp"
+#include <behaviortree_cpp/blackboard.h>
 
 
 // ===== ANSI COLOR CODES =====
@@ -86,49 +89,45 @@
 
 class utils
 {
-protected:
-    utils()
-    {
-        node_ = rclcpp::Node::make_shared("utils");
-        robot_id = 1;
-        DEBUG_PRINT = true;
+public:
+    explicit utils(rclcpp::Node::SharedPtr node);
 
-        // Publisher
-        action_pose_pub_ = node_->create_publisher<std_msgs::msg::Int32>("action", 10);
+    virtual ~utils() = default;
 
-        // Service clients
-        set_joint_module_client_ =
-           node_->create_client<robotis_controller_msgs::srv::SetModule>("set_joint_module");
-        get_joint_module_client_ =
-           node_->create_client<robotis_controller_msgs::srv::GetJointModule>("get_joint_module");
-    }
+    //Blackboard* getBlackboard() { return &blackboard; }
 
-    void setModule(const std::string& module)
-    {
-        auto req = std::make_shared<robotis_controller_msgs::srv::SetModule::Request>();
-        req->module_name = module;
-        if (!set_joint_module_client_->wait_for_service(1s))
-        {
-            RCLCPP_ERROR(node_->get_logger(), "Service unavailable");
-            return;
-        }
-        set_joint_module_client_->async_send_request(req);
-    }
+    void setModule(const std::string& module_name);
+    std::string getModule(const std::string& joint_name);
+    void goAction(int page);
 
-    void goAction(int page)
-    {
-        std_msgs::msg::Int32 msg;
-        msg.data = page;
-        action_pose_pub_->publish(msg);
-    }
+    std::string getDataFilePath(const std::string& filename);
+    std::vector<std::vector<float>> loadPositions();
+
+    static void resetLoggedTags();
 
 protected:
     rclcpp::Node::SharedPtr node_;
     int robot_id;
-    bool DEBUG_PRINT;
+    bool DEBUG_PRINT = true;
+    //auto blackboard = BT::Blackboard::create();
 
-    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr action_pose_pub_;
+private:
+    // Service clients
     rclcpp::Client<robotis_controller_msgs::srv::SetModule>::SharedPtr set_joint_module_client_;
     rclcpp::Client<robotis_controller_msgs::srv::GetJointModule>::SharedPtr get_joint_module_client_;
+
+    // Publisher
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr action_pose_pub_;    
+    static std::unordered_map<std::string, bool> already_logged_tags_;
+    static std::unordered_map<std::string, std::pair<const char*, const char*>> color_map;
+    
+    //standing up txt
+    const int rows_ = 40;
+    const int cols_ = 6;
+    
+    std::string last_module;
+    const char* resolveColor(const std::string& color, bool bold);
+
 };
 
+#endif  // UTILS_H

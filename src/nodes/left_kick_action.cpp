@@ -16,7 +16,11 @@ LeftKick::LeftKick(
 : StatefulActionNode(name, config)
 {
     
-    node_ = rclcpp::Node::make_shared("left_kick_action");
+    //node_ = rclcpp::Node::make_shared("left_kick_action");
+    if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("LeftKick: missing [node] in blackboard");
+}
+    utils_ = std::make_shared<utils>(node_);
     RCLCPP_INFO(node_->get_logger(), "LeftKick constructed");
 }
 
@@ -37,7 +41,8 @@ BT::NodeStatus LeftKick::onRunning()
     {
         RCLCPP_INFO(node_->get_logger(), "[LeftKick] Executing LEFT KICK...");
         // Your action call here
-        // goAction(84);  
+        // goAction(84); 
+        utils_->goAction(84); 
         action_sent_ = true;
         
         return BT::NodeStatus::RUNNING;

@@ -16,6 +16,7 @@
 #include <chrono>
 #include <memory>
 #include <thread>
+#include "movement_pkg/utils.h"
 
 
 
@@ -39,6 +40,7 @@ public:
     void onHalted() override;
 private:
     rclcpp::Node::SharedPtr node_;
+    std::shared_ptr<utils> utils_;
     std::chrono::system_clock::time_point start_time_;
     bool action_sent_ = false;
     bool error_d = false;

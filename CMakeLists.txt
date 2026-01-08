@@ -8,6 +8,20 @@ find_package(ament_index_cpp REQUIRED)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
+find_package(
+    std_msgs REQUIRED
+    robotis_math REQUIRED
+    op3_walking_module_msgs REQUIRED
+)
+find_package(robotis_controller_msgs REQUIRED)
+find_package(op3_action_module_msgs REQUIRED)
+find_package(robotis_framework_common REQUIRED)
+find_package(robotis_device REQUIRED)
+
 
 # ------------------------------
 # Include directories
@@ -21,11 +35,38 @@ add_library(manager_bt_plugin SHARED
   src/nodes/left_kick_action.cpp
   src/nodes/right_kick_action.cpp
   src/bt_plugin_register.cpp
+  src/utils.cpp
 )
+
+# utils
+#add_library(utils src/utils.cpp)
+
+
+set(SHARED_LIBRARIES
+  ${catkin_LIBRARIES}
+  ${Eigen3_LIBRARIES}
+  #behavior_tree_core
+  #cb_data_manager
+  #walking_controller
+  utils
+  #fov_calculation
+  #blackboard
+  #tree_builder
+  #repeat_node
+)
+
 
 ament_target_dependencies(manager_bt_plugin
   rclcpp
+  std_msgs
+  geometry_msgs
+  sensor_msgs
+  std_srvs
   behaviortree_cpp
+  robotis_controller_msgs
+  op3_action_module_msgs
+  robotis_framework_common
+  robotis_device
 )
 
 target_include_directories(manager_bt_plugin PUBLIC

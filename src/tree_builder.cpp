@@ -20,6 +20,8 @@ int main(int argc, char **argv)
     rclcpp::init(argc, argv);
 
     auto node = rclcpp::Node::make_shared("bt_executor");
+    auto blackboard = BT::Blackboard::create();
+    blackboard->set("node", node);
 
     BT::BehaviorTreeFactory factory;
 
@@ -41,7 +43,7 @@ int main(int argc, char **argv)
     const auto tree_xml =
         pkg_share + "/behavior_trees/init_check.xml";
 
-    auto tree = factory.createTreeFromFile(tree_xml);
+    auto tree = factory.createTreeFromFile(tree_xml, blackboard);
 
     // Optional: console logger
     BT::StdCoutLogger logger(tree);

@@ -16,8 +16,19 @@
   <!-- BehaviorTree.CPP v4 -->
   <depend>behaviortree_cpp</depend>
   <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
   <depend>sensor_msgs</depend>
   <depend>ament_index_cpp</depend>
+  <depend>robotis_controller_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>eigen</depend>
+  <depend>robotis_math</depend>
+  <depend>op3_action_module_msgs</depend>
+  <depend>op3_walking_module_msgs</depend>
+
+  <exec_depend>op3_manager</exec_depend>
+
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
