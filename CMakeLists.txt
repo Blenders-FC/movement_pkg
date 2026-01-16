@@ -11,16 +11,15 @@ find_package(behaviortree_cpp REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-
-find_package(
-    std_msgs REQUIRED
-    robotis_math REQUIRED
-    op3_walking_module_msgs REQUIRED
-)
+find_package(robotis_math REQUIRED)
+find_package(op3_online_walking_module_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(robotis_controller_msgs REQUIRED)
 find_package(op3_action_module_msgs REQUIRED)
+find_package(op3_walking_module_msgs REQUIRED)
 find_package(robotis_framework_common REQUIRED)
 find_package(robotis_device REQUIRED)
+
 
 
 # ------------------------------
@@ -28,13 +27,17 @@ find_package(robotis_device REQUIRED)
 # ------------------------------
 include_directories(
   include
+  ${robotis_math_INCLUDE_DIRS}
 )
+
 # BT plugin
 add_library(manager_bt_plugin SHARED
   src/nodes/manager_running_condition.cpp
   src/nodes/left_kick_action.cpp
+  src/nodes/simple_walk_action.cpp
   src/nodes/right_kick_action.cpp
   src/bt_plugin_register.cpp
+  src/walking_controller.cpp
   src/utils.cpp
 )
 
@@ -48,7 +51,7 @@ set(SHARED_LIBRARIES
   #behavior_tree_core
   #cb_data_manager
   #walking_controller
-  utils
+  #utils
   #fov_calculation
   #blackboard
   #tree_builder
@@ -62,11 +65,15 @@ ament_target_dependencies(manager_bt_plugin
   geometry_msgs
   sensor_msgs
   std_srvs
+  robotis_math
   behaviortree_cpp
   robotis_controller_msgs
+  op3_online_walking_module_msgs
   op3_action_module_msgs
+  op3_walking_module_msgs
   robotis_framework_common
   robotis_device
+  
 )
 
 target_include_directories(manager_bt_plugin PUBLIC

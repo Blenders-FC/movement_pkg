@@ -7,6 +7,15 @@
       <!-- Your custom condition -->
       <ManagerRunning/>
       <LeftKick/>
+      <Parallel success_threshold="1" failure_threshold="1">
+
+          <SimpleWalk/>
+
+          <Timeout msec="5000">
+              <AlwaysSuccess/>
+          </Timeout>
+
+      </Parallel>
 
     </Sequence>
   </BehaviorTree>
