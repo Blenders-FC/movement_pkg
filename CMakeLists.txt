@@ -36,9 +36,11 @@ add_library(manager_bt_plugin SHARED
   src/nodes/left_kick_action.cpp
   src/nodes/simple_walk_action.cpp
   src/nodes/right_kick_action.cpp
+  src/nodes/ball_detected_condition.cpp
   src/bt_plugin_register.cpp
   src/walking_controller.cpp
   src/utils.cpp
+  src/cb_data_manager.cpp
 )
 
 # utils
