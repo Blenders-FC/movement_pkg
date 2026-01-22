@@ -21,11 +21,17 @@ SimpleWalk::SimpleWalk(
     throw BT::RuntimeError("SimpleWalk: missing [node] in blackboard");
 }
     utils_ = std::make_shared<utils>(node_);
+    walking_controller_ = std::make_shared<WalkingController>(node_);
     RCLCPP_INFO(node_->get_logger(), "SimpleWalk constructed");
 }
 
 NodeStatus SimpleWalk::onStart()
 {
+    if (!walking_controller_)
+    {
+        RCLCPP_ERROR(node_->get_logger(), "walking_controller_ is null");
+        return BT::NodeStatus::FAILURE;
+    }
     RCLCPP_INFO(node_->get_logger(), "[SimpleWalk] START");
 
     // reset action flag

@@ -7,7 +7,7 @@
 #include <movement_pkg/walking_controller.h>
 
 
-WalkingController::WalkingController() : utils()
+WalkingController::WalkingController(rclcpp::Node::SharedPtr node) : utils(node)
 {
     // Publishers
     walk_command_pub =

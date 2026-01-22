@@ -9,10 +9,18 @@ using namespace std::chrono_literals;
 
 std::unordered_map<std::string, bool> utils::already_logged_tags_;
 
+utils::utils()
+: node_(nullptr), robot_id(0)
+{
+    RCLCPP_INFO(node_->get_logger(), "utils not loaded correctly");
+}
+
 utils::utils(rclcpp::Node::SharedPtr node)
 : node_(std::move(node))
 {
-    node_->declare_parameter<int>("robot_id", 1);
+    if (!node_->has_parameter("robot_id")) {
+        node_->declare_parameter<int>("robot_id", 1);
+    }
     robot_id = node_->get_parameter("robot_id").as_int();
 
     RCLCPP_INFO(node_->get_logger(), "utils loaded, robot_id = %d", robot_id);

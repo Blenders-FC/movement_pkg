@@ -25,7 +25,7 @@ class WalkingController : public virtual utils
 {
 public:
     // Constructor
-    explicit WalkingController();
+    explicit WalkingController(rclcpp::Node::SharedPtr node);
     ~WalkingController();
 
     // External methods
