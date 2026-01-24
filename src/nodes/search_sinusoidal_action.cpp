@@ -39,7 +39,7 @@ NodeStatus SearchBallSinusoidal::onRunning()
     if (getModule("r_knee") != "direct_control_module")
             {
                 setModule("direct_control_module");
-                // ros::Duration(1).sleep(); check how to add delay
+                rclcpp::sleep_for(std::chrono::milliseconds(500));
                 // ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
                 RCLCPP_INFO(node_->get_logger(), "Set Module to direct_control_module");
             }
@@ -69,7 +69,7 @@ NodeStatus SearchBallSinusoidal::onRunning()
     }
 
     writeHeadJoint(x_target_, y_target_);
-    // ros::Duration(0.5).sleep(); check how to add delay
+    rclcpp::sleep_for(std::chrono::milliseconds(500));
     
     // ROS_SUCCESS_LOG("Searching Ball!");
     return NodeStatus::SUCCESS; // ?
