@@ -38,6 +38,7 @@ add_library(manager_bt_plugin SHARED
   src/nodes/right_kick_action.cpp
   src/nodes/ball_detected_condition.cpp
   src/nodes/search_sinusoidal_action.cpp
+  src/nodes/center_ball_YOLO_PID_action.cpp
   src/bt_plugin_register.cpp
   src/walking_controller.cpp
   src/utils.cpp
