@@ -25,6 +25,7 @@
   <depend>robotis_math</depend>
   <depend>op3_action_module_msgs</depend>
   <depend>op3_walking_module_msgs</depend>
+  <depend>humanoid_nav_msgs</depend>
 
   <exec_depend>op3_manager</exec_depend>
 

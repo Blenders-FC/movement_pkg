@@ -14,8 +14,8 @@
 #include "robotis_math/robotis_linear_algebra.h"
 #include "op3_walking_module_msgs/srv/get_walking_param.hpp"
 #include "op3_walking_module_msgs/msg/walking_param.hpp"
-//#include "humanoid_nav_msgs/srv/PlanFootsteps.h"
-//#include "humanoid_nav_msgs/msg/StepTarget.h"
+#include "humanoid_nav_msgs/srv/plan_footsteps.hpp"
+#include "humanoid_nav_msgs/msg/step_target.hpp"
 #include "op3_online_walking_module_msgs/msg/step2_d.hpp"
 #include "op3_online_walking_module_msgs/msg/step2_d_array.hpp"
 #include "movement_pkg/utils.h"
@@ -47,7 +47,7 @@ private:
     void getWalkingParam();
     bool callFootstepPlanner(double x_goal, double y_goal, double theta_goal, std::vector<op3_online_walking_module_msgs::msg::Step2D>& step_list);
     void publishFootsteps(const std::vector<op3_online_walking_module_msgs::msg::Step2D>& steps, double step_time);
-    //bool walkFootstepPlan(const std::vector<humanoid_nav_msgs::StepTarget>& plan);
+    bool walkFootstepPlan(const std::vector<humanoid_nav_msgs::msg::StepTarget>& plan);
 
     // Private ros variables
  /*    ros::ServiceClient get_param_client_;
@@ -59,7 +59,7 @@ private:
     op3_walking_module_msgs::msg::WalkingParam current_walking_param_;
 
     rclcpp::Client<op3_walking_module_msgs::srv::GetWalkingParam>::SharedPtr get_param_client_;
-    //rclcpp::Client<humanoid_nav_msgs::srv::PlanFootsteps>::SharedPtr footstep_planner_client_;
+    rclcpp::Client<humanoid_nav_msgs::srv::PlanFootsteps>::SharedPtr footstep_planner_client_;
     rclcpp::Publisher<op3_walking_module_msgs::msg::WalkingParam>::SharedPtr set_walking_param_pub_;
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr balance_enable_pub_;
     rclcpp::Publisher<op3_online_walking_module_msgs::msg::Step2DArray>::SharedPtr online_step_pub_;

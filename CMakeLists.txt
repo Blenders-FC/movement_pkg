@@ -19,6 +19,7 @@ find_package(op3_action_module_msgs REQUIRED)
 find_package(op3_walking_module_msgs REQUIRED)
 find_package(robotis_framework_common REQUIRED)
 find_package(robotis_device REQUIRED)
+find_package(humanoid_nav_msgs REQUIRED)
 
 
 
@@ -77,6 +78,7 @@ ament_target_dependencies(manager_bt_plugin
   op3_walking_module_msgs
   robotis_framework_common
   robotis_device
+  humanoid_nav_msgs
   
 )
 

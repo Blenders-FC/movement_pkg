@@ -34,7 +34,10 @@ WalkingController::WalkingController(rclcpp::Node::SharedPtr node) : utils(node)
     get_param_client_ =
         node_->create_client<op3_walking_module_msgs::srv::GetWalkingParam>(
             "/robotis_" + std::to_string(robot_id) + "/walking/get_params");
-    //footstep_planner_client_ = nh.serviceClient<humanoid_nav_msgs::PlanFootsteps>("/plan_footsteps");
+
+    footstep_planner_client_ = 
+        node_->create_client<humanoid_nav_msgs::srv::PlanFootsteps>(
+            "/robotis_" + std::to_string(robot_id) + "/plan_footsteps");
 }
 
 WalkingController::~WalkingController() {}
@@ -145,7 +148,7 @@ bool WalkingController::walkToPose(double x_goal, double y_goal, double theta_go
 {
     std::vector<op3_online_walking_module_msgs::msg::Step2D> steps;
 
-    bool success = 1; //callFootstepPlanner(x_goal, y_goal, theta_goal, steps);
+    bool success = callFootstepPlanner(x_goal, y_goal, theta_goal, steps);
     if (success) 
     {
         RCLCPP_INFO(node_->get_logger(), "Footstep plan successful. Sending footsteps to walking module...");
@@ -162,44 +165,59 @@ bool WalkingController::walkToPose(double x_goal, double y_goal, double theta_go
     }
 }
 
-/*bool WalkingController::callFootstepPlanner(double x_goal, double y_goal, double theta_goal, std::vector<op3_online_walking_module_msgs::msg::Step2D>& step_list)
+bool WalkingController::callFootstepPlanner(double x_goal, double y_goal, double theta_goal, std::vector<op3_online_walking_module_msgs::msg::Step2D>& step_list)
 {
-{
-    humanoid_nav_msgs::PlanFootsteps srv;
+    humanoid_nav_msgs::srv::PlanFootsteps srv;
 
+    if (!footstep_planner_client_->wait_for_service(std::chrono::seconds(2)))
+    {
+        RCLCPP_ERROR(node_->get_logger(),
+                     "Service /plan_footsteps not available");
+        return false;
+    }
+
+    auto request = std::make_shared<humanoid_nav_msgs::srv::PlanFootsteps::Request>();
+    
     // Set start and goal in robot-local frame
-    srv.request.start.x = 0.0;
-    srv.request.start.y = 0.0;
-    srv.request.start.theta = 0.0;
+    request->start.x = 0.0;
+    request->start.y = 0.0;
+    request->start.theta = 0.0;
 
-    srv.request.goal.x = x_goal;
-    srv.request.goal.y = y_goal;
-    srv.request.goal.theta = theta_goal;
+    request->goal.x = x_goal;
+    request->goal.y = y_goal;
+    request->goal.theta = theta_goal;
 
-    if (!footstep_planner_client_.call(srv))
+    auto future = footstep_planner_client_->async_send_request(request);
+
+    if (rclcpp::spin_until_future_complete(
+            node_, future, std::chrono::seconds(1))
+        != rclcpp::FutureReturnCode::SUCCESS)
     {
-        ROS_ERROR_LOG("Failed to call /plan_footsteps service", false);
+        RCLCPP_ERROR(node_->get_logger(), "Failed to call /plan_footsteps service");
         return false;
     }
 
-    if (!srv.response.result)
+    auto response = future.get();
+
+    if (!response->result)
     {
-        ROS_ERROR_LOG("Footstep planner returned 'false' for result", false);
+        RCLCPP_ERROR(node_->get_logger(), "Footstep planner failed to produce a plan");
+        RCLCPP_INFO(node_->get_logger(), "Footstep planner returned 'false' for result");
         return false;
     }
 
-    for (const auto& step : srv.response.footsteps)
+    for (const auto& step : response->footsteps)
     {
-        op3_online_walking_module_msgs::Step2D step_msg;
+        op3_online_walking_module_msgs::msg::Step2D step_msg;
         step_msg.step2d.x = step.pose.x;
         step_msg.step2d.y = step.pose.y;
         step_msg.step2d.theta = step.pose.theta;
 
         // Convert leg type from planner to OP3 walking module
-        if (step.leg == humanoid_nav_msgs::StepTarget::left)
+        if (step.leg == humanoid_nav_msgs::msg::StepTarget::LEFT)
             step_msg.moving_foot = 0;  // LEFT_FOOT_SWING
 
-        else if (step.leg == humanoid_nav_msgs::StepTarget::right)
+        else if (step.leg == humanoid_nav_msgs::msg::StepTarget::RIGHT)
             step_msg.moving_foot = 1;  // RIGHT_FOOT_SWING
 
         else
@@ -210,7 +228,7 @@ bool WalkingController::walkToPose(double x_goal, double y_goal, double theta_go
 
     return true;
 }
-*/
+
 void WalkingController::publishFootsteps(const std::vector<op3_online_walking_module_msgs::msg::Step2D>& steps, double step_time)
 {
     op3_online_walking_module_msgs::msg::Step2DArray msg;
@@ -221,20 +239,20 @@ void WalkingController::publishFootsteps(const std::vector<op3_online_walking_mo
 
     online_step_pub_->publish(msg);
 }
-/*
-bool WalkingController::walkFootstepPlan(const std::vector<humanoid_nav_msgs::StepTarget>& plan)
+
+bool WalkingController::walkFootstepPlan(const std::vector<humanoid_nav_msgs::msg::StepTarget>& plan)
 {
     for (size_t i = 1; i < plan.size(); ++i) {
         
-        if (plan[i].leg != humanoid_nav_msgs::StepTarget::left)
+        if (plan[i].leg != humanoid_nav_msgs::msg::StepTarget::LEFT)
             continue;  // skip if not left foot
 
         // Find the previous left foot step
         size_t prev = i - 1;
-        while (prev > 0 && plan[prev].leg != humanoid_nav_msgs::StepTarget::left)
+        while (prev > 0 && plan[prev].leg != humanoid_nav_msgs::msg::StepTarget::LEFT)
             --prev;
 
-        if (plan[prev].leg != humanoid_nav_msgs::StepTarget::left)
+        if (plan[prev].leg != humanoid_nav_msgs::msg::StepTarget::LEFT)
             continue;  // can't find previous left step, skip
 
         double dx = plan[i].pose.x - plan[prev].pose.x;
@@ -245,59 +263,67 @@ bool WalkingController::walkFootstepPlan(const std::vector<humanoid_nav_msgs::St
         double lateral = 0.0; // you can use dy if needed for sidesteps
         double angle = 0.0; //clamp(dtheta, -0.1, 0.1);        // turn slowly
 
-        ROS_COLORED_LOG("forward: %f", CYAN, false, forward);
-        ROS_COLORED_LOG("lateral: %f", CYAN, false, lateral);
-        ROS_COLORED_LOG("angle: %f", CYAN, false, angle);
+        RCLCPP_INFO(node_->get_logger(), "forward: %f", forward);
+        RCLCPP_INFO(node_->get_logger(), "lateral: %f", lateral);
+        RCLCPP_INFO(node_->get_logger(), "angle: %f", angle);
         setWalkingParam(forward, lateral, angle, true);
         startWalking(false);
-        ros::Duration(1).sleep();   // 700 ms step duration
+        rclcpp::sleep_for(std::chrono::milliseconds(700));   // 700 ms step duration
         stopWalking();
     }
     return true;
 }
-*/
 
-/*
+
+
 bool WalkingController::walkToGoalPose(double x_goal, double y_goal, double theta_goal)
 {
-    humanoid_nav_msgs::PlanFootsteps srv;
-
-    // Set the request
-    srv.request.start.x = 0.0;
-    srv.request.start.y = 0.0;
-    srv.request.start.theta = 0.0;
-
-    srv.request.goal.x = x_goal;
-    srv.request.goal.y = y_goal;
-    srv.request.goal.theta = theta_goal;
-
-    // Call the planner service
-    if (!footstep_planner_client_.call(srv)) {
-        ROS_ERROR_LOG("Failed to call /plan_footsteps service", false);
+    humanoid_nav_msgs::srv::PlanFootsteps srv;
+    if (!footstep_planner_client_->wait_for_service(std::chrono::seconds(2)))
+    {
+        RCLCPP_ERROR(node_->get_logger(),
+                     "Service /plan_footsteps not available");
         return false;
     }
+    auto request = std::make_shared<humanoid_nav_msgs::srv::PlanFootsteps::Request>();
+
+    // Set the request
+    request->start.x = 0.0;
+    request->start.y = 0.0;
+    request->start.theta = 0.0;
+
+    request->goal.x = x_goal;
+    request->goal.y = y_goal;
+    request->goal.theta = theta_goal;
+    // Call the planner service
+    auto future = footstep_planner_client_->async_send_request(request);
+    if (future.wait_for(std::chrono::seconds(2)) != std::future_status::ready) {
+        RCLCPP_ERROR(node_->get_logger(), "Failed to call /plan_footsteps service");
+        return false;
+    }
+    auto response = future.get();
 
     // Check the result
-    if (!srv.response.result) {
-        ROS_ERROR_LOG("Planner failed to produce a plan", false);
+    if (!response->result) {
+        RCLCPP_ERROR(node_->get_logger(), "Planner failed to produce a plan");
         return false;
     }
 
     // output each footstep
-    ROS_INFO("[WalkingController] Footstep Plan Output:");
-    for (size_t i = 0; i < srv.response.footsteps.size(); ++i) {
-        const auto& step = srv.response.footsteps[i];
-        const char* foot = (step.leg == humanoid_nav_msgs::StepTarget::left) ? "LEFT" : "RIGHT";
-        ROS_INFO("Step %2lu: foot=%s, x=%.3f, y=%.3f, theta=%.3f",
+    RCLCPP_INFO(node_->get_logger(), "[WalkingController] Footstep Plan Output:");
+    for (size_t i = 0; i < response->footsteps.size(); ++i) {
+        const auto& step = response->footsteps[i];
+        const char* foot = (step.leg == humanoid_nav_msgs::msg::StepTarget::LEFT) ? "LEFT" : "RIGHT";
+        RCLCPP_INFO(node_->get_logger(), "Step %2lu: foot=%s, x=%.3f, y=%.3f, theta=%.3f",
                  i, foot, step.pose.x, step.pose.y, step.pose.theta);
     }
 
     // Optionally print how many footsteps were generated
-    ROS_COLORED_LOG("Planner succeeded. Steps: %lu", CYAN, false, srv.response.footsteps.size());
+    RCLCPP_INFO(node_->get_logger(), "Planner succeeded. Steps: %lu", response->footsteps.size());
 
     // Walk the planned footsteps
-    return walkFootstepPlan(srv.response.footsteps);
+    return walkFootstepPlan(response->footsteps);
 }
-*/
+
 
 
