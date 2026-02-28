@@ -10,7 +10,7 @@ using namespace std::chrono_literals;
 std::unordered_map<std::string, bool> utils::already_logged_tags_;
 
 utils::utils()
-: node_(nullptr), robot_id(0)
+: node_(nullptr), robot_id(0), blackboard()
 {
     RCLCPP_INFO(node_->get_logger(), "utils not loaded correctly");
 }
