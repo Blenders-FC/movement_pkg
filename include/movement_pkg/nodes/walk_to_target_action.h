@@ -16,7 +16,7 @@
 
 namespace BT
 {
-class WalkToTarget : public BT::StatefulActionNode
+class WalkToTarget : public BT::StatefulActionNode, public CBDataManager
 {
     public:
         // Constructor
@@ -60,7 +60,9 @@ class WalkToTarget : public BT::StatefulActionNode
         bool walkingSucced = false;
         bool walkLimitReach = false;
         const double walk_thresh  = 0.80;
+        bool error_d = false;
         std_msgs::msg::String walk_command;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr walk_command_pub_;
         //ros::Time prev_time_walk_ = ros::Time::now();
 };
 }  // namespace BT

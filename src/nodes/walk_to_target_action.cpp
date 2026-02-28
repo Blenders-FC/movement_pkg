@@ -19,7 +19,7 @@ WalkToTarget::WalkToTarget(
     utils_ = std::make_shared<utils>(node_);
     walking_controller_ = std::make_shared<WalkingController>(node_);
     RCLCPP_INFO(node_->get_logger(), "WalkToTarget constructed");
-    write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 10);    
+    write_joint_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 10);    
 
 }
 
@@ -71,18 +71,18 @@ void WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_ang
 {
     double distance_to_ball = calculateDistance(head_tilt_angle);
     RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] dist to ball: %f   ang to ball: %f", distance_to_ball, head_pan_angle);
-    while (ros::ok())
+    while (rclcpp::ok())
     {
-        ros::Time curr_time_walk = ros::Time::now();
-        ros::Duration dur_walk = curr_time_walk - prev_time_walk_;
-        
-        if (dur_walk.toSec() == curr_time_walk.toSec())
+        rclcpp::Time curr_time_walk = node_->get_clock()->now();
+        rclcpp::Duration dur_walk = curr_time_walk - prev_time_walk_;
+
+        if (dur_walk.seconds() == curr_time_walk.seconds())
         {
             prev_time_walk_ = curr_time_walk;
             return;
         }
 
-        double delta_time_walk = dur_walk.toSec();
+        double delta_time_walk = dur_walk.seconds();
         prev_time_walk_ = curr_time_walk;
     
         if (distance_to_ball < 0)
@@ -92,21 +92,21 @@ void WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_ang
     
         double distance_to_walk = distance_to_ball - distance_to_kick_;
         double delta_distance = distance_to_walk - walked_distance;
-        ROS_COLORED_LOG("walked dist: %f", ORANGE, false, walked_distance);
+        RCLCPP_INFO(node_->get_logger(), "walked dist: %f", walked_distance);
 
         double remaining_distance = distance_to_ball - walked_distance;
         double new_tilt = calculateTilt(remaining_distance);  // rad
     
         if (walked_distance >= distance_to_walk)
         {
-            stopWalking();
+            walking_controller_->stopWalking();
             walkingSucced = true;
             writeHeadJoint(new_tilt);
             return;
         }
         else if (walked_distance >= walk_thresh)
         {
-            stopWalking();
+            walking_controller_->stopWalking();
             walkLimitReach = true;
             writeHeadJoint(new_tilt);
             return;
@@ -114,8 +114,8 @@ void WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_ang
         
         else if (walked_distance >= walk_thresh)
         {
-            ROS_COLORED_LOG("walked dist: %f, reached threshold: %f", ORANGE, false, walked_distance, walk_thresh);
-            stopWalking();
+            RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] walked dist: %f, reached threshold: %f", walked_distance, walk_thresh);
+            walking_controller_->stopWalking();
             walkLimitReach = true;
             return;
         }
@@ -137,20 +137,19 @@ void WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_ang
         // std::cout << current_x_move_ << std::endl;
         // std::cout << delta_time_walk << std::endl;
     
-        calcFootstep(delta_distance, delta_angle, delta_time_walk, fb_move, rl_angle);  // pan = 0
-        ROS_COLORED_LOG("curr dist to ball: %f   curr ang to ball: %f", CYAN, false, delta_distance, delta_angle);
+        walking_controller_->calcFootstep(delta_distance, delta_angle, delta_time_walk, fb_move, rl_angle);  // pan = 0
+        RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] curr dist to ball: %f   curr ang to ball: %f", delta_distance, delta_angle);
 
         walked_distance += fabs(fb_move);
         accum_rotation += rl_angle;
-        setWalkingParam(fb_move, 0, rl_angle, true);
+        walking_controller_->setWalkingParam(fb_move, 0, rl_angle, true);
         
-        std_msgs::String command_msg;
+        std_msgs::msg::String command_msg;
         command_msg.data = "start";
-        walk_command_pub.publish(command_msg);
-        ros::Duration(0.1).sleep();
+        walk_command_pub_->publish(command_msg);
+        rclcpp::sleep_for(std::chrono::milliseconds(100));
     }
-    ROS_ERROR_LOG("ROS stopped unexpectedly", false);
-    set_status(BT::FAILURE);
+    RCLCPP_ERROR(node_->get_logger(), "[WalkToTarget] ROS stopped unexpectedly");
 }
 
 double WalkToTarget::calculateDistance(double head_tilt)
@@ -167,22 +166,25 @@ double WalkToTarget::calculateTilt(double remaining_distance)
 
 void WalkToTarget::writeHeadJoint(double ang_value)
 {
-    if (getModule("r_knee") != "none")
+    if (this->getModule("r_knee") != "none")
     {
-        setModule("none");
-        ros::Duration(1).sleep();
-        ROS_COLORED_LOG("Set Module to none", YELLOW, false);
+        this->setModule("none");
+        rclcpp::sleep_for(std::chrono::seconds(1));
+        RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] Set Module to none");
     }
-    write_msg_.header.stamp = ros::Time::now();
+    write_msg_.header.stamp = rclcpp::Time(0, 0, RCL_ROS_TIME);
         
     // ang_value *= 0.0174533;  // DegToRad -> pi/180
   
     if (ang_value >= 0.34906) ang_value = 0.34906;        //20 deg
     else if (ang_value <= -1.2217) ang_value = -1.2217;   //-70 deg
+    
+    write_msg_.name.clear();
+    write_msg_.position.clear();
     write_msg_.name.push_back("head_tilt");
     write_msg_.position.push_back(ang_value);
 
-    write_joint_pub_.publish(write_msg_);
+    write_joint_pub_->publish(write_msg_);
 }
 
 

@@ -106,7 +106,7 @@ public:
     static void resetLoggedTags();
 
 protected:  
-    utils();
+    //utils();
     rclcpp::Node::SharedPtr node_;
     int robot_id;
     bool DEBUG_PRINT = true;
