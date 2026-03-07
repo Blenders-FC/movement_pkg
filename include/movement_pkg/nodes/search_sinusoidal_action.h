@@ -10,6 +10,7 @@
 #define SEARCH_BALL_SINUSOIDAL_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
+#include "movement_pkg/utils.h"
 #include "behaviortree_cpp/action_node.h"
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -41,6 +42,8 @@ class SearchBallSinusoidal : public BT::StatefulActionNode, public CBDataManager
     private:
         // Helper to send joint commands
         void writeHeadJoint(double ang_valueX, double ang_valueY);
+        std::shared_ptr<utils> utils_;
+        rclcpp::Node::SharedPtr node_;
 
         // ROS publisher
         //ros::Publisher write_joint_pub_;
@@ -70,6 +73,7 @@ class SearchBallSinusoidal : public BT::StatefulActionNode, public CBDataManager
 
         // JointState messages for publishing (use local msg in function instead)
         sensor_msgs::msg::JointState write_msg;
+        int robot_id = utils_->robot_id;
 };
 }  // namespace BT
 

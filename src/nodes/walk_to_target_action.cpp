@@ -14,11 +14,12 @@ WalkToTarget::WalkToTarget(
 {
         //node_ = rclcpp::Node::make_shared("simple_walk_action");
     if (!config.blackboard->get("node", node_)) {
-    throw BT::RuntimeError("SimpleWalk: missing [node] in blackboard");
+    throw BT::RuntimeError("WalkToTarget: missing [node] in blackboard");
 }
     utils_ = std::make_shared<utils>(node_);
     walking_controller_ = std::make_shared<WalkingController>(node_);
     RCLCPP_INFO(node_->get_logger(), "WalkToTarget constructed");
+    robot_id = utils_->robot_id;
     write_joint_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/set_joint_states", 10);    
 
 }
@@ -166,9 +167,9 @@ double WalkToTarget::calculateTilt(double remaining_distance)
 
 void WalkToTarget::writeHeadJoint(double ang_value)
 {
-    if (this->getModule("r_knee") != "none")
+    if (utils_->getModule("r_knee") != "none")
     {
-        this->setModule("none");
+        utils_->setModule("none");
         rclcpp::sleep_for(std::chrono::seconds(1));
         RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] Set Module to none");
     }

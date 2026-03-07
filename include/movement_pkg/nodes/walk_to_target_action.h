@@ -64,6 +64,7 @@ class WalkToTarget : public BT::StatefulActionNode, public CBDataManager
         std_msgs::msg::String walk_command;
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr walk_command_pub_;
         //ros::Time prev_time_walk_ = ros::Time::now();
+        int robot_id;
 };
 }  // namespace BT
 

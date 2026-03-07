@@ -7,14 +7,17 @@
 #include "movement_pkg/cb_data_manager.h"
 
 // Private constructor (subscribes to topic)
-CBDataManager::CBDataManager(const rclcpp::NodeOptions& options) : rclcpp::Node("cb_data_manager", options), utils(), imu_orientation_(1, 0, 0, 0)  // Default identity quaternion | This definition save computation
-{
-    // Subscribers
+CBDataManager::CBDataManager(const rclcpp::NodeOptions& options) : rclcpp::Node("cb_data_manager", options), imu_orientation_(1, 0, 0, 0)  // Default identity quaternion | This definition save computation
+{   
+    if (!this->has_parameter("robot_id")) {
+        this->declare_parameter<int>("robot_id", 1);
+    }
+    robot_id = this->get_parameter("robot_id").as_int();
 
     const std::string prefix = "/robotis_" + std::to_string(robot_id);
 
     ball_sub_ = this->create_subscription<geometry_msgs::msg::Point>(
-	prefix + "/ball_center)", 
+	prefix + "/ball_center", 
 	10, 
 	std::bind(&CBDataManager::ballCenterCallback, this, std::placeholders::_1));
 
@@ -43,6 +46,9 @@ CBDataManager::CBDataManager(const rclcpp::NodeOptions& options) : rclcpp::Node(
       10,
       std::bind(&CBDataManager::statusCallback, this, std::placeholders::_1));
 }
+void CBDataManager::init() {
+  utils_ = std::make_shared<utils>(this->shared_from_this());
+}
 
 // [============================== CALLBACKS ==============================]
 
@@ -69,17 +75,17 @@ void CBDataManager::imuCallback(const sensor_msgs::msg::Imu::ConstPtr& msg)
     // std::cout << present_pitch_ << std::endl;
     if (present_pitch_ > FALL_FORWARD_LIMIT) 
     {
-        goAction(122);
-        setModule("none");
+        utils_->goAction(122);
+        utils_->setModule("none");
     } 
     else if (present_pitch_ < FALL_BACK_LIMIT) 
     {
-        goAction(1);
-        setModule("none");
+        utils_->goAction(1);
+        utils_->setModule("none");
         //ros::Duration(1.0).sleep();
         rclcpp::sleep_for(std::chrono::seconds(1));
-        goAction(82);
-        setModule("none");
+        utils_->goAction(82);
+        utils_->setModule("none");
     }
 }
 

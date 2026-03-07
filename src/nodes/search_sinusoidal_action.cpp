@@ -20,11 +20,14 @@ SearchBallSinusoidal::SearchBallSinusoidal(
     //type_ = BT::ACTION_NODE;
     //write_joint_pub_ = nh.advertise<sensor_msgs::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
     //thread_ = std::thread(&SearchBallSinusoidal::WaitForTick, this);
-	node_ = rclcpp::Node::make_shared("search_sinusoidal_action");
+	
+    if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("SimpleWalk: missing [node] in blackboard");
+}
+    utils_ = std::make_shared<utils>(node_);
     RCLCPP_INFO(node_->get_logger(), "SearchSinusoidal constructed");
     write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 10);
 }
-
 BT::SearchBallSinusoidal::~SearchBallSinusoidal() {}
 
 NodeStatus SearchBallSinusoidal::onStart()
@@ -36,9 +39,9 @@ NodeStatus SearchBallSinusoidal::onStart()
 
 NodeStatus SearchBallSinusoidal::onRunning()
 {
-    if (getModule("r_knee") != "direct_control_module")
+    if (utils_->getModule("r_knee") != "direct_control_module")
             {
-                setModule("direct_control_module");
+                utils_->setModule("direct_control_module");
                 rclcpp::sleep_for(std::chrono::milliseconds(500));
                 // ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
                 RCLCPP_INFO(node_->get_logger(), "Set Module to direct_control_module");

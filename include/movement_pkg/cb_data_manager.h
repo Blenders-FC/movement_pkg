@@ -17,11 +17,11 @@ enum referee{
 
 };
 
-class CBDataManager : public virtual utils, public rclcpp::Node
+class CBDataManager : public rclcpp::Node
 {
 public:
     CBDataManager(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());  // Constructor
-
+    void init();
     // External functions
     geometry_msgs::msg::Point getBallPosition();
     double getRobotPitch();
@@ -30,6 +30,9 @@ public:
     // int getRefereeState();
     bool getStartButtonState();
     std::pair<std::string, std::string> getRobotStatus();
+    rclcpp::Node::SharedPtr node_;
+    std::shared_ptr<utils> utils_;
+    int robot_id;
 
 private:
 
