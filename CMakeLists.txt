@@ -43,6 +43,7 @@ add_library(manager_bt_plugin SHARED
   src/nodes/choose_kick_foot_condition.cpp
   src/nodes/send_head_to_home_action.cpp
   src/nodes/send_head_to_home_reset.cpp
+  src/nodes/stand_up_action.cpp
   src/bt_plugin_register.cpp
   src/walking_controller.cpp
   src/utils.cpp
