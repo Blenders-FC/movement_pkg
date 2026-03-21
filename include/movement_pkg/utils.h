@@ -31,7 +31,7 @@
 #include "robotis_controller_msgs/srv/set_module.hpp"
 #include "robotis_controller_msgs/srv/load_offset.hpp"
 #include <behaviortree_cpp/blackboard.h>
-#include "movement_pkg/blackboard.h"
+//#include "movement_pkg/blackboard.h"
 
 
 // ===== ANSI COLOR CODES =====
@@ -95,7 +95,7 @@ public:
 
     virtual ~utils() = default;
 
-    Blackboard* getBlackboard() { return &blackboard; }
+    //Blackboard* getBlackboard() { return &blackboard; }
 
     void setModule(const std::string& module_name);
     std::string getModule(const std::string& joint_name);
@@ -111,7 +111,7 @@ protected:
     rclcpp::Node::SharedPtr node_;
     int robot_id;
     bool DEBUG_PRINT = true;
-    Blackboard blackboard;
+    //Blackboard blackboard;
     template <typename T>
         T clamp(T val, T min_val, T max_val)
         {
