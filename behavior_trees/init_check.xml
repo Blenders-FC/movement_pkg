@@ -6,6 +6,7 @@
 
       <!-- Your custom condition -->
       <ManagerRunning/>
+      <StandUp/>
       <LeftKick/>
       <Parallel success_count="1" failure_count="1">
 
