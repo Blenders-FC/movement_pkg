@@ -31,6 +31,7 @@
 #include "robotis_controller_msgs/srv/set_module.hpp"
 #include "robotis_controller_msgs/srv/load_offset.hpp"
 #include <behaviortree_cpp/blackboard.h>
+//#include "movement_pkg/blackboard.h"
 
 
 // ===== ANSI COLOR CODES =====
@@ -111,7 +112,7 @@ protected:
     rclcpp::Node::SharedPtr node_;
     
     bool DEBUG_PRINT = true;
-    //auto blackboard = BT::Blackboard::create();
+    //Blackboard blackboard;
     template <typename T>
         T clamp(T val, T min_val, T max_val)
         {
