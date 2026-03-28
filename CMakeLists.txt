@@ -47,6 +47,7 @@ add_library(manager_bt_plugin SHARED
   src/nodes/robot_fallen_condition.cpp
   src/nodes/manager_done_condition.cpp
   src/nodes/start_button_condition.cpp
+  src/nodes/get_up_combined_action.cpp
   src/bt_plugin_register.cpp
   src/walking_controller.cpp
   src/utils.cpp
