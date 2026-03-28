@@ -31,25 +31,22 @@ NodeStatus HeadToHomeReset::onStart()
 
 NodeStatus BT::HeadToHomeReset::onRunning()
 {
+    RCLCPP_INFO(node_->get_logger(), "[HeadToHomeReset] Set Module to direct_control_module");
 
-    // set_status(BT::RUNNING);
     setModule("direct_control_module");
     rclcpp::sleep_for(std::chrono::milliseconds(1000));
-    //ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
-    RCLCPP_INFO(node_->get_logger(), "[HeadToHomeReset] Set Module to direct_control_module");
 
     writeHeadJoint(0, true);
     writeHeadJoint(-10, false);
-    //ROS_COLORED_LOG("New tilt angle position from head2home: %f", TEAL, false, -10);
-    RCLCPP_INFO(node_->get_logger(), "[HeadToHome] New tilt angle position from head2home: %d", -10);
+
     rclcpp::sleep_for(std::chrono::milliseconds(2000));
 
-    //ROS_SUCCESS_LOG("Head in home position! Resetting Counter");
     RCLCPP_INFO(node_->get_logger(), "[HeadToHome] Head in home position! Resetting Counter");
-    m_turncnt.turncnt = 0;
-    getBlackboard()->setTarget("m_turncnt", m_turncnt);
-    return NodeStatus::SUCCESS;
 
+    m_turncnt.turncnt = 0;
+    config().blackboard->set("m_turncnt", m_turncnt);
+
+    return NodeStatus::SUCCESS;
 }
 
 void BT::HeadToHomeReset::writeHeadJoint(double ang_value, bool is_pan)

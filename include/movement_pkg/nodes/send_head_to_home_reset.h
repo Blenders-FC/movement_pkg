@@ -29,6 +29,11 @@ class HeadToHomeReset : public StatefulActionNode, public CBDataManager
         void onHalted() override;
 
     private:
+
+        struct TargetInfo
+        {
+        int turncnt;
+        };
         //  Auxiliar methods
         void writeHeadJoint(double ang_value, bool is_pan);
 

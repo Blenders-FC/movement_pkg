@@ -43,7 +43,7 @@ add_library(manager_bt_plugin SHARED
   src/nodes/walk_to_target_action.cpp
   src/nodes/choose_kick_foot_condition.cpp
   src/nodes/send_head_to_home_action.cpp
-  #src/nodes/send_head_to_home_reset.cpp
+  src/nodes/send_head_to_home_reset.cpp
   src/nodes/stand_up_action.cpp
   src/nodes/robot_fallen_condition.cpp
   src/nodes/manager_done_condition.cpp
