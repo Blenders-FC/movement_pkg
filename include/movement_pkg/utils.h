@@ -105,11 +105,12 @@ public:
     std::vector<std::vector<float>> loadPositions();
 
     static void resetLoggedTags();
+    int robot_id;
 
 protected:  
     utils();
     rclcpp::Node::SharedPtr node_;
-    int robot_id;
+    
     bool DEBUG_PRINT = true;
     //Blackboard blackboard;
     template <typename T>

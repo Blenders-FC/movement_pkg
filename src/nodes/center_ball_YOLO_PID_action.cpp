@@ -17,7 +17,7 @@ CenterBallYOLOPID::CenterBallYOLOPID(
 {
     node_ = rclcpp::Node::make_shared("center_ball_YOLO_PID_action");
     RCLCPP_INFO(node_->get_logger(), "CenterBallYOLOPID constructed");
-    write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 10);    
+    write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(utils_->robot_id) + "/direct_control/set_joint_states", 10);    
 }
 
 BT::CenterBallYOLOPID::~CenterBallYOLOPID() {}
@@ -88,9 +88,9 @@ NodeStatus BT::CenterBallYOLOPID::onRunning()
 
 void BT::CenterBallYOLOPID::writeHeadJoint(double ang_valueX, double ang_valueY, bool ang_in_rad)
 {
-    if (getModule("head_tilt") != "direct_control_module")
+    if (utils_->getModule("head_tilt") != "direct_control_module")
     {
-        setModule("direct_control_module");
+        utils_->setModule("direct_control_module");
         rclcpp::sleep_for(std::chrono::seconds(1));
         RCLCPP_INFO(node_->get_logger(), "Set Module to direct_control_module");
     }

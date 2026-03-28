@@ -8,6 +8,7 @@
 #define CENTER_BALL_YOLO_PID_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
+#include "movement_pkg/utils.h"
 #include <behaviortree_cpp/action_node.h>
 #include <sensor_msgs/msg/joint_state.h>
 #include <geometry_msgs/msg/point.h>
@@ -47,6 +48,8 @@ class CenterBallYOLOPID : public BT::StatefulActionNode, public CBDataManager
         // double clamp(double value, double min_value, double max_value);
         // void resetPID();
 
+        rclcpp::Node::SharedPtr node_;
+        std::shared_ptr<utils> utils_;
         // ROS
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr write_joint_pub_;
 
@@ -76,6 +79,7 @@ class CenterBallYOLOPID : public BT::StatefulActionNode, public CBDataManager
         double yerror_;
         double deg_to_rad = 0.0174533;      // M_PI / 180;
         double error_limit_ = 0.0523599;    // 3°
+        int robot_id = utils_->robot_id;
 
         sensor_msgs::msg::JointState write_msg_;
 };

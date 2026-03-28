@@ -13,8 +13,12 @@ BT::BallDetectedCondition::BallDetectedCondition(
 		const std::string &name, 
 		const BT::NodeConfig& config
 		) 
-: BT::ConditionNode(name, config) {
-	node_ = rclcpp::Node::make_shared("ball_detected_condition");
+: BT::ConditionNode(name, config)
+{
+	if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("BallDetected: missing [node] in blackboard");
+}
+    utils_ = std::make_shared<utils>(node_);
 }
 
 BT::NodeStatus BT::BallDetectedCondition::tick()
