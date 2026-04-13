@@ -14,6 +14,7 @@
 
 // Include custom nodes
 #include "nodes/ball_detected_condition.h"
+#include "nodes/ball_detected_condition2.h"
 #include "nodes/ball_direction_condition.h"
 #include "nodes/ball_in_center_condition.h"
 #include "nodes/center_ball_Viola_Jones_action.h"

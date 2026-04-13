@@ -14,6 +14,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* is_start_button = new BT::StartButtonCondition("IsStartButton");
     auto* stand_up = new BT::StandUp("StandUp");
     auto* ball_detected = new BT::BallDetectedCondition("BallDetected");
+    auto* ball_detected_2 = new BT::BallDetectedCondition2("BallDetected2");
     auto* search_ball = new BT::SearchBallSinusoidal("SearchBallSinusoidal");
     auto* center_ball = new BT::CenterBallYOLOPID("CenterBallYOLOPID");
     auto* walk_to_target = new BT::WalkToTarget("WalkToTarget");
@@ -40,6 +41,7 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     auto* timer_entry = new BT::TimerCondition("TimerCondition", 10.0);  // 5 secs
     auto* timer = new BT::TimerCondition("Timer", 30.0);  // 5 secs
     auto* turn_right_entry = new BT::TurnRight("TurnRightEntry", 6);
+    auto* timer_debug = new BT::TimerCondition("TimerDebug", 2.0);
     //referee entry conditiomn
     auto* ref_entry_condition = new BT::RefEntryCondition("RefEntryCondition");
     auto* timer_condition2 = new BT::TimerCondition("TimerCondition2", 5.0);  // 5 secs
@@ -170,6 +172,8 @@ BT::ControlNode* BT::TreeBuilder::BuildTree()
     ball_found_sequence->AddChild(center_ball);
     ball_found_sequence->AddChild(walk_straight_to_ball);
     ball_found_sequence->AddChild(walk_to_target);
+    ball_found_sequence->AddChild(timer_debug);
+    ball_found_sequence->AddChild(ball_detected_2);
     ball_found_sequence->AddChild(fallback_kick_selector);
 
     

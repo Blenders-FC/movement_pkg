@@ -25,6 +25,7 @@ void CBDataManager::ballCenterCallback(const geometry_msgs::Point& msg)
 {
     ball_position_.x = msg.x; // 320) - 1;
     ball_position_.y = msg.y; // 240) - 1;
+    ball_position_.z = msg.z; // confidence
 }
 
 // Updating IMU state

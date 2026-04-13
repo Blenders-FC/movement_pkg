@@ -75,7 +75,7 @@ class CenterBallYOLOPID : public ActionNode, public CBDataManager
         double xerror_;
         double yerror_;
         double deg_to_rad = 0.0174533;      // M_PI / 180;
-        double error_limit_ = 0.0523599;    // 3°
+        double error_limit_ = 0.0523599*2;    // 3°
 
         sensor_msgs::JointState write_msg_;
 };
