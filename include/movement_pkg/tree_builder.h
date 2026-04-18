@@ -14,6 +14,7 @@
 
 // Include custom nodes
 #include "nodes/ball_detected_condition.h"
+#include "nodes/ball_detected_condition2.h"
 #include "nodes/ball_direction_condition.h"
 #include "nodes/ball_in_center_condition.h"
 #include "nodes/center_ball_Viola_Jones_action.h"
@@ -33,6 +34,7 @@
 #include "nodes/online_walk_to_target_action.h"
 #include "nodes/penalty_kick_action.h"
 #include "nodes/right_kick_action.h"
+#include "nodes/right_long_kick_action.h"
 #include "nodes/robot_fallen_condition.h"
 #include "nodes/search_ball_action.h"
 #include "nodes/search_sinusoidal_action.h"

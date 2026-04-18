@@ -50,6 +50,8 @@ class WalkToTarget : public ActionNode, public WalkingController, public CBDataM
         double rl_angle;
         double distance_to_walk;
         const double distance_to_kick_ = -0.1; //0.0;  // 0.30;  // 0.22
+        /*Para el portero*/
+        //const double distance_to_kick_ = -1; //0.0;  // 0.30;  // 0.22
         const double CAMERA_HEIGHT_ = 0.46;
         const double hip_pitch_offset_ = 0.12217305; //7°
         bool walkingSucced = false;

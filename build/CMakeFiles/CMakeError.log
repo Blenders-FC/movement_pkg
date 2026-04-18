@@ -1,0 +1,396 @@
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9b185/fast && /usr/bin/make -f CMakeFiles/cmTC_9b185.dir/build.make CMakeFiles/cmTC_9b185.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9b185.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_9b185.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_9b185
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9b185.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_9b185.dir/testCCompiler.c.o  -o cmTC_9b185 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_9b185.dir/build.make:87: cmTC_9b185] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_9b185/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_910f7/fast && /usr/bin/make -f CMakeFiles/cmTC_910f7.dir/build.make CMakeFiles/cmTC_910f7.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_910f7.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_910f7.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_910f7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_910f7.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_910f7.dir/testCCompiler.c.o  -o cmTC_910f7 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_910f7.dir/build.make:87: cmTC_910f7] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_910f7/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_2f70a/fast && /usr/bin/make -f CMakeFiles/cmTC_2f70a.dir/build.make CMakeFiles/cmTC_2f70a.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_2f70a.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_2f70a.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_2f70a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2f70a.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_2f70a.dir/testCCompiler.c.o  -o cmTC_2f70a 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_2f70a.dir/build.make:87: cmTC_2f70a] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_2f70a/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_3bf35/fast && /usr/bin/make -f CMakeFiles/cmTC_3bf35.dir/build.make CMakeFiles/cmTC_3bf35.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3bf35.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_3bf35.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_3bf35
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3bf35.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_3bf35.dir/testCCompiler.c.o  -o cmTC_3bf35 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_3bf35.dir/build.make:87: cmTC_3bf35] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_3bf35/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_dfed3/fast && /usr/bin/make -f CMakeFiles/cmTC_dfed3.dir/build.make CMakeFiles/cmTC_dfed3.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_dfed3.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_dfed3.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_dfed3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dfed3.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_dfed3.dir/testCCompiler.c.o  -o cmTC_dfed3 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_dfed3.dir/build.make:87: cmTC_dfed3] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_dfed3/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e3a80/fast && /usr/bin/make -f CMakeFiles/cmTC_e3a80.dir/build.make CMakeFiles/cmTC_e3a80.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e3a80.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_e3a80.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_e3a80
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e3a80.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_e3a80.dir/testCCompiler.c.o  -o cmTC_e3a80 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_e3a80.dir/build.make:87: cmTC_e3a80] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_e3a80/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_70526/fast && /usr/bin/make -f CMakeFiles/cmTC_70526.dir/build.make CMakeFiles/cmTC_70526.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_70526.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_70526.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_70526
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_70526.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_70526.dir/testCCompiler.c.o  -o cmTC_70526 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_70526.dir/build.make:87: cmTC_70526] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_70526/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_1f690/fast && /usr/bin/make -f CMakeFiles/cmTC_1f690.dir/build.make CMakeFiles/cmTC_1f690.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1f690.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_1f690.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_1f690
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1f690.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_1f690.dir/testCCompiler.c.o  -o cmTC_1f690 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_1f690.dir/build.make:87: cmTC_1f690] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_1f690/fast] Error 2
+
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/clang-cl-10 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Determining if the C compiler works failed with the following output:
+Change Dir: /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e4bfc/fast && /usr/bin/make -f CMakeFiles/cmTC_e4bfc.dir/build.make CMakeFiles/cmTC_e4bfc.dir/build
+make[1]: Entering directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e4bfc.dir/testCCompiler.c.o
+/usr/bin/clang-cl-10    -o CMakeFiles/cmTC_e4bfc.dir/testCCompiler.c.o   -c /home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_e4bfc
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e4bfc.dir/link.txt --verbose=1
+/usr/bin/clang-cl-10      -rdynamic CMakeFiles/cmTC_e4bfc.dir/testCCompiler.c.o  -o cmTC_e4bfc 
+clang: warning: unknown argument ignored in clang-cl: '-rdynamic' [-Wunknown-argument]
+clang: warning: unable to find a Visual Studio installation; try running Clang from a developer command prompt [-Wmsvc-not-found]
+clang: error: unable to execute command: Executable "link.exe" doesn't exist!
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[1]: *** [CMakeFiles/cmTC_e4bfc.dir/build.make:87: cmTC_e4bfc] Error 1
+make[1]: Leaving directory '/home/blenders/catkin_ws/src/movement_pkg/build/CMakeFiles/CMakeTmp'
+make: *** [Makefile:121: cmTC_e4bfc/fast] Error 2
+
+
+
