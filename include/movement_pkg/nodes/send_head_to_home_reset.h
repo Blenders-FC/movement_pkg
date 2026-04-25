@@ -36,6 +36,9 @@ class HeadToHomeReset : public StatefulActionNode, public CBDataManager
         };
         //  Auxiliar methods
         void writeHeadJoint(double ang_value, bool is_pan);
+        std::shared_ptr<utils> utils_;
+        rclcpp::Node::SharedPtr node_;
+        int robot_id = utils_->robot_id;
 
         // ROS variable
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr write_joint_pub_;

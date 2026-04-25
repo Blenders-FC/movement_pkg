@@ -7,14 +7,22 @@
 #define BT_PLUGIN_REGISTER_H
 
 
-#include "movement_pkg/nodes/manager_running_condition.h"
+#include "movement_pkg/nodes/ball_detected_condition.h"
+#include "movement_pkg/nodes/center_ball_YOLO_PID_action.h"
+#include "movement_pkg/nodes/choose_kick_foot_condition.h"
+#include "movement_pkg/nodes/get_up_combined_action.h"
 #include "movement_pkg/nodes/left_kick_action.h"
+#include "movement_pkg/nodes/manager_running_condition.h"
+#include "movement_pkg/nodes/manager_done_condition.h"
+#include "movement_pkg/nodes/right_kick_action.h"
+#include "movement_pkg/nodes/robot_fallen_condition.h"
+#include "movement_pkg/nodes/search_sinusoidal_action.h"
+#include "movement_pkg/nodes/send_head_to_home_action.h"
+#include "movement_pkg/nodes/send_head_to_home_reset.h"
 #include "movement_pkg/nodes/simple_walk_action.h"
-#include "movement_pkg/nodes/walk_to_target_action.h"
-//#include "movement_pkg/nodes/ball_detected_condition.h"
-//#include "movement_pkg/nodes/search_sinusoidal_action.h"
-//#include "movement_pkg/nodes/center_ball_YOLO_PID_action.h"
 #include "movement_pkg/nodes/stand_up_action.h"
+#include "movement_pkg/nodes/start_button_condition.h"
+#include "movement_pkg/nodes/walk_to_target_action.h"
 #include <behaviortree_cpp/bt_factory.h>
 
 #endif  // LEFT_KICK_ACTION_H

@@ -16,7 +16,10 @@ GetUpCombined::GetUpCombined(
 {
     //type_ = BT::ACTION_NODE;
     //thread_ = std::thread(&GetUpCombined::WaitForTick, this);
-    node_ = rclcpp::Node::make_shared("get_up_combined_action");
+    if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("GetUpCombined: missing [node] in blackboard");
+}
+    utils_ = std::make_shared<utils>(node_);
     RCLCPP_INFO(node_->get_logger(), "GetUpCombined constructed");
 }
 
@@ -40,7 +43,7 @@ NodeStatus BT::GetUpCombined::onRunning()
 
 
 
-            goAction(1);  // straighten legs
+            utils_->goAction(1);  // straighten legs
             rclcpp::sleep_for(std::chrono::milliseconds(500));
 
             pitch = getRobotPitch();
@@ -54,7 +57,7 @@ NodeStatus BT::GetUpCombined::onRunning()
             if (present_pitch_ > FALL_FORWARD_LIMIT)
             {
                 RCLCPP_INFO(node_->get_logger(), "Forward fall detected with pitch: %f", present_pitch_);
-                goAction(122);  // get up forward
+                utils_->goAction(122);  // get up forward
                 rclcpp::sleep_for(std::chrono::seconds(1));
 
                 RCLCPP_INFO(node_->get_logger(), "Get up forwards action");
@@ -64,7 +67,7 @@ NodeStatus BT::GetUpCombined::onRunning()
             else if (present_pitch_ < FALL_BACKWARDS_LIMIT) 
             {
                 RCLCPP_INFO(node_->get_logger(), "Backwards fall detected with pitch: %f", present_pitch_);
-                goAction(82);  // get up forward
+                utils_->goAction(82);  // get up forward
                 rclcpp::sleep_for(std::chrono::seconds(1));
 
                 RCLCPP_INFO(node_->get_logger(), "Get up backwards action");

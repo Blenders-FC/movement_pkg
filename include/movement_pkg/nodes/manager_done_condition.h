@@ -18,11 +18,13 @@ class ManagerDoneCondition : public ConditionNode, public CBDataManager
     public:
         explicit ManagerDoneCondition(const std::string &name, const BT::NodeConfig& config);  // Constructor
 
+        static BT::PortsList providedPorts();
         // Behavior Tree Tick function
         BT::NodeStatus tick() override;
 
     private:
         bool already_logged_ = false;
+        rclcpp::Node::SharedPtr node_;
         std::pair<std::string, std::string> robot_status_;
 };
 }  // namesapce BT

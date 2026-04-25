@@ -18,6 +18,7 @@ class RobotFallenCondition : public ConditionNode, public CBDataManager
     public:
         explicit RobotFallenCondition(const std::string &name, const BT::NodeConfig& config);  // Constructor
 
+        static BT::PortsList providedPorts();
         // Behavior Tree Tick function
         BT::NodeStatus tick() override;
 

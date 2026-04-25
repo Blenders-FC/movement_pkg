@@ -36,3 +36,7 @@ BT::NodeStatus BT::ManagerDoneCondition::tick()
     RCLCPP_ERROR(node_->get_logger(), "ROS stopped unexpectedly");
     return BT::NodeStatus::FAILURE;
 }
+BT::PortsList BT::ManagerDoneCondition::providedPorts()
+{
+    return {};
+}

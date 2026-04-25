@@ -15,7 +15,10 @@ namespace BT {
         const BT::NodeConfig& config)
     : StatefulActionNode(name, config)
     {
-        node_ = rclcpp::Node::make_shared("send_head_to_home_reset");
+        if (!config.blackboard->get("node", node_)) {
+        throw BT::RuntimeError("HeadToHomeReset: missing [node] in blackboard");
+        }
+        utils_ = std::make_shared<utils>(node_);
         RCLCPP_INFO(node_->get_logger(), "[HeadToHomeReset] constructed");
         write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
     }
@@ -33,7 +36,7 @@ NodeStatus BT::HeadToHomeReset::onRunning()
 {
     RCLCPP_INFO(node_->get_logger(), "[HeadToHomeReset] Set Module to direct_control_module");
 
-    setModule("direct_control_module");
+    utils_->setModule("direct_control_module");
     rclcpp::sleep_for(std::chrono::milliseconds(1000));
 
     writeHeadJoint(0, true);
@@ -67,6 +70,11 @@ void BT::HeadToHomeReset::writeHeadJoint(double ang_value, bool is_pan)
       write_msg_.position.push_back(ang_value);
     }
     write_joint_pub_->publish(write_msg_);
+}
+
+BT::PortsList BT::HeadToHomeReset::providedPorts()
+{
+    return {};
 }
 
 void BT::HeadToHomeReset::onHalted()

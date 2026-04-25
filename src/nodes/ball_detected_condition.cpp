@@ -49,3 +49,8 @@ BT::NodeStatus BT::BallDetectedCondition::tick()
 		    "ROS stopped unexpectedly");
     return BT::NodeStatus::FAILURE; 
 }
+
+BT::PortsList BT::BallDetectedCondition::providedPorts()
+{
+    return {};
+}

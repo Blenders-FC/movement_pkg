@@ -14,7 +14,11 @@ namespace BT {
         const BT::NodeConfig& config)
     : StatefulActionNode(name, config)
     {
-        node_ = rclcpp::Node::make_shared("send_head_to_home");
+        if (!config.blackboard->get("node", node_)) {
+        throw BT::RuntimeError("HeadToHome: missing [node] in blackboard");
+        }
+        utils_ = std::make_shared<utils>(node_);
+    
         RCLCPP_INFO(node_->get_logger(), "[HeadToHome] constructed");
         write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
     }
@@ -32,7 +36,7 @@ NodeStatus BT::HeadToHome::onRunning()
 {
 
     // set_status(BT::RUNNING);
-    setModule("direct_control_module");
+    utils_->setModule("direct_control_module");
     rclcpp::sleep_for(std::chrono::milliseconds(1000));
     //ROS_COLORED_LOG("Set Module to direct_control_module", YELLOW, false);
     RCLCPP_INFO(node_->get_logger(), "[HeadToHome] Set Module to direct_control_module");

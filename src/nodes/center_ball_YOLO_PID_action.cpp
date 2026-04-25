@@ -116,6 +116,11 @@ void BT::CenterBallYOLOPID::writeHeadJoint(double ang_valueX, double ang_valueY,
     write_joint_pub_->publish(write_msg_);
 }
 
+BT::PortsList BT::CenterBallYOLOPID::providedPorts()
+{
+    return {};
+}
+
 void CenterBallYOLOPID::onHalted()
 {
     RCLCPP_INFO(node_->get_logger(), "[SearchBallSinusoidal] HALTED: Stopped ball searching");

@@ -8,6 +8,7 @@
 #define HEAD_TO_HOME_ACTION_H
 
 #include "movement_pkg/cb_data_manager.h"
+#include "movement_pkg/utils.h"
 #include "behaviortree_cpp/action_node.h"
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -31,6 +32,9 @@ class HeadToHome : public StatefulActionNode, public CBDataManager
     private:
         //  Auxiliar methods
         void writeHeadJoint(double ang_value, bool is_pan);
+        std::shared_ptr<utils> utils_;
+        rclcpp::Node::SharedPtr node_;
+        int robot_id = utils_->robot_id;
 
         // ROS publisher
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr write_joint_pub_;

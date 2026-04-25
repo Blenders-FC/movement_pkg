@@ -48,3 +48,7 @@ BT::NodeStatus BT::RobotFallenCondition::tick()
 
     return BT::NodeStatus::FAILURE;
 }
+BT::PortsList BT::RobotFallenCondition::providedPorts()
+{
+    return {};
+}

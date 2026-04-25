@@ -7,6 +7,7 @@
 #ifndef GET_UP_COMBINED_ACTION_H
 #define GET_UP_COMBINED_ACTION_H
 
+#include "movement_pkg/utils.h"
 #include "behaviortree_cpp/action_node.h"
 #include "movement_pkg/cb_data_manager.h"
 
@@ -28,6 +29,8 @@ public:
 
     static BT::PortsList providedPorts();
 private:
+    std::shared_ptr<utils> utils_;
+    rclcpp::Node::SharedPtr node_;
     double pitch;
     double alpha = 0.4;
     double present_pitch_ = 0;

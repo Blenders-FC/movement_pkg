@@ -20,6 +20,7 @@ class StartButtonCondition : public ConditionNode, public CBDataManager
 
         // Behavior Tree Tick function
         BT::NodeStatus tick() override;
+        static BT::PortsList providedPorts();
 
     private:
         //button
