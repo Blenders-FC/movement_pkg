@@ -29,7 +29,7 @@ struct PIDController
 
 namespace BT
 {
-class CenterBallYOLOPID : public BT::StatefulActionNode, public CBDataManager
+class CenterBallYOLOPID : public BT::StatefulActionNode
 {
     public:
         // Constructor
@@ -50,6 +50,7 @@ class CenterBallYOLOPID : public BT::StatefulActionNode, public CBDataManager
 
         rclcpp::Node::SharedPtr node_;
         std::shared_ptr<utils> utils_;
+        std::shared_ptr<CBDataManager> data_manager_;
         // ROS
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr write_joint_pub_;
 

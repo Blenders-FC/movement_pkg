@@ -16,6 +16,7 @@ GetUpCombined::GetUpCombined(
 {
     //type_ = BT::ACTION_NODE;
     //thread_ = std::thread(&GetUpCombined::WaitForTick, this);
+    data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
     if (!config.blackboard->get("node", node_)) {
     throw BT::RuntimeError("GetUpCombined: missing [node] in blackboard");
 }
@@ -46,7 +47,7 @@ NodeStatus BT::GetUpCombined::onRunning()
             utils_->goAction(1);  // straighten legs
             rclcpp::sleep_for(std::chrono::milliseconds(500));
 
-            pitch = getRobotPitch();
+            pitch = data_manager_->getRobotPitch();
         
             if (present_pitch_ == 0) 
                 present_pitch_ = pitch;

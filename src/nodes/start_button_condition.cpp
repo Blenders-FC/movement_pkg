@@ -8,9 +8,11 @@
 
 
 BT::StartButtonCondition::StartButtonCondition(const std::string &name, const BT::NodeConfig& config) 
-: BT::ConditionNode(name, config),CBDataManager()
+: BT::ConditionNode(name, config)
 {
-        node_ = rclcpp::Node::make_shared("start_button_condition");
+    data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
+    if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("StartButton: missing [node] in blackboard");}
 }
 
 BT::NodeStatus BT::StartButtonCondition::tick()
@@ -20,7 +22,7 @@ BT::NodeStatus BT::StartButtonCondition::tick()
     while (rclcpp::ok())
     {
         //set_status(BT::RUNNING);
-        start_button_flag_ = getStartButtonState();
+        start_button_flag_ = data_manager_->getStartButtonState();
 
         if (start_button_flag_)
         {

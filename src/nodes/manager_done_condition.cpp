@@ -9,11 +9,12 @@
 
 BT::ManagerDoneCondition::ManagerDoneCondition(
     const std::string &name, const BT::NodeConfig& config)
-: BT::ConditionNode(name, config), CBDataManager() 
+: BT::ConditionNode(name, config)   
 {
     //node_ = rclcpp::Node::make_shared("manager_done_condition");
+    data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
     if (!config.blackboard->get("node", node_)) {
-    throw BT::RuntimeError("LeftKick: missing [node] in blackboard");
+    throw BT::RuntimeError("ManagerDone: missing [node] in blackboard");}
     // Register this node with the shared executor so callbacks fire
     //init();
     //auto executor = config.blackboard->get<std::shared_ptr<rclcpp::executors::MultiThreadedExecutor>>("executor");
@@ -25,7 +26,7 @@ BT::NodeStatus BT::ManagerDoneCondition::tick()
     // Condition checking and state update
     while (rclcpp::ok())
     {
-        robot_status_ = getRobotStatus();  // first: module_name  second: status_msg
+        robot_status_ = data_manager_->getRobotStatus();  // first: module_name  second: status_msg
 
         if (robot_status_.first == "Base" && robot_status_.second == "Finish Init Pose") 
         {

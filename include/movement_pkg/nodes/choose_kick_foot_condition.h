@@ -13,7 +13,7 @@
 
 namespace BT
 {
-class ChooseKickFootCondition : public BT::ConditionNode, public CBDataManager
+class ChooseKickFootCondition : public BT::ConditionNode
 {
     public:
         explicit ChooseKickFootCondition(const std::string &name, const BT::NodeConfig& config);  // Constructor
@@ -28,6 +28,7 @@ class ChooseKickFootCondition : public BT::ConditionNode, public CBDataManager
     private:
         double head_pan_;
         rclcpp::Node::SharedPtr node_;
+        std::shared_ptr<CBDataManager> data_manager_;
 
 };
 }  // namesapce BT

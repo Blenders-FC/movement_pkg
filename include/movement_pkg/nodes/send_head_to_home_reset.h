@@ -15,7 +15,7 @@
 
 namespace BT
 {
-class HeadToHomeReset : public StatefulActionNode, public CBDataManager
+class HeadToHomeReset : public StatefulActionNode
 {
     public:
         // Constructor
@@ -39,6 +39,8 @@ class HeadToHomeReset : public StatefulActionNode, public CBDataManager
         std::shared_ptr<utils> utils_;
         rclcpp::Node::SharedPtr node_;
         int robot_id = utils_->robot_id;
+        std::shared_ptr<CBDataManager> data_manager_;
+
 
         // ROS variable
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr write_joint_pub_;

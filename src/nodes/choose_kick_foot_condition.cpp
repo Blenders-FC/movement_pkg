@@ -12,7 +12,9 @@ BT::ChooseKickFootCondition::ChooseKickFootCondition(
         const BT::NodeConfiguration& config
         )
 : BT::ConditionNode(name, config) {
-  node_ = rclcpp::Node::make_shared("choose_kick_foot_condition");
+  data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
+    if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("ChooseKickFoot: missing [node] in blackboard");}
 
 }
 
@@ -24,7 +26,7 @@ BT::NodeStatus BT::ChooseKickFootCondition::tick()
     return BT::NodeStatus::FAILURE;
   }
 
-  double head_pan = getHeadPan();
+  double head_pan = data_manager_->getHeadPan();
 
   if (head_pan < 0.0)
   {

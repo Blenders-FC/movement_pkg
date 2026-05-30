@@ -26,7 +26,7 @@ SearchBallSinusoidal::SearchBallSinusoidal(
 }
     utils_ = std::make_shared<utils>(node_);
     RCLCPP_INFO(node_->get_logger(), "SearchSinusoidal constructed");
-    write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 10);
+    write_joint_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 10);
 }
 BT::SearchBallSinusoidal::~SearchBallSinusoidal() {}
 

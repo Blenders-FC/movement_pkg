@@ -13,7 +13,7 @@
 
 namespace BT
 {
-class StartButtonCondition : public ConditionNode, public CBDataManager
+class StartButtonCondition : public ConditionNode
 {
     public:
         explicit StartButtonCondition(const std::string &name, const BT::NodeConfig& config);  // Constructor
@@ -27,6 +27,8 @@ class StartButtonCondition : public ConditionNode, public CBDataManager
         //button
         bool start_button_flag_ = false;
         bool already_logged_ = false;
+        rclcpp::Node::SharedPtr node_;
+        std::shared_ptr<CBDataManager> data_manager_;
 };
 }  // namesapce BT
 

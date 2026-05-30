@@ -14,13 +14,14 @@ namespace BT {
         const BT::NodeConfig& config)
     : StatefulActionNode(name, config)
     {
+        data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
         if (!config.blackboard->get("node", node_)) {
         throw BT::RuntimeError("HeadToHome: missing [node] in blackboard");
         }
         utils_ = std::make_shared<utils>(node_);
     
         RCLCPP_INFO(node_->get_logger(), "[HeadToHome] constructed");
-        write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
+        write_joint_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(robot_id) + "/direct_control/set_joint_states", 0);
     }
 
 BT::HeadToHome::~HeadToHome() {}

@@ -13,7 +13,7 @@
 
 namespace BT
 {
-class RobotFallenCondition : public ConditionNode, public CBDataManager
+class RobotFallenCondition : public ConditionNode
 {
     public:
         explicit RobotFallenCondition(const std::string &name, const BT::NodeConfig& config);  // Constructor
@@ -28,6 +28,8 @@ class RobotFallenCondition : public ConditionNode, public CBDataManager
         double present_pitch_ = 0;
         const double FALL_FORWARD_LIMIT = 55;
         const double FALL_BACKWARDS_LIMIT = -55;
+        rclcpp::Node::SharedPtr node_;
+        std::shared_ptr<CBDataManager> data_manager_;
 };
 }  // namesapce BT
 

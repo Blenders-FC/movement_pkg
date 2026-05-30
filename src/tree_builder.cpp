@@ -8,6 +8,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <behaviortree_cpp/bt_factory.h>
 #include <behaviortree_cpp/loggers/bt_cout_logger.h>
+#include "movement_pkg/cb_data_manager.h"
 //#include <behaviortree_cpp/loggers/bt_zmq_publisher.h>
 
 #include <ament_index_cpp/get_package_share_directory.hpp>
@@ -20,9 +21,12 @@ int main(int argc, char **argv)
     rclcpp::init(argc, argv);
 
     auto node = rclcpp::Node::make_shared("bt_executor");
+    auto data_manager = std::make_shared<CBDataManager>(rclcpp::NodeOptions());
+    data_manager->init();
 
     auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
     executor->add_node(node);
+    executor->add_node(data_manager);
 
     std::thread executor_thread([&executor]() {
         executor->spin();
@@ -30,6 +34,7 @@ int main(int argc, char **argv)
 
     auto blackboard = BT::Blackboard::create();
     blackboard->set("node", node);
+    blackboard->set("data_manager", data_manager);  // all BT nodes pull from here
     //blackboard->set("executor", executor);  
 
     BT::BehaviorTreeFactory factory;

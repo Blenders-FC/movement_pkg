@@ -13,6 +13,7 @@ WalkToTarget::WalkToTarget(
 : StatefulActionNode(name, config)
 {
         //node_ = rclcpp::Node::make_shared("simple_walk_action");
+    data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
     if (!config.blackboard->get("node", node_)) {
     throw BT::RuntimeError("WalkToTarget: missing [node] in blackboard");
 }
@@ -37,8 +38,8 @@ NodeStatus BT::WalkToTarget::onRunning()
         // Perform action...
     walked_distance = 0;  // Resets in each cycle
     
-    head_pan_angle_ = getHeadPan();
-    head_tilt_angle_ = getHeadTilt();
+    head_pan_angle_ = data_manager_->getHeadPan();
+    head_tilt_angle_ = data_manager_->getHeadTilt();
 
     utils_->setModule("walking_module");
     RCLCPP_INFO_THROTTLE(
