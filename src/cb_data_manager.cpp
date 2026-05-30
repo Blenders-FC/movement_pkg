@@ -55,6 +55,7 @@ void CBDataManager::init() {
 // Updating latest ball position
 void CBDataManager::ballCenterCallback(const geometry_msgs::msg::Point& msg)
 {
+    
     ball_position_.x = msg.x; // 320) - 1;
     ball_position_.y = msg.y; // 240) - 1;
 }
@@ -196,10 +197,13 @@ double CBDataManager::getHeadTilt()
 
 bool CBDataManager::getStartButtonState()
 {
+    RCLCPP_INFO(this->get_logger(), "Called Start Button!");
     return start_button_flag_;
 }
 
 std::pair<std::string, std::string> CBDataManager::getRobotStatus()
 {
+    RCLCPP_INFO(this->get_logger(), "Called Robot Status!");
+    RCLCPP_INFO(this->get_logger(), "Module: %s, Status: %s", module_name_.c_str(), status_msg_.c_str());
     return std::make_pair(module_name_, status_msg_);
 }

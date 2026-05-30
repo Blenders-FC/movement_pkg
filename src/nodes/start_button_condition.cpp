@@ -8,7 +8,7 @@
 
 
 BT::StartButtonCondition::StartButtonCondition(const std::string &name, const BT::NodeConfig& config) 
-: BT::ConditionNode(name, config) 
+: BT::ConditionNode(name, config),CBDataManager()
 {
         node_ = rclcpp::Node::make_shared("start_button_condition");
 }

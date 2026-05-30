@@ -6,17 +6,20 @@
 
       <!-- Your custom condition -->
       <ManagerRunning/>
+      <ManagerDoneCondition/>
+      <StartButtonCondition/>
       <StandUp/>
-      <LeftKick/>
+      <BallDetectedCondition/>
       <Parallel success_count="1" failure_count="1">
 
           <WalkToTarget/>
 
-          <Timeout msec="5000">
+          <Timeout msec="10000">
               <AlwaysSuccess/>
           </Timeout>
 
       </Parallel>
+      <LeftKick/>
 
     </Sequence>
   </BehaviorTree>

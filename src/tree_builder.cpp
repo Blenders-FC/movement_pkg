@@ -20,8 +20,17 @@ int main(int argc, char **argv)
     rclcpp::init(argc, argv);
 
     auto node = rclcpp::Node::make_shared("bt_executor");
+
+    auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
+    executor->add_node(node);
+
+    std::thread executor_thread([&executor]() {
+        executor->spin();
+    });
+
     auto blackboard = BT::Blackboard::create();
     blackboard->set("node", node);
+    //blackboard->set("executor", executor);  
 
     BT::BehaviorTreeFactory factory;
 
@@ -61,6 +70,8 @@ int main(int argc, char **argv)
         rate.sleep();
     }
 
+    executor->cancel();
+    executor_thread.join();
     rclcpp::shutdown();
     return 0;
 }

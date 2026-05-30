@@ -30,7 +30,6 @@ public:
     // int getRefereeState();
     bool getStartButtonState();
     std::pair<std::string, std::string> getRobotStatus();
-    rclcpp::Node::SharedPtr node_;
     std::shared_ptr<utils> utils_;
     int robot_id;
 

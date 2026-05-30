@@ -18,6 +18,7 @@ class StartButtonCondition : public ConditionNode, public CBDataManager
     public:
         explicit StartButtonCondition(const std::string &name, const BT::NodeConfig& config);  // Constructor
 
+        ~StartButtonCondition() override = default;
         // Behavior Tree Tick function
         BT::NodeStatus tick() override;
         static BT::PortsList providedPorts();
