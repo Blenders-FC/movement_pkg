@@ -25,7 +25,7 @@ BT::BallDetectedCondition::BallDetectedCondition(
 BT::NodeStatus BT::BallDetectedCondition::tick()
 {
     // Condition checking and state update
-    while (rclcpp::ok())
+    if (rclcpp::ok())
     {
 
         ball_center_position_ = data_manager_->getBallPosition();

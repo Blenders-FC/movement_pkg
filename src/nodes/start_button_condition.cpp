@@ -19,7 +19,7 @@ BT::NodeStatus BT::StartButtonCondition::tick()
 {
     // Condition checking and state update
 
-    while (rclcpp::ok())
+    if (rclcpp::ok())
     {
         //set_status(BT::RUNNING);
         start_button_flag_ = data_manager_->getStartButtonState();
