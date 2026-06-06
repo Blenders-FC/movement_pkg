@@ -10,6 +10,7 @@
 #include <behaviortree_cpp/loggers/bt_cout_logger.h>
 #include "movement_pkg/cb_data_manager.h"
 //#include <behaviortree_cpp/loggers/bt_zmq_publisher.h>
+#include <behaviortree_cpp/loggers/groot2_publisher.h>
 
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <filesystem>
@@ -59,9 +60,12 @@ int main(int argc, char **argv)
         pkg_share + "/behavior_trees/init_check.xml";
 
     auto tree = factory.createTreeFromFile(tree_xml, blackboard);
+    
+    
 
     // Optional: console logger
     BT::StdCoutLogger logger(tree);
+    BT::Groot2Publisher publisher(tree);   // ← add this
 
     // Optional: Groot2 live visualization
     //BT::PublisherZMQ zmq_publisher(tree);

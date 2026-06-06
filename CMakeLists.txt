@@ -20,6 +20,8 @@ find_package(op3_walking_module_msgs REQUIRED)
 find_package(robotis_framework_common REQUIRED)
 find_package(robotis_device REQUIRED)
 find_package(humanoid_nav_msgs REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ZMQ REQUIRED libzmq)
 
 
 
@@ -88,8 +90,8 @@ ament_target_dependencies(manager_bt_plugin
   robotis_framework_common
   robotis_device
   humanoid_nav_msgs
-  
 )
+target_link_libraries(manager_bt_plugin ${ZMQ_LIBRARIES})
 
 target_include_directories(manager_bt_plugin PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -124,6 +126,8 @@ ament_target_dependencies(bt_executor
   robotis_device
   humanoid_nav_msgs
 )
+target_link_libraries(bt_executor ${ZMQ_LIBRARIES})
+
 
 install(TARGETS bt_executor
   DESTINATION lib/${PROJECT_NAME}
