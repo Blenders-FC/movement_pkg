@@ -37,7 +37,7 @@ class BallDetectedCondition : public BT::ConditionNode
         rclcpp::Node::SharedPtr node_;
         std::shared_ptr<utils> utils_;
         geometry_msgs::msg::Point ball_center_position_;
-	CBDataManager cb_data_manager_;
+	    std::shared_ptr<CBDataManager> data_manager_;
 };
 }  // namesapce BT
 

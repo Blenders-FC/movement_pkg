@@ -2,6 +2,8 @@
     Authors:
         Pedro Deniz
         Marlene Cobian
+
+        Ricardo Berumen
 */
 
 #include <movement_pkg/walking_controller.h>
@@ -120,14 +122,14 @@ void WalkingController::getWalkingParam()
 
     auto future = get_param_client_->async_send_request(request);
 
-    if (rclcpp::spin_until_future_complete(
-            node_, future, std::chrono::seconds(1))
-        != rclcpp::FutureReturnCode::SUCCESS)
-    {
-        RCLCPP_ERROR(node_->get_logger(),
-                     "Failed to call GetWalkingParam service");
-        return;
+    auto timeout = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (future.wait_for(std::chrono::milliseconds(10)) != std::future_status::ready) {
+        if (std::chrono::steady_clock::now() > timeout) {
+            RCLCPP_ERROR(node_->get_logger(), "Timeout waiting for GetWalkingParam");
+            return;
+        }
     }
+
 
     current_walking_param_ = future.get()->parameters;
 
@@ -189,12 +191,12 @@ bool WalkingController::callFootstepPlanner(double x_goal, double y_goal, double
 
     auto future = footstep_planner_client_->async_send_request(request);
 
-    if (rclcpp::spin_until_future_complete(
-            node_, future, std::chrono::seconds(1))
-        != rclcpp::FutureReturnCode::SUCCESS)
-    {
-        RCLCPP_ERROR(node_->get_logger(), "Failed to call /plan_footsteps service");
-        return false;
+    auto timeout = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (future.wait_for(std::chrono::milliseconds(10)) != std::future_status::ready) {
+        if (std::chrono::steady_clock::now() > timeout) {
+            RCLCPP_ERROR(node_->get_logger(), "Failed to call /plan_footsteps service");
+            return false;
+        }
     }
 
     auto response = future.get();

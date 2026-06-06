@@ -103,12 +103,26 @@ install(TARGETS manager_bt_plugin
 # BT executor
 add_executable(bt_executor
   src/tree_builder.cpp
+  src/utils.cpp
+  src/cb_data_manager.cpp
 )
 
 ament_target_dependencies(bt_executor
-  rclcpp
   behaviortree_cpp
   ament_index_cpp
+  rclcpp
+  std_msgs
+  geometry_msgs
+  sensor_msgs
+  std_srvs
+  robotis_math
+  robotis_controller_msgs
+  op3_online_walking_module_msgs
+  op3_action_module_msgs
+  op3_walking_module_msgs
+  robotis_framework_common
+  robotis_device
+  humanoid_nav_msgs
 )
 
 install(TARGETS bt_executor

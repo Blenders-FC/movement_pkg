@@ -15,7 +15,8 @@ BT::BallDetectedCondition::BallDetectedCondition(
 		) 
 : BT::ConditionNode(name, config)
 {
-	if (!config.blackboard->get("node", node_)) {
+	data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
+    if (!config.blackboard->get("node", node_)) {
     throw BT::RuntimeError("BallDetected: missing [node] in blackboard");
 }
     utils_ = std::make_shared<utils>(node_);
@@ -27,7 +28,7 @@ BT::NodeStatus BT::BallDetectedCondition::tick()
     while (rclcpp::ok())
     {
 
-        ball_center_position_ = cb_data_manager_.getBallPosition();
+        ball_center_position_ = data_manager_->getBallPosition();
         if ((ball_center_position_.x != 999 && ball_center_position_.x != 0) || (ball_center_position_.y != 999 && ball_center_position_.y != 0))
         {   
             RCLCPP_INFO(rclcpp::get_logger("BallDetectedCondition"), 

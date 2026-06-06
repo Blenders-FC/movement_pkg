@@ -2,6 +2,8 @@
     Authors:
         Pedro Deniz
         Marlene Cobian
+
+        Ricardo Berumen
 */
 
 #include "movement_pkg/nodes/walk_to_target_action.h"
@@ -13,6 +15,7 @@ WalkToTarget::WalkToTarget(
 : StatefulActionNode(name, config)
 {
         //node_ = rclcpp::Node::make_shared("simple_walk_action");
+    data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
     if (!config.blackboard->get("node", node_)) {
     throw BT::RuntimeError("WalkToTarget: missing [node] in blackboard");
 }
@@ -37,8 +40,8 @@ NodeStatus BT::WalkToTarget::onRunning()
         // Perform action...
     walked_distance = 0;  // Resets in each cycle
     
-    head_pan_angle_ = getHeadPan();
-    head_tilt_angle_ = getHeadTilt();
+    head_pan_angle_ = data_manager_->getHeadPan();
+    head_tilt_angle_ = data_manager_->getHeadTilt();
 
     utils_->setModule("walking_module");
     RCLCPP_INFO_THROTTLE(
@@ -72,7 +75,7 @@ void WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_ang
 {
     double distance_to_ball = calculateDistance(head_tilt_angle);
     RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] dist to ball: %f   ang to ball: %f", distance_to_ball, head_pan_angle);
-    while (rclcpp::ok())
+    if (rclcpp::ok())
     {
         rclcpp::Time curr_time_walk = node_->get_clock()->now();
         rclcpp::Duration dur_walk = curr_time_walk - prev_time_walk_;

@@ -18,7 +18,7 @@
 
 namespace BT
 {
-class SearchBallSinusoidal : public BT::StatefulActionNode, public CBDataManager
+class SearchBallSinusoidal : public BT::StatefulActionNode
 {
     public:
         // Constructor
@@ -74,6 +74,7 @@ class SearchBallSinusoidal : public BT::StatefulActionNode, public CBDataManager
         // JointState messages for publishing (use local msg in function instead)
         sensor_msgs::msg::JointState write_msg;
         int robot_id = utils_->robot_id;
+        std::shared_ptr<CBDataManager> data_manager_;
 };
 }  // namespace BT
 

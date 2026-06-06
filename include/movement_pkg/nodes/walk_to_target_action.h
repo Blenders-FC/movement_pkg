@@ -16,7 +16,7 @@
 
 namespace BT
 {
-class WalkToTarget : public BT::StatefulActionNode, public CBDataManager
+class WalkToTarget : public BT::StatefulActionNode
 {
     public:
         // Constructor
@@ -32,6 +32,7 @@ class WalkToTarget : public BT::StatefulActionNode, public CBDataManager
     private:
         rclcpp::Node::SharedPtr node_;
         std::shared_ptr<utils> utils_;
+        std::shared_ptr<CBDataManager> data_manager_;
         std::shared_ptr<WalkingController> walking_controller_;    
     //  Auxiliar methods
         void walkTowardsTarget(double head_pan_angle, double head_tilt_angle);

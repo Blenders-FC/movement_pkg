@@ -12,7 +12,7 @@ BT::StandUp::StandUp(const std::string &name, const BT::NodeConfig &config)
 : BT::StatefulActionNode(name, config)
 {
     //node_ = rclcpp::Node::make_shared("stand_up_action");
-
+    //data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
     if(!config.blackboard->get("node",node_)){
         throw BT::RuntimeError("StandUp: missing [node] in blackboard");
     }

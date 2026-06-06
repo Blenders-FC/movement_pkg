@@ -15,9 +15,11 @@ CenterBallYOLOPID::CenterBallYOLOPID(
 ) 
 : StatefulActionNode(name, config)
 {
-    node_ = rclcpp::Node::make_shared("center_ball_YOLO_PID_action");
+    data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
+    if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("CenterBallYOLOPID: missing [node] in blackboard");}
     RCLCPP_INFO(node_->get_logger(), "CenterBallYOLOPID constructed");
-    write_joint_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(utils_->robot_id) + "/direct_control/set_joint_states", 10);    
+    write_joint_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("/robotis_" + std::to_string(utils_->robot_id) + "/direct_control/set_joint_states", 10);    
 }
 
 BT::CenterBallYOLOPID::~CenterBallYOLOPID() {}
@@ -37,15 +39,15 @@ NodeStatus BT::CenterBallYOLOPID::onRunning()
     rclcpp::Rate rate(30); // 30 Hz
     double dt = 0.033333;
 
-    ball_center_position_ = getBallPosition();
+    ball_center_position_ = data_manager_->getBallPosition();
 
     if ((ball_center_position_.x == 999 || ball_center_position_.x == 0) || (ball_center_position_.y == 999 || ball_center_position_.y == 0))
     {
         RCLCPP_WARN(node_->get_logger(), "BALL NOT detected. Not able to center.");
         return NodeStatus::FAILURE;
     }
-    head_pan_angle_ = getHeadPan();
-    head_tilt_angle_ = getHeadTilt();
+    head_pan_angle_ = data_manager_->getHeadPan();
+    head_tilt_angle_ = data_manager_->getHeadTilt();
     angle_mov_x_ = head_pan_angle_;  // rad   //* 57.2958;   // RadToDeg
     angle_mov_y_ = head_tilt_angle_; // rad   //* 57.2958;   // RadToDeg
 

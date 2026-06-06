@@ -13,7 +13,7 @@
 
 namespace BT
 {
-class GetUpCombined : public BT::StatefulActionNode, public CBDataManager
+class GetUpCombined : public BT::StatefulActionNode
 {
 public:
     // Constructor
@@ -36,6 +36,7 @@ private:
     double present_pitch_ = 0;
     const double FALL_FORWARD_LIMIT = 55;
     const double FALL_BACKWARDS_LIMIT = -55;
+    std::shared_ptr<CBDataManager> data_manager_;
 };
 }  // namespace BT
 

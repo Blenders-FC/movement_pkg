@@ -1,27 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root BTCPP_format="4">
+<BehaviorTree ID="MainTree">
+    <Sequence name="root">
 
-  <BehaviorTree ID="MainTree">
-    <Sequence name="startup_sequence">
+        <!-- Runs once — if it ever succeeds, the outer Sequence 
+             moves forward and never comes back here -->
+        <Sequence name="startup_sequence">
+            <ManagerRunning/>
+            <ManagerDoneCondition/>
+            <StartButtonCondition/>
+            <StandUp/>
+        </Sequence>
 
-      <!-- Your custom condition -->
-      <ManagerRunning/>
-      <ManagerDoneCondition/>
-      <StartButtonCondition/>
-      <StandUp/>
-      <BallDetectedCondition/>
-      <Parallel success_count="1" failure_count="1">
+        <!-- Loops forever — Fallback ensures Repeat never exits on failure -->
+        <Repeat num_cycles="-1">
+            <Fallback name="main_behavior">
 
-          <WalkToTarget/>
+                <!-- Happy path -->
+                <Sequence name="play_sequence">
+                    <BallDetectedCondition/>
+                    <Parallel success_count="1" failure_count="1">
+                        <WalkToTarget/>
+                        <Timeout msec="10000">
+                            <AlwaysSuccess/>
+                        </Timeout>
+                    </Parallel>
+                    <LeftKick/>
+                </Sequence>
 
-          <Timeout msec="10000">
-              <AlwaysSuccess/>
-          </Timeout>
+                <!-- Ball not detected — search for it.
+                     You have SearchBallSinusoidal ready, 
+                     plug it in here when ready -->
+                <AlwaysSuccess/>
 
-      </Parallel>
-      <LeftKick/>
+            </Fallback>
+        </Repeat>
 
     </Sequence>
-  </BehaviorTree>
-
+</BehaviorTree>
 </root>

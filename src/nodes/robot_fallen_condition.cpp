@@ -12,14 +12,16 @@ BT::RobotFallenCondition::RobotFallenCondition(
         const BT::NodeConfig& config)
 : BT::ConditionNode(name, config)
 {
-    node_ = rclcpp::Node::make_shared("robot_fallen_condition");
+    data_manager_ = config.blackboard->get<std::shared_ptr<CBDataManager>>("data_manager");
+    if (!config.blackboard->get("node", node_)) {
+    throw BT::RuntimeError("RobotFallen: missing [node] in blackboard");}
 }
 
 BT::NodeStatus BT::RobotFallenCondition::tick()
 {
-    while (rclcpp::ok())
+    if (rclcpp::ok())
     {
-        pitch = getRobotPitch();
+        pitch = data_manager_->getRobotPitch();
 
         if (present_pitch_ == 0)
             present_pitch_ = pitch;

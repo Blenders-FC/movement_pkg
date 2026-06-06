@@ -16,7 +16,7 @@
 
 namespace BT
 {
-class HeadToHome : public StatefulActionNode, public CBDataManager
+class HeadToHome : public StatefulActionNode
 {
     public:
         // Constructor
@@ -38,6 +38,7 @@ class HeadToHome : public StatefulActionNode, public CBDataManager
 
         // ROS publisher
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr write_joint_pub_;
+        std::shared_ptr<CBDataManager> data_manager_;
         
         sensor_msgs::msg::JointState write_msg_;
 };

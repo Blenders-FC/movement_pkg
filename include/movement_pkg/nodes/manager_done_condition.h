@@ -13,7 +13,7 @@
 
 namespace BT
 {
-class ManagerDoneCondition : public ConditionNode, public CBDataManager
+class ManagerDoneCondition : public ConditionNode
 {
     public:
         explicit ManagerDoneCondition(const std::string &name, const BT::NodeConfig& config);  // Constructor
@@ -25,6 +25,7 @@ class ManagerDoneCondition : public ConditionNode, public CBDataManager
     private:
         bool already_logged_ = false;
         rclcpp::Node::SharedPtr node_;
+        std::shared_ptr<CBDataManager> data_manager_;
         std::pair<std::string, std::string> robot_status_;
 };
 }  // namesapce BT
