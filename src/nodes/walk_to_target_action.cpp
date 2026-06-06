@@ -2,6 +2,8 @@
     Authors:
         Pedro Deniz
         Marlene Cobian
+
+        Ricardo Berumen
 */
 
 #include "movement_pkg/nodes/walk_to_target_action.h"
@@ -73,7 +75,7 @@ void WalkToTarget::walkTowardsTarget(double head_pan_angle, double head_tilt_ang
 {
     double distance_to_ball = calculateDistance(head_tilt_angle);
     RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] dist to ball: %f   ang to ball: %f", distance_to_ball, head_pan_angle);
-    while (rclcpp::ok())
+    if (rclcpp::ok())
     {
         rclcpp::Time curr_time_walk = node_->get_clock()->now();
         rclcpp::Duration dur_walk = curr_time_walk - prev_time_walk_;

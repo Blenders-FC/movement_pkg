@@ -20,7 +20,7 @@ BT::ManagerRunningCondition::ManagerRunningCondition(
 BT::NodeStatus BT::ManagerRunningCondition::tick()
 {
     // Condition checking and state update
-    while (rclcpp::ok())
+    if (rclcpp::ok())
     {
         rclcpp::sleep_for(1s);
 

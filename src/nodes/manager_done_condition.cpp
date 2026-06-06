@@ -2,6 +2,8 @@
     Authors:
         Pedro Deniz
         Marlene Cobian
+
+        Ricardo Berumen
 */
 
 #include "movement_pkg/nodes/manager_done_condition.h"
@@ -24,7 +26,7 @@ BT::ManagerDoneCondition::ManagerDoneCondition(
 BT::NodeStatus BT::ManagerDoneCondition::tick()
 {
     // Condition checking and state update
-    while (rclcpp::ok())
+    if (rclcpp::ok())//while (rclcpp::ok())
     {
         robot_status_ = data_manager_->getRobotStatus();  // first: module_name  second: status_msg
 
@@ -38,10 +40,10 @@ BT::NodeStatus BT::ManagerDoneCondition::tick()
         else
         {
             RCLCPP_WARN(node_->get_logger(), "Waiting for op3 manager to finish init pose");
-            RCLCPP_WARN(node_->get_logger(), "Current Pose: %s, Status: %s", robot_status_.first.c_str(), robot_status_.second.c_str());
+            RCLCPP_WARN_THROTTLE(node_->get_logger(), *node_->get_clock(), 1000, "Current Pose: %s, Status: %s", robot_status_.first.c_str(), robot_status_.second.c_str());
         }
     }
-    RCLCPP_ERROR(node_->get_logger(), "ROS stopped unexpectedly");
+    //RCLCPP_ERROR(node_->get_logger(), "ROS stopped unexpectedly");
     return BT::NodeStatus::FAILURE;
 }
 BT::PortsList BT::ManagerDoneCondition::providedPorts()

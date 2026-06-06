@@ -19,7 +19,7 @@ BT::RobotFallenCondition::RobotFallenCondition(
 
 BT::NodeStatus BT::RobotFallenCondition::tick()
 {
-    while (rclcpp::ok())
+    if (rclcpp::ok())
     {
         pitch = data_manager_->getRobotPitch();
 

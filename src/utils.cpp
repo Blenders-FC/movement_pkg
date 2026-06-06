@@ -1,6 +1,8 @@
 /*
     Authors:
         Pedro Deniz
+
+        Ricardo Berumen
 */
 
 #include "movement_pkg/utils.h"
@@ -51,10 +53,12 @@ void utils::setModule(const std::string& module_name)
     rclcpp::sleep_for(1s); // keep original timing
 
     auto future = set_joint_module_client_->async_send_request(req);
-    if (rclcpp::spin_until_future_complete(node_, future) !=
-        rclcpp::FutureReturnCode::SUCCESS)
-    {
-        RCLCPP_ERROR(node_->get_logger(), "Failed to call SetModule");
+    auto timeout = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (future.wait_for(std::chrono::milliseconds(10)) != std::future_status::ready) {
+        if (std::chrono::steady_clock::now() > timeout) {
+            RCLCPP_ERROR(node_->get_logger(), "Timeout waiting for SetModule response");
+            return;
+        }
     }
 }
 
@@ -69,11 +73,13 @@ std::string utils::getModule(const std::string& joint_name)
     }
 
     auto future = get_joint_module_client_->async_send_request(req);
-    if (rclcpp::spin_until_future_complete(node_, future) !=
-        rclcpp::FutureReturnCode::SUCCESS)
-    {
-        RCLCPP_ERROR(node_->get_logger(), "Failed to get joint module");
-        return "";
+
+    auto timeout = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while (future.wait_for(std::chrono::milliseconds(10)) != std::future_status::ready) {
+        if (std::chrono::steady_clock::now() > timeout) {
+            RCLCPP_ERROR(node_->get_logger(), "Timeout waiting for GetModule response");
+            return "";
+        }
     }
 
     auto result = future.get();

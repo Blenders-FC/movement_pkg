@@ -31,6 +31,7 @@ int main(int argc, char **argv)
     std::thread executor_thread([&executor]() {
         executor->spin();
     });
+    rclcpp::sleep_for(std::chrono::milliseconds(500));
 
     auto blackboard = BT::Blackboard::create();
     blackboard->set("node", node);
