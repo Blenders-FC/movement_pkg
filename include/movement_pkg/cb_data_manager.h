@@ -4,8 +4,9 @@
 #include <eigen3/Eigen/Eigen>
 
 #include "movement_pkg/utils.h"
-//#include "vision_pkg/referee.h"
+#include "localization_pkg/msg/referee.hpp"
 #include "robotis_math/robotis_linear_algebra.h"
+#include "blackboard.h"
 
 
 enum referee{
@@ -27,10 +28,11 @@ public:
     double getRobotPitch();
     double getHeadPan();
     double getHeadTilt();
-    // int getRefereeState();
+    int getRefereeState();
     bool getStartButtonState();
     std::pair<std::string, std::string> getRobotStatus();
     std::shared_ptr<utils> utils_;
+    std::shared_ptr<Blackboard> blackboard_;
     int robot_id;
 
 private:
@@ -39,7 +41,7 @@ private:
     void ballCenterCallback(const geometry_msgs::msg::Point& msg);
     void imuCallback(const sensor_msgs::msg::Imu::ConstPtr& msg);
     void jointStatesCallback(const sensor_msgs::msg::JointState& msg);
-    //void refereeCallback(const vision_pkg::referee& msg);
+    void refereeCallback(const localization_pkg::msg::Referee& msg);
     void buttonHandlerCallback(const std_msgs::msg::String::ConstPtr& msg);
     void statusCallback(const robotis_controller_msgs::msg::StatusMsg::ConstPtr& msg);
 
@@ -47,7 +49,7 @@ private:
     rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr ball_sub_;
     rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_sub_;
-    //rclcpp::Subscription<vision_pkg::referee>::SharedPtr ref_sub_;
+    rclcpp::Subscription<localization_pkg::msg::Referee>::SharedPtr ref_sub_;
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr button_sub_;
     rclcpp::Subscription<robotis_controller_msgs::msg::StatusMsg>::SharedPtr robot_status_sub_;
 
@@ -61,7 +63,8 @@ private:
     std::string module_name_;
     std::string status_msg_;
     //referee blackboard variable
-    //TargetInfo m_refereeInfo;
+    TargetInfo m_refereeInfo;
+    int referee_state_; //referee state variable to be used in the behavior tree
     //imu
     double alpha = 0.4;
     double pitch;

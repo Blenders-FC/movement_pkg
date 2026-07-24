@@ -26,6 +26,7 @@
   <depend>op3_action_module_msgs</depend>
   <depend>op3_walking_module_msgs</depend>
   <depend>humanoid_nav_msgs</depend>
+  <depend>localization_pkg</depend>
 
   <exec_depend>op3_manager</exec_depend>
 

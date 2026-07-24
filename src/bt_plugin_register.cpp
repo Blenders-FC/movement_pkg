@@ -24,4 +24,5 @@ extern "C" void BT_RegisterNodesFromPlugin(BT::BehaviorTreeFactory& factory)
     factory.registerNodeType<BT::StandUp>("StandUp");
     factory.registerNodeType<BT::StartButtonCondition>("StartButtonCondition");
     factory.registerNodeType<BT::WalkToTarget>("WalkToTarget");
+    factory.registerNodeType<BT::RefereeStateCondition>("RefereeStateCondition");
 }

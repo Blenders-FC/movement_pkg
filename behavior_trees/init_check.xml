@@ -5,12 +5,12 @@
 
         <!-- Runs once — if it ever succeeds, the outer Sequence 
              moves forward and never comes back here -->
-        <Sequence name="startup_sequence">
+        <!--<Sequence name="startup_sequence">
             <ManagerRunning/>
             <ManagerDoneCondition/>
             <StartButtonCondition/>
             <StandUp/>
-        </Sequence>
+        </Sequence>-->
 
         <!-- Loops forever — Fallback ensures Repeat never exits on failure -->
         <Repeat num_cycles="-1">
@@ -18,14 +18,17 @@
 
                 <!-- Happy path -->
                 <Sequence name="play_sequence">
-                    <BallDetectedCondition/>
-                    <Parallel success_count="1" failure_count="1">
+                   <!-- <BallDetectedCondition/>-->
+                    <!--<Parallel success_count="1" failure_count="1">
                         <WalkToTarget/>
                         <Timeout msec="10000">
                             <AlwaysSuccess/>
                         </Timeout>
                     </Parallel>
-                    <LeftKick/>
+                    <LeftKick/>-->
+                    <RefereeStateCondition/>
+                    
+
                 </Sequence>
 
                 <!-- Ball not detected — search for it.

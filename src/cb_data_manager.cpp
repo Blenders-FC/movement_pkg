@@ -31,11 +31,11 @@ CBDataManager::CBDataManager(const rclcpp::NodeOptions& options) : rclcpp::Node(
       10,
       std::bind(&CBDataManager::jointStatesCallback, this, std::placeholders::_1));
 
-  /*ref_sub_ = this->create_subscription<vision_pkg::msg::Referee>(
+  ref_sub_ = this->create_subscription<localization_pkg::msg::Referee>(
       prefix + "/referee_data",
       10,
       std::bind(&CBDataManager::refereeCallback, this, std::placeholders::_1));
-*/
+
   button_sub_ = this->create_subscription<std_msgs::msg::String>(
       prefix + "/open_cr/button",
       10,
@@ -98,54 +98,56 @@ void CBDataManager::jointStatesCallback(const sensor_msgs::msg::JointState& msg)
 }
 
 // Updating referee state
-/*
-void CBDataManager::refereeCallback(const vision_pkg::referee& msg)
+
+void CBDataManager::refereeCallback(const localization_pkg::msg::Referee& msg)
 {
-    
+    /*
     0 = "quieto"
     1 = "acomodate"
     2 = "playing"
     3 = "acercate"
     4 = "alejate"
-    
+    */
 //check if previous state was the same
-    if(blackboard.getTarget("m_refereeStatus")->refereeStatus == msg.robotPlayStateInt){
-        m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
-        blackboard.setTarget("m_refereeStatus",m_refereeInfo);
+    if(blackboard_->getTarget("m_refereeStatus")->refereeStatus == msg.robot_play_state_int){
+        m_refereeInfo.refereeStatus = msg.robot_play_state_int; 
+        referee_state_ = msg.robot_play_state_int;
+        blackboard_->setTarget("m_refereeStatus",m_refereeInfo);
+        RCLCPP_INFO(this->get_logger(), "refereeState stable: %d", msg.robot_play_state_int);
         // ROS_COLORED_LOG("refereeState stable: %d", CYAN, true, msg.robotPlayStateInt);
 
         return; //if so return, there is nothing to change, only update blackboard
     }
-    m_refereeInfo.refereeStatus = msg.robotPlayStateInt; 
-    blackboard.setTarget("m_refereeStatus",m_refereeInfo); //update blacboard
-
+    m_refereeInfo.refereeStatus = msg.robot_play_state_int; 
+    blackboard_->setTarget("m_refereeStatus",m_refereeInfo); //update blacboard
+    referee_state_ = msg.robot_play_state_int;
 
     //if statements to change behavior if referee changed its state
 
 
-switch (msg.robotPlayStateInt)
+switch (msg.robot_play_state_int)
 {
     case referee::STILL:
         // code 
-        ROS_COLORED_LOG("refereeState changed to STILL: %d", CYAN, true, msg.robotPlayStateInt);
+        RCLCPP_INFO(this->get_logger(), "refereeState changed to STILL: %d", msg.robot_play_state_int);
         break;
     case referee::MIDFIELD:
-        ROS_COLORED_LOG("refereeState changed to MIDFIELD kickoff: %d", CYAN, true, msg.robotPlayStateInt);
+        RCLCPP_INFO(this->get_logger(), "refereeState changed to MIDFIELD kickoff: %d", msg.robot_play_state_int);
         break;
     case referee::PLAY:
-        ROS_COLORED_LOG("refereeState changed to PlAY: %d", CYAN, true, msg.robotPlayStateInt);
+        RCLCPP_INFO(this->get_logger(), "refereeState changed to PlAY: %d", msg.robot_play_state_int);
         break;
     case referee::GET_CLOSE:
-        ROS_COLORED_LOG("refereeState changed to GET_CLOSE to ball: %d", CYAN, true, msg.robotPlayStateInt);
+        RCLCPP_INFO(this->get_logger(), "refereeState changed to GET_CLOSE to ball: %d", msg.robot_play_state_int);
         break;
     case referee::GET_FAR:
-        ROS_COLORED_LOG("refereeState changed to GET_FAR from ball: %d", CYAN, true, msg.robotPlayStateInt);
+        RCLCPP_INFO(this->get_logger(), "refereeState changed to GET_FAR from ball: %d", msg.robot_play_state_int);
         break;
     default:
         break;
     }
 }
-*/
+
 // Updating start button state
 void CBDataManager::buttonHandlerCallback(const std_msgs::msg::String::ConstPtr& msg)
 {
@@ -190,10 +192,10 @@ double CBDataManager::getHeadTilt()
     return head_tilt_;
 }
 
-// int CBDataManager::getRefereeState()
-// {
-//     return referee_state_;
-// }
+int CBDataManager::getRefereeState()
+{
+     return referee_state_;
+}
 
 bool CBDataManager::getStartButtonState()
 {

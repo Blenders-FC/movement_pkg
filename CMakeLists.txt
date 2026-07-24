@@ -20,6 +20,7 @@ find_package(op3_walking_module_msgs REQUIRED)
 find_package(robotis_framework_common REQUIRED)
 find_package(robotis_device REQUIRED)
 find_package(humanoid_nav_msgs REQUIRED)
+find_package(localization_pkg REQUIRED)
 
 
 
@@ -49,10 +50,12 @@ add_library(manager_bt_plugin SHARED
   src/nodes/manager_done_condition.cpp
   src/nodes/start_button_condition.cpp
   src/nodes/get_up_combined_action.cpp
+  src/nodes/referee_state_condition.cpp
   src/bt_plugin_register.cpp
   src/walking_controller.cpp
   src/utils.cpp
   src/cb_data_manager.cpp
+  src/blackboard.cpp
 )
 
 # utils
@@ -88,6 +91,7 @@ ament_target_dependencies(manager_bt_plugin
   robotis_framework_common
   robotis_device
   humanoid_nav_msgs
+  localization_pkg
   
 )
 
@@ -105,6 +109,7 @@ add_executable(bt_executor
   src/tree_builder.cpp
   src/utils.cpp
   src/cb_data_manager.cpp
+  src/blackboard.cpp
 )
 
 ament_target_dependencies(bt_executor
@@ -123,6 +128,7 @@ ament_target_dependencies(bt_executor
   robotis_framework_common
   robotis_device
   humanoid_nav_msgs
+  localization_pkg
 )
 
 install(TARGETS bt_executor
