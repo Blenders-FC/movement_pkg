@@ -73,7 +73,7 @@ class SearchBallSinusoidal : public BT::StatefulActionNode
 
         // JointState messages for publishing (use local msg in function instead)
         sensor_msgs::msg::JointState write_msg;
-        int robot_id = utils_->robot_id;
+        int robot_id = 0; //= utils_->robot_id;
         std::shared_ptr<CBDataManager> data_manager_;
 };
 }  // namespace BT

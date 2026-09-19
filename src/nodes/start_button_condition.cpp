@@ -35,6 +35,7 @@ BT::NodeStatus BT::StartButtonCondition::tick()
         else 
         {
             RCLCPP_WARN(node_->get_logger(), "Waiting for start button");
+            return BT::NodeStatus::RUNNING;
         }
     }
     RCLCPP_ERROR(node_->get_logger(), "ROS stopped unexpectedly");

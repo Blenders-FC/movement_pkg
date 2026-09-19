@@ -56,7 +56,7 @@ NodeStatus BT::WalkToTarget::onRunning()
         if (walkingSucced)
         {
             RCLCPP_INFO(node_->get_logger(), "[WalkToTarget] Walk to target SUCCESS");
-            return BT::NodeStatus::IDLE;
+            return BT::NodeStatus::SUCCESS;
         }
         else if (walkLimitReach)
         {
@@ -65,7 +65,7 @@ NodeStatus BT::WalkToTarget::onRunning()
         }
 
         if (error_d){
-            return BT::NodeStatus::IDLE;
+            return BT::NodeStatus::RUNNING;
         }
         
         return BT::NodeStatus::RUNNING;

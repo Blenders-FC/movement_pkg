@@ -31,7 +31,10 @@
                 <!-- Ball not detected — search for it.
                      You have SearchBallSinusoidal ready, 
                      plug it in here when ready -->
-                <AlwaysSuccess/>
+                
+                <Sequence name="ball_not_found_sequence">
+                <SearchBallSinusoidal/>
+                </Sequence>
 
             </Fallback>
         </Repeat>
