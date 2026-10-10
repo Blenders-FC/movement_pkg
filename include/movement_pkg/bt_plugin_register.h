@@ -23,6 +23,7 @@
 #include "movement_pkg/nodes/stand_up_action.h"
 #include "movement_pkg/nodes/start_button_condition.h"
 #include "movement_pkg/nodes/walk_to_target_action.h"
+#include "movement_pkg/nodes/turn_left_action.h"
 #include <behaviortree_cpp/bt_factory.h>
 
 #endif  // LEFT_KICK_ACTION_H

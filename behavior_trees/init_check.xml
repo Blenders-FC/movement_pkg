@@ -15,8 +15,6 @@
         <!-- Loops forever — Fallback ensures Repeat never exits on failure -->
         <Repeat num_cycles="-1">
             <Fallback name="main_behavior">
-
-                <!-- Happy path -->
                 <Sequence name="play_sequence">
                     <BallDetectedCondition/>
                     <Parallel success_count="1" failure_count="1">
@@ -27,13 +25,23 @@
                     </Parallel>
                     <LeftKick/>
                 </Sequence>
-
-                <!-- Ball not detected — search for it.
-                     You have SearchBallSinusoidal ready, 
-                     plug it in here when ready -->
                 
                 <Sequence name="ball_not_found_sequence">
-                <SearchBallSinusoidal/>
+                    <Fallback name = "ball_search">
+                        <SearchBallSinusoidal/>
+                        <Fallback name = "failback_search">
+                            <Sequence name="search_sequence">
+                                <Fallback name = "turn_search">
+                                    <Sequence name="turn_sequence">
+                                        <SimpleWalk/>
+                                        <TurnRight/>
+                                    </Sequence>
+                                    <TurnLeft/>
+                                </Fallback>
+                                <HeadToHome>
+                            <Sequence>
+                        </Fallback>
+                    </Fallback>
                 </Sequence>
 
             </Fallback>
