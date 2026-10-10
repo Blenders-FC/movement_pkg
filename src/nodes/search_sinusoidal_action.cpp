@@ -42,7 +42,9 @@ NodeStatus SearchBallSinusoidal::onStart()
             rclcpp::sleep_for(std::chrono::milliseconds(1000));
         }
         utils_->setModule("direct_control_module");
-        rclcpp::sleep_for(std::chrono::milliseconds(1000));
+        for (int i = 0; i < 10 && utils_->getModule("r_knee") != "direct_control_module"; ++i) {
+            rclcpp::sleep_for(std::chrono::milliseconds(200));
+        }
     }
     RCLCPP_INFO(node_->get_logger(), "[SearchBallSinusoidal] START");
 
@@ -90,7 +92,7 @@ NodeStatus SearchBallSinusoidal::onRunning()
     }
 
     writeHeadJoint(x_target_, y_target_);
-    rclcpp::sleep_for(std::chrono::milliseconds(500));
+    rclcpp::sleep_for(std::chrono::milliseconds(550)); // return to 500 after fixing
     
     // ROS_SUCCESS_LOG("Searching Ball!");
     return NodeStatus::SUCCESS; // ?
@@ -101,8 +103,8 @@ NodeStatus SearchBallSinusoidal::onRunning()
 
 void BT::SearchBallSinusoidal::writeHeadJoint(double ang_valueX, double ang_valueY)
 {
-    //write_msg.name.clear();      // clean msg
-    //write_msg.position.clear();  
+    write_msg.name.clear();      // clean msg
+    write_msg.position.clear();  
     write_msg.header.stamp = node_->get_clock()->now();     
     ang_valueX *= 0.0174533;  // DegToRad -> pi/180
     ang_valueY *= 0.0174533;  // DegToRad -> pi/180

@@ -37,6 +37,7 @@ int main(int argc, char **argv)
     auto blackboard = BT::Blackboard::create();
     blackboard->set("node", node);
     blackboard->set("data_manager", data_manager);  // all BT nodes pull from here
+    blackboard->set<int>("turns_num", 3);   // in tree_builder.cpp
     //blackboard->set("executor", executor);  
 
     BT::BehaviorTreeFactory factory;
@@ -80,6 +81,7 @@ int main(int argc, char **argv)
         rate.sleep();
     }
 
+    tree.haltTree();
     executor->cancel();
     executor_thread.join();
     rclcpp::shutdown();
