@@ -71,13 +71,14 @@ int main(int argc, char **argv)
     // Optional: Groot2 live visualization
     //BT::PublisherZMQ zmq_publisher(tree);
 
-    rclcpp::Rate rate(10);
+    rclcpp::Rate rate(100);
 
     RCLCPP_INFO(node->get_logger(), "Behavior Tree executor started");
 
     while (rclcpp::ok())
     {
-        tree.tickWhileRunning();
+        //tree.tickWhileRunning();
+        tree.tickOnce();
         rate.sleep();
     }
 

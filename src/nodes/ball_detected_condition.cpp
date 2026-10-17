@@ -40,8 +40,12 @@ BT::NodeStatus BT::BallDetectedCondition::tick()
         }
         else
         {   
-            RCLCPP_INFO(rclcpp::get_logger("BallDetectedCondition"), 
-			    "Ball NOT Detected!");
+            RCLCPP_INFO_THROTTLE(
+                node_->get_logger(),
+                *node_->get_clock(),
+                2000,
+                 "Ball NOT Detected!"
+            ); 
             //set_status(BT::FAILURE);
             return BT::NodeStatus::FAILURE;
         }

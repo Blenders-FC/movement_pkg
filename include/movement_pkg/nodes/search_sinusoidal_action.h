@@ -15,6 +15,7 @@
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <cmath>
+#include <algorithm>
 
 namespace BT
 {
@@ -75,6 +76,10 @@ class SearchBallSinusoidal : public BT::StatefulActionNode
         sensor_msgs::msg::JointState write_msg;
         int robot_id = 0; //= utils_->robot_id;
         std::shared_ptr<CBDataManager> data_manager_;
+        rclcpp::Time last_pub_    = rclcpp::Time(0, 0, RCL_ROS_TIME);
+        rclcpp::Time last_active_ = rclcpp::Time(0, 0, RCL_ROS_TIME);
+        static constexpr double kPublishPeriod = 0.05;  // 20 Hz
+        static constexpr double kOmega = 0.2;           // rad/s, same sweep speed as today
 };
 }  // namespace BT
 
