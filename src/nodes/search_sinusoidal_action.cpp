@@ -92,7 +92,7 @@ NodeStatus SearchBallSinusoidal::onRunning()
     }
 
     writeHeadJoint(x_target_, y_target_);
-    rclcpp::sleep_for(std::chrono::milliseconds(550)); // return to 500 after fixing
+    rclcpp::sleep_for(std::chrono::milliseconds(500)); // return to 500 after fixing
     
     // ROS_SUCCESS_LOG("Searching Ball!");
     return NodeStatus::SUCCESS; // ?
