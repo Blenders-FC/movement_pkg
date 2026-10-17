@@ -7,8 +7,8 @@
              moves forward and never comes back here -->
         <Sequence name="startup_sequence">
             <ManagerRunning/>
-            <ManagerDoneCondition/>
-            <StartButtonCondition/>
+            <!-- <ManagerDoneCondition/> -->
+            <!-- <StartButtonCondition/> -->
             <StandUp/>
         </Sequence>
 
@@ -27,20 +27,9 @@
                 </Sequence>
                 
                 <Sequence name="ball_not_found_sequence">
-                    <Fallback name = "ball_search">
+                    <Fallback name="search_ball">
                         <SearchBallSinusoidal/>
-                        <Fallback name = "failback_search">
-                            <Sequence name="search_sequence">
-                                <Fallback name = "turn_search">
-                                    <Sequence name="turn_sequence">
-                                        <SimpleWalk/>
-                                        <TurnRight/>
-                                    </Sequence>
-                                    <TurnLeft/>
-                                </Fallback>
-                                <HeadToHome>
-                            <Sequence>
-                        </Fallback>
+                        <TurnLeft turns="{turns_num}"/>
                     </Fallback>
                 </Sequence>
 
